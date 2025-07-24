@@ -8,22 +8,29 @@ public class Todo {
 	private String todoContent;
 	private Date todoDate;
 	private boolean todoImportant;
-	
+	private int memId;            // 회원 ID (외래키)
+
 	public Todo() {}
 
-	public Todo(boolean todoDone, String todoContent, Date todoDate, boolean todoImportant) {
+	public Todo(boolean todoDone, String todoContent, Date todoDate, boolean todoImportant, int memId) {
 		this.todoDone = todoDone;
 		this.todoContent = todoContent;
 		this.todoDate = todoDate;
 		this.todoImportant = todoImportant;
+		this.memId = memId;
 	}
 	
-	public Todo(int todoId, boolean todoDone, String todoContent, Date todoDate, boolean todoImportant) {
+	public Todo(int todoId, boolean todoDone, String todoContent, Date todoDate, boolean todoImportant, int memId) {
 		this.todoId = todoId;
 		this.todoDone = todoDone;
 		this.todoContent = todoContent;
 		this.todoDate = todoDate;
 		this.todoImportant = todoImportant;
+		this.memId = memId;
+	}
+	public Todo(int todoId, boolean todoDone) {
+		this.todoId = todoId;
+		this.todoDone = todoDone;
 	}
 
 	public int getTodoId() {
@@ -66,11 +73,18 @@ public class Todo {
 		this.todoImportant = todoImportant;
 	}
 
+	public int getMemId() {
+		return memId;
+	}
+
+	public void setMemId(int memId) {
+		this.memId = memId;
+	}
+
 	@Override
 	public String toString() {
 		return "Todo [todoId=" + todoId + ", todoDone=" + todoDone + ", todoContent=" + todoContent + ", todoDate="
-				+ todoDate + ", todoImportant=" + todoImportant + "]";
+				+ todoDate + ", todoImportant=" + todoImportant + ", memId=" + memId + "]";
 	}
-
 	
 }
