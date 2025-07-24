@@ -21,6 +21,12 @@ public class Note {
 		this.noteContent = noteContent;
 		this.noteImportant = noteImportant;
 	}
+
+	@Override
+	public String toString() {
+		return "Note [noteId=" + noteId + ", noteName=" + noteName + ", noteContent=" + noteContent + ", noteImportant="
+				+ noteImportant + "]";
+	}
 	
 	
 }
