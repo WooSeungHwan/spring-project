@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="ns.sql.MemberMapper">
+	<!-- Member ResultMap -->
+	<resultMap id="memberRM" type="member">
+		<id property="memId" column="mem_id"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="gender" column="gender"/>
+        <result property="profileImg" column="profile_img"/>
+	</resultMap>
+
+	<!-- 동적쿼리 1) 로그인(ID, Password) 2) getMember (ID)-->
+	<select id="getMember" parameterType="member" resultMap="memberRM">		
+		SELECT mem_id, email, password, nickname, gender, profile_img
+		FROM member
+		WHERE email=#{email}
+		<if test="password != null">
+			AND password=#{password}
+		</if>
+	</select>
+	
+<!-- 	<insert id="addUser" parameterType="user">		
+		INSERT
+		INTO userinfo (userId, password, name, email)
+		VALUES (#{userId}, #{password}, #{name}, #{email})
+	</insert> -->
+	
+	
+<!-- addMember
+deleteMember
+changeMember
+addFriend
+getFriend
+deleteFriend
+
+getGoal
+setGoal
+updateGoal -->
+	<!-- Goal 관련 쿼리문 -->
+		
+	<!-- Goal ResultMap -->
+	<resultMap id="goalRM" type="goal">
+		<id property="goalLv" column="goal_lv"/>
+        <result property="goalName" column="goal_name"/>
+        <result property="goalExp" column="goal_exp"/>	
+	</resultMap>
+
+	<!-- 사용자의 목표를 가져옴 -->
+	<select id="getGoal" parameterType="int" resultType="goal">
+		SELECT goal_lv, goal_name, goal_exp
+		FROM member
+		WHERE mem_id=#{VALUE}
+	</select>
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

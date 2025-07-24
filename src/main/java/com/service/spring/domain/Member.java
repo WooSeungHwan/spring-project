@@ -9,7 +9,9 @@ public class Member {
 	private String nickname;
 	private String gender;
 	private String profileImg;
+	
 	private Goal goal;
+	
 	private List<Account> accounts;
 	private List<Health> healths;
 	private List<Todo> Todos;
