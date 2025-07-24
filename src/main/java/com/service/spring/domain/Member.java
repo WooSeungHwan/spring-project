@@ -94,7 +94,6 @@ public class Member {
 		return "Member [memId=" + memId + ", email=" + email + ", password=" + password + ", nickname=" + nickname
 				+ ", gender=" + gender + ", profileImg=" + profileImg + ", goal=" + goal + "]";
 	}
-	
-	
+
 	
 }

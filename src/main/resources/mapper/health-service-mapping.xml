@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ns.sql.HealthMapper">
+	<select id="getHealth" parameterType="hashmap" resultType="health">
+		SELECT heal_id, heal_name, heal_amount, heal_done
+		FROM health
+		<where>
+			<if test="memId != null">
+            	mem_id = #{memId}
+	        </if>
+	        <if test="healName != null and healName != ''">
+	            AND heal_name LIKE #{healName}
+	        </if>
+	        <if test="healDone != null">
+	            AND heal_done = #{healDone}
+	        </if>
+		</where>
+	</select>
+	
+	<insert id="addHealth" parameterType="health" useGeneratedKeys="true" keyProperty="healId">
+		INSERT INTO health
+		(heal_name, heal_amount, heal_done, mem_id)
+		VALUES (#{healName}, #{healAmount}, #{healDone}, #{memId})
+	</insert>
+	
+	<delete id="deleteHealth" parameterType="int">
+		DELETE FROM health
+		WHERE heal_id=#{VALUE}
+	</delete>
+	
+	<update id="changeHealth" parameterType="health">
+		UPDATE health
+		SET heal_name=#{healName}, heal_amount=#{healAmount}, heal_done=#{healDone}
+		WHERE heal_id=#{healId}
+	</update>
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
