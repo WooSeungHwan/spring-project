@@ -29,7 +29,7 @@ public class Account {
 	}
 	
 	public Account(int accId, LocalDate accDate, boolean accIncome, String accCategory, int accAmount, String accEtc,
-			String accDesc, String accPayment) {
+			String accDesc, String accPayment, int memId) {
 		this.accId = accId;
 		this.accDate = accDate;
 		this.accIncome = accIncome;
@@ -38,6 +38,7 @@ public class Account {
 		this.accEtc = accEtc;
 		this.accDesc = accDesc;
 		this.accPayment = accPayment;
+		this.memId = memId;
 	}
 
 	public int getAccId() {

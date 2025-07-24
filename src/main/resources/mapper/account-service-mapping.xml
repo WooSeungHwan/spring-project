@@ -3,7 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ns.sql.AccountMapper">
-	<!-- ResultMap -->
+	<!-- Account ResultMap -->
 	<resultMap id="accountRM" type="account">
         <id property="accId" column="acc_id"/>
         <result property="accDate" column="acc_date"/>
@@ -25,7 +25,7 @@
     <select id="getMonthAcc" parameterType="account" resultMap="accountRM">
     	<include refid="select-acc"></include>
     	WHERE mem_id=#{memId}
-    	AND DATE_FORMAT(acc_date, '%Y-%m') = #{accDate}
+    	AND DATE_FORMAT(acc_date, '%Y-%m') = DATE_FORMAT(#{accDate}, '%Y-%m')
     </select>
 	
 	<!-- 가계부 추가 -->
@@ -33,6 +33,19 @@
 		INSERT INTO account (acc_date, acc_income, acc_category, acc_amount, acc_desc, acc_payment, acc_etc, mem_id)
 		VALUES (#{accDate}, #{accIncome}, #{accCategory}, #{accAmount}, #{accEtc}, #{accDesc}, #{accPayment}, #{memId})
 	</insert>
+	
+	<!-- 가계부 수정 -->
+	<update id="changeAcc" parameterType="account">
+		UPDATE account
+		SET acc_date=#{accDate}, acc_income=#{accIncome}, acc_category=#{accCategory}, 
+			acc_amount=#{accAmount}, acc_desc=#{accDesc}, acc_payment=#{accPayment}, acc_etc=#{accEtc}
+		WHERE acc_id=#{accId}
+	</update>
+	
+	<delete id="deleteAcc" parameterType="int">
+		DELETE FROM account
+		WHERE acc_id=#{VALUE}
+	</delete>
 	
 </mapper>
 
