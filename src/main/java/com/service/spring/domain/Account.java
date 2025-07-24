@@ -28,17 +28,17 @@ public class Account {
 		this.memId = memId;
 	}
 	
-//	public Account(int accId, Date accDate, boolean accIncome, String accCategory, int accAmount, String accEtc,
-//			String accDesc, String accPayment) {
-//		this.accId = accId;
-//		this.accDate = accDate;
-//		this.accIncome = accIncome;
-//		this.accCategory = accCategory;
-//		this.accAmount = accAmount;
-//		this.accEtc = accEtc;
-//		this.accDesc = accDesc;
-//		this.accPayment = accPayment;
-//	}
+	public Account(int accId, LocalDate accDate, boolean accIncome, String accCategory, int accAmount, String accEtc,
+			String accDesc, String accPayment) {
+		this.accId = accId;
+		this.accDate = accDate;
+		this.accIncome = accIncome;
+		this.accCategory = accCategory;
+		this.accAmount = accAmount;
+		this.accEtc = accEtc;
+		this.accDesc = accDesc;
+		this.accPayment = accPayment;
+	}
 
 	public int getAccId() {
 		return accId;
