@@ -9,29 +9,28 @@ public class Member {
 	private String nickname;
 	private String gender;
 	private String profileImg;
-	private Goal goal;
-	private List<Account> accounts;
-	private List<Health> healths;
-	private List<Todo> Todos;
-	private List<Note> notes;
 	
+	private Goal goal;
+
 	public Member() {}
 
-	public Member(String email, String password, String nickname, String gender, String profileImg) {
+	public Member(String email, String password, String nickname, String gender, String profileImg, Goal goal) {
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.gender = gender;
-
+		this.profileImg = profileImg;
+		this.goal = goal;
 	}
 	
-	public Member(int memId, String email, String password, String nickname, String gender, String profileImg) {
+	public Member(int memId, String email, String password, String nickname, String gender, String profileImg, Goal goal) {
 		this.memId = memId;
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.gender = gender;
 		this.profileImg = profileImg;
+		this.goal = goal;
 	}
 
 	public int getMemId() {
@@ -90,43 +89,10 @@ public class Member {
 		this.goal = goal;
 	}
 
-	public List<Account> getAccounts() {
-		return accounts;
-	}
-
-	public void setAccounts(List<Account> accounts) {
-		this.accounts = accounts;
-	}
-
-	public List<Health> getHealths() {
-		return healths;
-	}
-
-	public void setHealths(List<Health> healths) {
-		this.healths = healths;
-	}
-
-	public List<Todo> getTodos() {
-		return Todos;
-	}
-
-	public void setTodos(List<Todo> todos) {
-		Todos = todos;
-	}
-
-	public List<Note> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(List<Note> notes) {
-		this.notes = notes;
-	}
-
 	@Override
 	public String toString() {
 		return "Member [memId=" + memId + ", email=" + email + ", password=" + password + ", nickname=" + nickname
-				+ ", gender=" + gender + ", profileImg=" + profileImg + ", goal=" + goal + ", accounts=" + accounts
-				+ ", healths=" + healths + ", Todos=" + Todos + ", notes=" + notes + "]";
+				+ ", gender=" + gender + ", profileImg=" + profileImg + ", goal=" + goal + "]";
 	}
 	
 	

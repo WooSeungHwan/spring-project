@@ -6,12 +6,15 @@ public class Health {
 	private int healAmount;
 	private boolean healDone;
 	
+	private int memId;
+	
 	public Health() {}
 
-	public Health(String healName, int healAmount, boolean healDone) {
+	public Health(String healName, int healAmount, boolean healDone, int memId) {
 		this.healName = healName;
 		this.healAmount = healAmount;
 		this.healDone = healDone;
+		this.memId = memId;
 	}
 	
 	public Health(int healId, String healName, int healAmount, boolean healDone) {
@@ -52,11 +55,19 @@ public class Health {
 	public void setHealDone(boolean healDone) {
 		this.healDone = healDone;
 	}
+	
+	public int getMemId() {
+		return memId;
+	}
+
+	public void setMemId(int memId) {
+		this.memId = memId;
+	}
 
 	@Override
 	public String toString() {
 		return "Health [healId=" + healId + ", healName=" + healName + ", healAmount=" + healAmount + ", healDone="
-				+ healDone + "]";
+				+ healDone +", memId=" + memId + "]";
 	}
 	
 	

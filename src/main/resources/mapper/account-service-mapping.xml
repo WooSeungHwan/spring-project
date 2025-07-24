@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ns.sql.AccountMapper">
+	<!-- ResultMap -->
+	<resultMap id="accountRM" type="account">
+        <id property="accId" column="acc_id"/>
+        <result property="accDate" column="acc_date"/>
+        <result property="accIncome" column="acc_income"/>
+        <result property="accCategory" column="acc_category"/>
+        <result property="accAmount" column="acc_amount"/>
+        <result property="accEtc" column="acc_etc"/>
+        <result property="accDesc" column="acc_desc"/>
+        <result property="accPayment" column="acc_payment"/>
+        <result property="memId" column="mem_id"/>
+    </resultMap>
+    
+    <sql id="select-acc">
+    	SELECT acc_id, acc_date, acc_income, acc_category, acc_amount, acc_desc, acc_payment, acc_etc, mem_id
+    	FROM account
+    </sql>
+    
+    <!-- 가계부 전체조회 -->
+    <select id="getMonthAcc" parameterType="account" resultMap="accountRM">
+    	<include refid="select-acc"></include>
+    	WHERE mem_id=#{memId}
+    	AND DATE_FORMAT(acc_date, '%Y-%m') = #{accDate}
+    </select>
+	
+	<!-- 가계부 추가 -->
+	<insert id="addAcc" parameterType="account" useGeneratedKeys="true" keyProperty="accId">
+		INSERT INTO account (acc_date, acc_income, acc_category, acc_amount, acc_desc, acc_payment, acc_etc, mem_id)
+		VALUES (#{accDate}, #{accIncome}, #{accCategory}, #{accAmount}, #{accEtc}, #{accDesc}, #{accPayment}, #{memId})
+	</insert>
+	
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
