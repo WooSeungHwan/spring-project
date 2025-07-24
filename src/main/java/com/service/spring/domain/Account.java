@@ -1,21 +1,23 @@
 package com.service.spring.domain;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Account {
-	private int accId;
-	private Date accDate;
-	private boolean accIncome;
-	private String accCategory;
-	private long accAmount;
-	private String accEtc;
-	private String accDesc;
-	private String accPayment;
+	private int accId; 				// column: acc_id
+	private LocalDate accDate;			// column: acc_date
+	private boolean accIncome;		// column: acc_income
+	private String accCategory;		// column: acc_category
+	private long accAmount;			// column: acc_amount
+	private String accEtc;			// column: acc_etc
+	private String accDesc;			// column: acc_desc
+	private String accPayment;		// column: acc_payment
+	
+	private int memId;				// column: mem_id
 	
 	public Account() {}
 
-	public Account(Date accDate, boolean accIncome, String accCategory, int accAmount, String accEtc,
-			String accDesc, String accPayment) {
+	public Account(LocalDate accDate, boolean accIncome, String accCategory, int accAmount, String accEtc,
+			String accDesc, String accPayment, int memId) {
 		this.accDate = accDate;
 		this.accIncome = accIncome;
 		this.accCategory = accCategory;
@@ -23,10 +25,11 @@ public class Account {
 		this.accEtc = accEtc;
 		this.accDesc = accDesc;
 		this.accPayment = accPayment;
+		this.memId = memId;
 	}
 	
-	public Account(int accId, Date accDate, boolean accIncome, String accCategory, int accAmount, String accEtc,
-			String accDesc, String accPayment) {
+	public Account(int accId, LocalDate accDate, boolean accIncome, String accCategory, int accAmount, String accEtc,
+			String accDesc, String accPayment, int memId) {
 		this.accId = accId;
 		this.accDate = accDate;
 		this.accIncome = accIncome;
@@ -35,6 +38,7 @@ public class Account {
 		this.accEtc = accEtc;
 		this.accDesc = accDesc;
 		this.accPayment = accPayment;
+		this.memId = memId;
 	}
 
 	public int getAccId() {
@@ -45,11 +49,11 @@ public class Account {
 		this.accId = accId;
 	}
 
-	public Date getAccDate() {
+	public LocalDate getAccDate() {
 		return accDate;
 	}
 
-	public void setAccDate(Date accDate) {
+	public void setAccDate(LocalDate accDate) {
 		this.accDate = accDate;
 	}
 
@@ -68,12 +72,12 @@ public class Account {
 	public void setAccCategory(String accCategory) {
 		this.accCategory = accCategory;
 	}
-
+	
 	public long getAccAmount() {
 		return accAmount;
 	}
 
-	public void setAccAmount(int accAmount) {
+	public void setAccAmount(long accAmount) {
 		this.accAmount = accAmount;
 	}
 
@@ -101,10 +105,20 @@ public class Account {
 		this.accPayment = accPayment;
 	}
 
+	public int getMemId() {
+		return memId;
+	}
+
+	public void setMemId(int memId) {
+		this.memId = memId;
+	}
+
 	@Override
 	public String toString() {
 		return "Account [accId=" + accId + ", accDate=" + accDate + ", accIncome=" + accIncome + ", accCategory="
 				+ accCategory + ", accAmount=" + accAmount + ", accEtc=" + accEtc + ", accDesc=" + accDesc
-				+ ", accPayment=" + accPayment + "]";
+				+ ", accPayment=" + accPayment + ", memId=" + memId + "]";
 	}
+
+
 }

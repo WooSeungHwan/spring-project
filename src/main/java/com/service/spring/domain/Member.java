@@ -9,25 +9,28 @@ public class Member {
 	private String nickname;
 	private String gender;
 	private String profileImg;
-	private Goal goal;
 	
+	private Goal goal;
+
 	public Member() {}
 
-	public Member(String email, String password, String nickname, String gender, String profileImg) {
+	public Member(String email, String password, String nickname, String gender, String profileImg, Goal goal) {
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.gender = gender;
-
+		this.profileImg = profileImg;
+		this.goal = goal;
 	}
 	
-	public Member(int memId, String email, String password, String nickname, String gender, String profileImg) {
+	public Member(int memId, String email, String password, String nickname, String gender, String profileImg, Goal goal) {
 		this.memId = memId;
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.gender = gender;
 		this.profileImg = profileImg;
+		this.goal = goal;
 	}
 
 	public int getMemId() {

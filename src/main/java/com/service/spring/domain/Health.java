@@ -7,6 +7,8 @@ public class Health {
 	private boolean healDone;
 	private int memId;
 	
+	private int memId;
+	
 	public Health() {}
 
 	public Health(String healName, int healAmount, boolean healDone, int memId) {
@@ -55,11 +57,19 @@ public class Health {
 	public void setHealDone(boolean healDone) {
 		this.healDone = healDone;
 	}
+	
+	public int getMemId() {
+		return memId;
+	}
+
+	public void setMemId(int memId) {
+		this.memId = memId;
+	}
 
 	@Override
 	public String toString() {
 		return "Health [healId=" + healId + ", healName=" + healName + ", healAmount=" + healAmount + ", healDone="
-				+ healDone + "]";
+				+ healDone +", memId=" + memId + "]";
 	}
 	
 	
