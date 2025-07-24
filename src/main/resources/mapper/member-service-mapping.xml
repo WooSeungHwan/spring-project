@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="ns.sql.MemberMapper">
+	<!-- Member ResultMap -->
+	<resultMap id="memberRM" type="member">
+		<id property="memId" column="mem_id"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="gender" column="gender"/>
+        <result property="profileImg" column="profile_img"/>
+	</resultMap>
+
+	<!-- 1) 로그인(ID, Password) 2) getMember (ID)-->
+	<select id="getMember" parameterType="member" resultMap="memberRM">		
+		SELECT mem_id, email, password, nickname, gender, profile_img
+		FROM member
+		WHERE email=#{email}
+		<if test="password != null">
+			AND password=#{password}
+		</if>
+	</select>
+	
+	<!-- 사용자 검색 -->
+	<select id="searchMember" parameterType="string" resultMap="memberRM">		
+		SELECT mem_id, email, password, nickname, gender, profile_img
+		FROM member
+		WHERE nickname=#{VALUE}
+	</select>
+	
+	<!-- 사용자 추가 -->
+	<insert id="addMember" parameterType="member" useGeneratedKeys="true" keyProperty="memId">		
+		INSERT INTO member (email, password, nickname, gender)
+		VALUES (#{email}, #{password}, #{nickname}, #{gender})
+	</insert>
+	
+	
+	<!-- 사용자 수정 -->
+	<update id="changeMember" parameterType="member">
+		UPDATE member
+		SET email=#{email}, password=#{password}, nickname=#{nickname}, gender=#{gender}, profile_img=#{profileImg}
+		WHERE mem_id=#{memId}
+	</update>
+	
+	<!-- 사용자 삭제 -->
+	<delete id="deleteMember" parameterType="int">
+		DELETE FROM member
+		WHERE mem_id=#{VALUE}
+	</delete>
+	
+	<!-- Goal 관련 쿼리문 -->
+		
+	<!-- Goal ResultMap -->
+	<resultMap id="goalRM" type="goal">
+		<result property="goalLv" column="goal_lv"/>
+        <result property="goalName" column="goal_name"/>
+        <result property="goalExp" column="goal_exp"/>	
+	</resultMap>
+
+	<!-- 사용자의 목표를 가져옴 -->
+	<select id="getGoal" parameterType="int" resultMap="goalRM">
+		SELECT goal_lv, goal_name, goal_exp
+		FROM member
+		WHERE mem_id=#{VALUE}
+	</select>
+	
+	<!-- 사용자의 목표를 수정 -->
+	<update id="updateGoal" parameterType="member">
+		UPDATE member
+		SET goal_lv=#{goal.goalLv}, goal_name=#{goal.goalName}, goal_exp=#{goal.goalExp}
+		WHERE mem_id=#{memId}
+	</update>
+	
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
