@@ -29,7 +29,7 @@
  
 
 	<mappers>
-		<mapper resource="mapper/book-service-mapping.xml"/>
-		<mapper resource="mapper/userinfo-service-mapping.xml"/>
+		<mapper resource="mapper/health-service-mapping.xml"/>
+		<mapper resource="mapper/friend-service-mapping.xml"/>
 	</mappers>
 </configuration>

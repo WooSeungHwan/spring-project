@@ -5,20 +5,23 @@ public class Health {
 	private String healName;
 	private int healAmount;
 	private boolean healDone;
+	private int memId;
 	
 	public Health() {}
 
-	public Health(String healName, int healAmount, boolean healDone) {
+	public Health(String healName, int healAmount, boolean healDone, int memId) {
 		this.healName = healName;
 		this.healAmount = healAmount;
 		this.healDone = healDone;
+		this.memId = memId;
 	}
 	
-	public Health(int healId, String healName, int healAmount, boolean healDone) {
+	public Health(int healId, String healName, int healAmount, boolean healDone, int memId) {
 		this.healId = healId;
 		this.healName = healName;
 		this.healAmount = healAmount;
 		this.healDone = healDone;
+		this.memId = memId;
 	}
 	
 	public int getHealId() {

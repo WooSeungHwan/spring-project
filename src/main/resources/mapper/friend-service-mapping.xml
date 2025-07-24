@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ns.sql.FriendMapper">
+	<insert id="addFriend" parameterType="hashmap">
+		INSERT INTO friend
+		(mem1_id, mem2_id)
+		VALUES (#{mem1Id}, #{mem2Id})
+	</insert>
+	<delete id="deleteFriend" parameterType="hashmap">
+        DELETE FROM friend
+        WHERE
+            (mem1_id = #{mem1Id} AND mem2_id = #{mem2Id})
+            OR (mem1_id = #{mem2Id} AND mem2_id = #{mem1Id})
+    </delete>
+	<select id="getFriend" parameterType="int" resultType="member">
+        SELECT m.mem_id, m.email, m.password, m.nickname, m.gender, m.profile_img
+        FROM friend f JOIN member m
+	    	ON (
+	    		(f.mem1_id = #{VALUE} AND m.mem_id = f.mem2_id)
+	            OR (f.mem2_id = #{VALUE} AND m.mem_id = f.mem1_id)
+	       	)
+        WHERE f.mem1_id = #{VALUE} OR f.mem2_id = #{VALUE}
+        ORDER BY m.mem_id
+    </select>
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
