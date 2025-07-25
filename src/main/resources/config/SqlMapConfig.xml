@@ -5,13 +5,11 @@
 <configuration>
 
 <!-- 1. MyBatis Framework Unit Test하기 위한 DataSource 설정부분 -->
-
-	<properties resource="config/dbconn.properties" /> 
 	 <settings>
 	 	<setting name="mapUnderscoreToCamelCase" value="true"/> <!-- snake to camel -->
 	 	
 	 </settings>
-	 
+
 	<typeAliases>
 		<package name="com.service.spring.domain"/> 
 	</typeAliases>
@@ -37,7 +35,6 @@
 		<mapper resource="target_account-service-mapping.xml"/>
 		<mapper resource="mapper/note-service-mapping.xml"/>
 		<mapper resource="mapper/todo-service-mapping.xml"/>
-
 	</mappers>
 	
 </configuration>

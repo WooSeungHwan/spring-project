@@ -32,6 +32,7 @@ public class NoteDAO {
 	}
 	
 	public List<Note> getAllNote(int memId) throws Exception {
+
 		List<Note> list = sqlSession.selectList(NS+"getAllNote", memId);
 		return list;
 	}
