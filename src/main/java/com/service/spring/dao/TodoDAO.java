@@ -1,4 +1,5 @@
 package com.service.spring.dao;
+
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -41,4 +42,3 @@ public class TodoDAO {
 		return list;
 	}
 }
-
