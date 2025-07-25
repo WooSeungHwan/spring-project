@@ -16,20 +16,21 @@ public class TodoDAO {
 	private SqlSession sqlSession;
 	
 
-	public void addTodo(Todo vo) throws Exception {
+	public Todo addTodo(Todo vo) throws Exception {
 		sqlSession.insert(NS+"addTodo", vo);
+		return vo;
 	}
 	
-	public void deleteTodo(String todoId) throws Exception{
-		sqlSession.delete(NS+"deleteTodo", todoId);
+	public int deleteTodo(int vo) throws Exception{
+		return sqlSession.delete(NS+"deleteTodo", vo);
 	}
 	
-	public void changeTodo(Todo vo) throws Exception{
-		sqlSession.update(NS+"changeTodo", vo);
+	public int changeTodo(Todo vo) throws Exception{
+		return sqlSession.update(NS+"changeTodo", vo);
 	}
 	
-	public void isTodoDone(Todo vo) throws Exception{
-		sqlSession.update(NS+"isTodoDone", vo);
+	public int isTodoDone(Todo vo) throws Exception{
+		return sqlSession.update(NS+"isTodoDone", vo);
 	}
 	
 	public List<Todo> getTodoByToday(String date) throws Exception{
