@@ -8,6 +8,7 @@ public class Todo {
 	private String todoContent;
 	private Date todoDate;
 	private boolean todoImportant;
+
 	private int memId;            // 회원 ID (외래키)
 
 	public Todo() {}

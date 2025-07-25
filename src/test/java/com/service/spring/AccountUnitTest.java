@@ -42,38 +42,10 @@ public class AccountUnitTest {
 		System.out.println(sqlSession.delete("ns.sql.AccountMapper.deleteAcc", 208) + "개 삭제 완료");
 	}
 	
-//	@Test
-//	public void searchByTitleTest() {
-//		sqlSession.selectList("ns.sql.BookMapper.searchByTitle", "스").forEach((b) -> {
-//			System.out.println(b);
-//		});
-//	}
-//	
-//	@Test
-//	public void searchByPublisherTest() {
-//		sqlSession.selectList("ns.sql.BookMapper.searchByPublisher", "스").forEach((b) -> {
-//			System.out.println(b);
-//		});
-//	}
-//	
-//	@Test
-//	public void searchByPriceTest() {
-//		sqlSession.selectList("ns.sql.BookMapper.searchByPrice", 4000).forEach((b) -> {
-//			System.out.println(b);
-//		});
-//	}
-//	
-//	@Test
-//	public void searchByIsbnTest() {
-//		System.out.println((Book)sqlSession.selectOne("ns.sql.BookMapper.searchByIsbn", "1233-111-333"));
-//	}
-//	
-
-//	
-////	@Test
-////	public void getIsbnTest() {
-////		
-////	}
-//	
-
+	@Test
+	public void getMonthSumTest() {
+		sqlSession.selectList("ns.sql.AccountMapper.getMonthSum", new Account(LocalDate.now(), false, null, 0, null, null, null, 2)).forEach((a) -> {
+			System.out.println(a);
+		});
+	}
 }
