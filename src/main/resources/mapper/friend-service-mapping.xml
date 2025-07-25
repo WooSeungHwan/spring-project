@@ -3,17 +3,20 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ns.sql.FriendMapper">
+	<!-- 친구 목록 추가 -->
 	<insert id="addFriend" parameterType="hashmap">
 		INSERT INTO friend
 		(mem1_id, mem2_id)
 		VALUES (#{mem1Id}, #{mem2Id})
 	</insert>
+	<!-- 특정 친구 목록 삭제 -->
 	<delete id="deleteFriend" parameterType="hashmap">
         DELETE FROM friend
         WHERE
             (mem1_id = #{mem1Id} AND mem2_id = #{mem2Id})
             OR (mem1_id = #{mem2Id} AND mem2_id = #{mem1Id})
     </delete>
+    <!-- 친구 목록 멤버리스트로 가져오기 -->
 	<select id="getFriend" parameterType="int" resultType="member">
         SELECT m.mem_id, m.email, m.password, m.nickname, m.gender, m.profile_img
         FROM friend f JOIN member m

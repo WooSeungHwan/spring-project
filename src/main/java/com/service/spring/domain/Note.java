@@ -5,9 +5,9 @@ public class Note {
 	private String noteName;
 	private String noteContent;
 	private boolean noteImportant;
+
 	private int memId;            // 회원 ID (외래키)
-	
-	
+
 	public Note() {}
 	
 	public Note(int noteId, String noteName, String noteContent, boolean noteImportant) {
@@ -17,18 +17,18 @@ public class Note {
 		this.noteImportant = noteImportant;
 	}
 
+	public Note(int noteId, boolean noteImportant) {
+    this.noteId = noteId;
+		this.noteImportant = noteImportant;
+	}
+
 	public Note(int noteId, String noteName, String noteContent, boolean noteImportant, int memId) {
-		this.noteId = noteId;
+    this.noteId = noteId;
 		this.noteName = noteName;
 		this.noteContent = noteContent;
 		this.noteImportant = noteImportant;
 		this.memId = memId;
 	}
-	public Note(int noteId, boolean noteImportant) {
-		this.noteId = noteId;
-		this.noteImportant = noteImportant;
-	}
-
 
 	public int getNoteId() {
 		return noteId;
@@ -70,10 +70,17 @@ public class Note {
 		this.memId = memId;
 	}
 
+	public int getMemId() {
+		return memId;
+	}
+
+	public void setMemId(int memId) {
+		this.memId = memId;
+	}
+
 	@Override
 	public String toString() {
 		return "Note [noteId=" + noteId + ", noteName=" + noteName + ", noteContent=" + noteContent + ", noteImportant="
 				+ noteImportant + ", memId=" + memId + "]";
 	}
-		
 }

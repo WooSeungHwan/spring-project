@@ -39,7 +39,8 @@ public class NoteDAO {
 
 	// 전체 노트 조회
 	public List<Note> getAllNote(int memId) throws Exception {
-		return sqlSession.selectList(NS + "getAllNote", memId);
+		List<Note> list = sqlSession.selectList(NS+"getAllNote", memId);
+		return list;
 	}
 
 	// 중요 노트만 조회
