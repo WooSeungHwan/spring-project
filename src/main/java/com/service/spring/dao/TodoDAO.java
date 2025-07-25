@@ -1,4 +1,5 @@
 package com.service.spring.dao;
+
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,87 +11,38 @@ import com.service.spring.domain.Todo;
 @Repository
 public class TodoDAO {
 	public static final String NS = "ns.sql.TodoMapper.";
-	
-	@Autowired	
+
+	@Autowired
 	private SqlSession sqlSession;
-	
-	public void addTodo(Todo vo) throws Exception {
-		sqlSession.insert(NS+"addTodo", vo);
-	}
-	
-	public void deleteTodo(String todoId) throws Exception{
-		sqlSession.delete(NS+"deleteTodo", todoId);
-	}
-	
-	public void changeTodo(Todo vo) throws Exception{
-		sqlSession.update(NS+"changeTodo", vo);
-	}
-	
-	public void isTodoDone(Todo vo) throws Exception{
-		sqlSession.update(NS+"isTodoDone", vo);
-	}
-	
-	public List<Todo> getTodoByToday(String date) throws Exception{
-		List<Todo> list = sqlSession.selectList(NS+"getTodoByToday", date);
-		return list;
-	}
-	
-	public List<Todo> getTodoByImportant(Todo vo) throws Exception{
-		List<Todo> list = sqlSession.selectList(NS+"getTodoByImportant", vo);
-		return list;
-	}
-	
-	
-/*
-	public void insertBook(Book vo) throws Exception {	
-		sqlSession.insert(NS + "insertBook", vo);
-	}
-	
-	public List<Book> getBooks() throws Exception {
-		List<Book> list = sqlSession.selectList(NS + "getBooks");
 
-        return list;
-	}
-	
-	public List<Book> searchByTitle(String word) throws Exception {
-		List<Book> list = sqlSession.selectList(NS + "searchByTitle", word);
-		
-       return list;
+	// 할 일 추가
+	public Todo addTodo(Todo vo) throws Exception {
+		sqlSession.insert(NS + "addTodo", vo);
+		return vo;
 	}
 
-	public List<Book> searchByPublisher(String word) throws Exception {
-		List<Book> list = sqlSession.selectList(NS + "searchByPublisher", word);
-		
-		return list;
-	}
-	
-	public List<Book> searchByPrice(int price) throws Exception {
-		List<Book> list = sqlSession.selectList(NS + "searchByPrice", price);
-		
-		return list;
+	// 할 일 삭제
+	public int deleteTodo(int vo) throws Exception {
+		return sqlSession.delete(NS + "deleteTodo", vo);
 	}
 
-	public Book searchByIsbn(String word) throws Exception { 
-		Book book = sqlSession.selectOne(NS + "searchByIsbn", word);
-		
-		return book;
+	// 할 일 수정
+	public int changeTodo(Todo vo) throws Exception {
+		return sqlSession.update(NS + "changeTodo", vo);
 	}
 
-	
-	public void delete(String word) throws Exception {
-		sqlSession.delete(NS + "delete", word);
+	// 할 일 완료 여부 수정
+	public int isTodoDone(Todo vo) throws Exception {
+		return sqlSession.update(NS + "isTodoDone", vo);
 	}
-	
-	
-	public Book getIsbn(String word) throws Exception {
-		Book book = sqlSession.selectOne(NS + "getIsbn", word);
-		
-        return book;
+
+	// 오늘의 할 일 조회
+	public List<Todo> getTodoByToday(String date) throws Exception {
+		return sqlSession.selectList(NS + "getTodoByToday", date);
 	}
-	
-	public void update(Book vo) throws Exception {
-		sqlSession.update(NS + "update", vo);
-	}	
-	
-*/
+
+	// 중요할 일만 조회
+	public List<Todo> getTodoByImportant(Todo vo) throws Exception {
+		return sqlSession.selectList(NS + "getTodoByImportant", vo);
+	}
 }

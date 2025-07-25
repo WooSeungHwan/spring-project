@@ -31,7 +31,7 @@
 		WHERE todo_id=#{todoId}
 	</update>
 	
-	<select id="getTodoByToday" parameterType="date" resultType="todo">
+	<select id="getTodoByToday" parameterType="String" resultType="todo">
 		<include refid="select-todo"></include>
 			WHERE todo_date = #{value}
 		
