@@ -31,7 +31,7 @@
 	<mappers>
 		<mapper resource="mapper/member-service-mapping.xml"/>
 		<mapper resource="mapper/account-service-mapping.xml"/>
-		<mapper resource="target_account-service-mapping.xml"/>
+		<mapper resource="mapper/target_account-service-mapping.xml"/>
 	</mappers>
 	
 </configuration>

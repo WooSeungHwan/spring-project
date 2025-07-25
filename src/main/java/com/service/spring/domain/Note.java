@@ -5,7 +5,9 @@ public class Note {
 	private String noteName;
 	private String noteContent;
 	private boolean noteImportant;
-	
+
+	private int memId;
+
 	public Note() {}
 
 	public Note(String noteName, String noteContent, boolean noteImportant) {

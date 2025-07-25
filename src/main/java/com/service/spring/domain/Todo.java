@@ -8,6 +8,8 @@ public class Todo {
 	private String todoContent;
 	private Date todoDate;
 	private boolean todoImportant;
+
+	private int memId;
 	
 	public Todo() {}
 
