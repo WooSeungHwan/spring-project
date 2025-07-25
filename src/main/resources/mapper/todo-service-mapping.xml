@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ns.sql.TodoMapper">
+	<sql id="select-todo">
+		SELECT todo_id, todo_done, todo_content, todo_date, todo_important
+		FROM todo
+	</sql>
+	
+	<insert id="addTodo" parameterType="todo">	
+		INSERT INTO 
+		todo (todo_id, todo_done, todo_content, todo_date, todo_important)
+		VALUES(#{todoId}, #{todoDone}, #{todoContent}, #{todoDate}, #{todoImportant})
+	</insert>
+	
+	<delete id="deleteTodo" parameterType="int">
+		DELETE FROM todo
+		WHERE todo_id=#{value}
+	</delete>
+	
+	<update id="changeTodo" parameterType="todo">	
+		UPDATE todo
+		SET todo_done=#{todoDone}, todo_content=#{todoContent}, todo_date=#{todoDate}, todo_important=#{todoImportant}, mem_id=#{memId}
+		WHERE todo_id = #{todoId}
+	</update>
+	
+	<update id="isTodoDone" parameterType="todo">		
+		UPDATE todo
+		SET todo_done=#{todoDone}
+		WHERE todo_id=#{todoId}
+	</update>
+	
+	<select id="getTodoByToday" parameterType="date" resultType="todo">
+		<include refid="select-todo"></include>
+			WHERE todo_date = #{value}
+		
+	</select>
+	
+	<select id="getTodoByImportant" parameterType="todo" resultType="todo"> 
+		<include refid="select-todo"></include>
+		WHERE todo_important= 1 AND todo_done = 1;
+	</select>
+
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
