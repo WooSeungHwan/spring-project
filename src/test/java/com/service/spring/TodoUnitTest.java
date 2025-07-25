@@ -10,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.service.spring.domain.Todo;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
-
 @SpringBootTest
 public class TodoUnitTest {
 	

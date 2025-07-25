@@ -15,28 +15,28 @@ public class NoteDAO {
 	@Autowired	
 	private SqlSession sqlSession;
 	
-	public void addNote(Note vo) {
+	public void addNote(Note vo) throws Exception {
 		sqlSession.insert(NS+"addNote", vo);
 	}
 	
-	public void changeNote(Note vo) {
+	public void changeNote(Note vo) throws Exception {
 		sqlSession.update(NS+"changeNote", vo);
 	}
 	
-	public void deleteNote(int noteId) {
+	public void deleteNote(int noteId) throws Exception {
 		sqlSession.delete(NS+"deleteNote", noteId);
 	}
 	
-	public void isImpNote(Note vo) {
+	public void isImpNote(Note vo) throws Exception {
 		sqlSession.update(NS+"isImpNote", vo);
 	}
 	
-	public List<Note> getAllNote(int memId) {
+	public List<Note> getAllNote(int memId) throws Exception {
 		List<Note> list = sqlSession.selectList(NS+"getAllNote", memId);
 		return list;
 	}
 	
-	public List<Note> getImpNote(int memId) {
+	public List<Note> getImpNote(int memId) throws Exception {
 		List<Note> list = sqlSession.selectList(NS+"getImpNote", memId);
 		return list;
 		}

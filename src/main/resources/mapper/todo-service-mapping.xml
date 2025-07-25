@@ -16,7 +16,7 @@
 	
 	<delete id="deleteTodo" parameterType="int">
 		DELETE FROM todo
-		WHERE todo_id=#{VALUE}
+		WHERE todo_id=#{value}
 	</delete>
 	
 	<update id="changeTodo" parameterType="todo">	
@@ -37,7 +37,7 @@
 		
 	</select>
 	
-	<select id="getTodoByImportant" parameterType="int" resultType="todo"> 
+	<select id="getTodoByImportant" parameterType="todo" resultType="todo"> 
 		<include refid="select-todo"></include>
 		WHERE todo_important= 1 AND todo_done = 1;
 	</select>

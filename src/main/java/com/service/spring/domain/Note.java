@@ -17,15 +17,6 @@ public class Note {
 		this.noteImportant = noteImportant;
 	}
 
-<<<<<<< Updated upstream
-	@Override
-	public String toString() {
-		return "Note [noteId=" + noteId + ", noteName=" + noteName + ", noteContent=" + noteContent + ", noteImportant="
-				+ noteImportant + "]";
-	}
-	
-	
-=======
 	public Note(int noteId, String noteName, String noteContent, boolean noteImportant, int memId) {
 		this.noteId = noteId;
 		this.noteName = noteName;
@@ -85,5 +76,4 @@ public class Note {
 				+ noteImportant + ", memId=" + memId + "]";
 	}
 		
->>>>>>> Stashed changes
 }

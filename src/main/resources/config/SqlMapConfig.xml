@@ -5,19 +5,12 @@
 <configuration>
 
 <!-- 1. MyBatis Framework Unit Test하기 위한 DataSource 설정부분 -->
-<<<<<<< Updated upstream
-	<properties resource="config/dbconn.properties" />
-	
-	 <!-- <settings>
-	 	<setting name="mapUnderscoreToCamelCase" value="true"/> snake to camel
-	 </settings> -->
-=======
+
 	<properties resource="config/dbconn.properties" /> 
 	 <settings>
 	 	<setting name="mapUnderscoreToCamelCase" value="true"/> <!-- snake to camel -->
 	 	
 	 </settings>
->>>>>>> Stashed changes
 	 
 	<typeAliases>
 		<package name="com.service.spring.domain"/> 
@@ -37,17 +30,14 @@
 	</environments> 
  
 	<mappers>
-<<<<<<< Updated upstream
 		<mapper resource="mapper/health-service-mapping.xml"/>
 		<mapper resource="mapper/friend-service-mapping.xml"/>
 		<mapper resource="mapper/member-service-mapping.xml"/>
 		<mapper resource="mapper/account-service-mapping.xml"/>
 		<mapper resource="target_account-service-mapping.xml"/>
-=======
 		<mapper resource="mapper/note-service-mapping.xml"/>
 		<mapper resource="mapper/todo-service-mapping.xml"/>
-		
->>>>>>> Stashed changes
+
 	</mappers>
 	
 </configuration>
