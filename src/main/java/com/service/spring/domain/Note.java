@@ -70,14 +70,6 @@ public class Note {
 		this.memId = memId;
 	}
 
-	public int getMemId() {
-		return memId;
-	}
-
-	public void setMemId(int memId) {
-		this.memId = memId;
-	}
-
 	@Override
 	public String toString() {
 		return "Note [noteId=" + noteId + ", noteName=" + noteName + ", noteContent=" + noteContent + ", noteImportant="
