@@ -7,8 +7,6 @@ public class Health {
 	private boolean healDone;
 	private int memId;
 	
-	private int memId;
-	
 	public Health() {}
 
 	public Health(String healName, int healAmount, boolean healDone, int memId) {
