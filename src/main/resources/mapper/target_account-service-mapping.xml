@@ -4,51 +4,54 @@
 	
 <mapper namespace="ns.sql.TargetAccountMapper">
 	<!-- TargetAccount ResultMap -->
-	<resultMap id="memberRM" type="member">
-        <result property="password" column="password"/>
-        <result property="nickname" column="nickname"/>
-        <result property="gender" column="gender"/>
-        <result property="profileImg" column="profile_img"/>
+	<resultMap id="targetAccountRM" type="targetAccount">
+        <result property="memId" column="mem_id"/>
+        <result property="year" column="year"/>
+        <result property="month" column="month"/>
+        <result property="targetAcc" column="target_acc"/>
 	</resultMap>
 	
-	<!-- 사용자의 해당 월의 목표 지출을 가져옴 -->
-	<select id="getTarget">
+	<sql id="select-target_account">
+		SELECT mem_id, year, month, target_acc
+		FROM target_account
+	</sql>
 	
+	<!-- 사용자의 해당 월의 목표 지출을 가져옴 -->
+	<select id="getTarget" parameterType="account" resultMap="targetAccountRM">
+	    <include refid="select-target_account" />
+	    <where>
+	        mem_id = #{memId}
+	        <if test="accDate != null">
+	        	AND year = #{accDate.year}
+	            AND month = #{accDate.monthValue}
+	        </if>
+	    </where>
 	</select>
 	
 	<!-- 사용자의 총 목표 지출의 리스트를 가져옴 -->
-	<select id="getAllTarget">
-	
+	<select id="getAllTarget" parameterType="account" resultMap="targetAccountRM">
+		<include refid="select-target_account" />
+	    <where>
+	        mem_id = #{memId}
+	        <if test="accDate != null">
+	        	AND year = #{accDate.year}
+	        </if>
+	    </where>
 	</select>
 	
 	<!-- 사용자의 이번 달 목표 지출을 설정 -->
-	<insert id="setTarget">
-	
+	<insert id="setTarget" parameterType="targetAccount" >
+		INSERT INTO target_account (mem_id, year, month, target_acc)
+		VALUE (#{memId}, #{year}, #{month}, #{targetAcc})
 	</insert>
 	
 	<!-- 사용자의 이번 달 목표 지출을 수정 -->
-	<update id="changeTarget">
-	
+	<update id="changeTarget" parameterType="targetAccount">
+		UPDATE target_account
+		SET target_acc=#{targetAcc}
+		WHERE mem_id=#{memId} AND year=#{year} AND month=#{month}
 	</update>
 
-	
 </mapper>
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
  

@@ -32,9 +32,13 @@
 		<mapper resource="mapper/friend-service-mapping.xml"/>
 		<mapper resource="mapper/member-service-mapping.xml"/>
 		<mapper resource="mapper/account-service-mapping.xml"/>
+<<<<<<< HEAD
 		<mapper resource="target_account-service-mapping.xml"/>
 		<mapper resource="mapper/note-service-mapping.xml"/>
 		<mapper resource="mapper/todo-service-mapping.xml"/>
+=======
+		<mapper resource="mapper/target_account-service-mapping.xml"/>
+>>>>>>> feat/account
 	</mappers>
 	
 </configuration>

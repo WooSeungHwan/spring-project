@@ -46,6 +46,15 @@
 		DELETE FROM account
 		WHERE acc_id=#{VALUE}
 	</delete>
+
+	<!-- 사용자의 해당 월 총 지출을 반환 -->
+    <select id="getMonthSum" parameterType="account" resultType="int">
+    	SELECT SUM(acc_amount)
+    	FROM account
+    	WHERE mem_id=#{memId}
+    	AND DATE_FORMAT(acc_date, '%Y-%m') = DATE_FORMAT(#{accDate}, '%Y-%m')
+    	AND acc_income=#{accIncome}
+    </select>
 	
 </mapper>
 
