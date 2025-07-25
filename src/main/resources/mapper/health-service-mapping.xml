@@ -3,6 +3,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ns.sql.HealthMapper">
+	<!-- 건강관리 동적할당 all 과 특정 조건 전부 충족하게 -->
 	<select id="getHealth" parameterType="hashmap" resultType="health">
 		SELECT heal_id, heal_name, heal_amount, heal_done
 		FROM health
@@ -18,18 +19,18 @@
 	        </if>
 		</where>
 	</select>
-	
+	<!-- 건강관리 목록 추가 -->
 	<insert id="addHealth" parameterType="health" useGeneratedKeys="true" keyProperty="healId">
 		INSERT INTO health
 		(heal_name, heal_amount, heal_done, mem_id)
 		VALUES (#{healName}, #{healAmount}, #{healDone}, #{memId})
 	</insert>
-	
+	<!-- 건강관리 목록 제거 -->
 	<delete id="deleteHealth" parameterType="int">
 		DELETE FROM health
 		WHERE heal_id=#{VALUE}
 	</delete>
-	
+	<!-- 건강관리 목록 수정 -->
 	<update id="changeHealth" parameterType="health">
 		UPDATE health
 		SET heal_name=#{healName}, heal_amount=#{healAmount}, heal_done=#{healDone}
