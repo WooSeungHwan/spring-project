@@ -37,41 +37,4 @@ public class NoteService {
 	public List<Note> getImpNote(int vo) throws Exception{
 		return noteDAO.getImpNote(vo);
 	}
-	
-	/*
-@Service
-public class BoardService {
-	
-	@Autowired
-	private BoardDAO boardDAO;
-	
-	public Board write(Board board) {
-		return boardDAO.write(board);
-	}
-	
-	public String selectByNoForDate(int vo) {
-		return boardDAO.selectByNoForDate(vo);
-	}
-
-	public List<Board> getBoardList(){
-		return boardDAO.getBoardList();
-	}
-	
-	public Board showContent(int vo) {
-		return boardDAO.showContent(vo);
-	}
-	
-	public int deleteBoard(int vo) {
-		return boardDAO.deleteBoard(vo);
-	}
-	
-	public int updateBoard(Board vo) {
-		return boardDAO.updateBoard(vo);
-	}
-	
-	public int updateCount(int vo) {
-		return boardDAO.updateCount(vo);
-	}
-
-	 * */
 }
