@@ -20,6 +20,24 @@
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="images/favicon.png" />
+  <style>
+  .card, .col-md-5 {
+  overflow: visible !important;
+}
+.dropdown-menu {
+  overflow: visible !important;
+}
+  .dropdown-menu {
+  position: absolute !important; /* 이 코드가 가장 중요합니다. */
+  top: 100% !important;
+  bottom: auto !important;
+  transform: none !important;
+  left: 0 !important;
+}
+  	.dropdown {
+  position: relative !important;
+}
+  </style>
 </head>
 <body>
   <div class="container-scroller">

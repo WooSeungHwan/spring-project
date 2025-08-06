@@ -16,7 +16,7 @@ public class HealthService {
 	@Autowired
 	private HealthDAO healthDAO;
 	
-	public List<Object> getHealth(HashMap<String, Object> map) throws SQLException {
+	public List<Health> getHealth(HashMap<String, Object> map) throws SQLException {
 		return healthDAO.getHealth(map);
 	}
 	

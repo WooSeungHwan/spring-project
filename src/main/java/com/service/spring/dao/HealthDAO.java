@@ -18,7 +18,7 @@ public class HealthDAO{
 	@Autowired
 	private SqlSession sqlSession;
 	
-	public List<Object> getHealth(HashMap<String, Object> map) throws SQLException {
+	public List<Health> getHealth(HashMap<String, Object> map) throws SQLException {
 		return sqlSession.selectList(NS + "getHealth", map);
 	}
 	
