@@ -20,7 +20,7 @@ public class MemberDAO {
 	private SqlSession sqlSession;
 	
 	public Member login(Member member) throws SQLException {
-		return sqlSession.selectOne(NS + "login", member);
+		return sqlSession.selectOne(NS + "getMember", member);
 	}
 	
 	public List<Member> searchMember(String nickname) throws SQLException {

@@ -23,7 +23,11 @@ public class AccountController {
 	@Autowired
 	private AccountService accountService;
 	
-	
+	@GetMapping("/account")
+	public String moveAccount() {
+		return "/pages/account/account";
+	}
+
 }
 
 
