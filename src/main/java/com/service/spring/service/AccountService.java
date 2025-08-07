@@ -1,6 +1,7 @@
 package com.service.spring.service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,8 @@ public class AccountService {
 	@Autowired
 	private AccountDAO accountDAO;
 	
-	public List<Account> getMonthAcc(Account account) throws SQLException {
-		return accountDAO.getMonthAcc(account);
+	public List<Account> getMonthAcc(int memId, LocalDate date) throws SQLException {
+		return accountDAO.getMonthAcc(memId, date);
 	}
 
 	public int addAcc(Account account) throws SQLException {

@@ -22,7 +22,7 @@
     </sql>
     
     <!-- 가계부 전체조회 -->
-    <select id="getMonthAcc" parameterType="account" resultMap="accountRM">
+    <select id="getMonthAcc" parameterType="map" resultMap="accountRM">
     	<include refid="select-acc"></include>
     	WHERE mem_id=#{memId}
     	AND DATE_FORMAT(acc_date, '%Y-%m') = DATE_FORMAT(#{accDate}, '%Y-%m')
@@ -31,7 +31,7 @@
 	<!-- 가계부 추가 -->
 	<insert id="addAcc" parameterType="account" useGeneratedKeys="true" keyProperty="accId">
 		INSERT INTO account (acc_date, acc_income, acc_category, acc_amount, acc_desc, acc_payment, acc_etc, mem_id)
-		VALUES (#{accDate}, #{accIncome}, #{accCategory}, #{accAmount}, #{accEtc}, #{accDesc}, #{accPayment}, #{memId})
+		VALUES (#{accDate}, #{accIncome}, #{accCategory}, #{accAmount}, #{accDesc}, #{accPayment}, #{accEtc}, #{memId})
 	</insert>
 	
 	<!-- 가계부 수정 -->

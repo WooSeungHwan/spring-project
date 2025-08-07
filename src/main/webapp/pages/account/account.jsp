@@ -1,28 +1,31 @@
+<%@ page import="com.service.spring.domain.Member" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+  Member member = (Member)session.getAttribute("member");
+%>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Skydash Admin</title>
+  <title>Spending Management</title>
   <!-- plugins:css -->
-  <link rel="stylesheet" href="/vendors/feather/feather.css">
-  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="<c:url value="/vendors/feather/feather.css"/>">
+  <link rel="stylesheet" href="<c:url value="/vendors/ti-icons/css/themify-icons.css"/>">
+  <link rel="stylesheet" href="<c:url value="/vendors/css/vendor.bundle.base.css"/>">
   <!-- endinject -->
   <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" type="text/css" href="/js/select.dataTables.min.css">
+  <link rel="stylesheet" href="<c:url value="/vendors/datatables.net-bs4/dataTables.bootstrap4.css"/>">
+  <link rel="stylesheet" href="<c:url value="/vendors/ti-icons/css/themify-icons.css"/>">
+  <link rel="stylesheet" type="text/css" href="<c:url value="/js/select.dataTables.min.css"/>">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
-  <link rel="stylesheet" href="/css/vertical-layout-light/style.css">
+  <link rel="stylesheet" href="<c:url value="/css/vertical-layout-light/style.css"/>">
   <!-- endinject -->
-  <link rel="shortcut icon" href="/images/favicon.png" />
+  <link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />
 </head>
 <body>
   <div class="container-scroller">
@@ -202,591 +205,155 @@
       </div>
       <!-- partial -->
       <!-- partial:partials/_sidebar.html -->
-      <!-- 사이드바 -->
-      <jsp:include page="/components/sidebar.jsp"/>
+      <!-- 네비게이션 바 -->
+      <jsp:include page="/components/navbar.jsp"/>
       <!-- partial -->
       <div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-            <div class="col-md-5 grid-margin stretch-card">
+            <!-- Expense Overview Chart -->
+            <div class="col-md-7 grid-margin">
               <div class="card">
                 <div class="card-body">
-                  <p class="card-title">Order Details</p>
-                  <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                  <div class="d-flex flex-wrap mb-5">
-                    <div class="mr-5 mt-3">
-                      <p class="text-muted">Order value</p>
-                      <h3 class="text-primary fs-30 font-weight-medium">12.3k</h3>
+                  <div class="chart-header">
+                    <p class="card-title mb-0">Expenses Overview</p>
+                    <div class="year-selector">
+                      <button onclick="changeYear(-1)">‹</button>
+                      <span>2021</span>
+                      <button onclick="changeYear(1)">›</button>
                     </div>
-                    <div class="mr-5 mt-3">
-                      <p class="text-muted">Orders</p>
-                      <h3 class="text-primary fs-30 font-weight-medium">14k</h3>
-                    </div>
-                    <div class="mr-5 mt-3">
-                      <p class="text-muted">Users</p>
-                      <h3 class="text-primary fs-30 font-weight-medium">71.56%</h3>
-                    </div>
-                    <div class="mt-3">
-                      <p class="text-muted">Downloads</p>
-                      <h3 class="text-primary fs-30 font-weight-medium">34040</h3>
-                    </div> 
                   </div>
-                  <canvas id="order-chart"></canvas>
+                  <canvas id="expenseChart"></canvas>
                 </div>
               </div>
             </div>
-            <div class="col-md-3 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                 <div class="d-flex justify-content-between">
-                  <p class="card-title">Sales Report</p>
-                  <a href="#" class="text-info">View all</a>
-                 </div>
-                  <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                  <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
-                  <canvas id="sales-chart"></canvas>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 grid-margin">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <p class="card-title">Sales Report</p>
-                    <a href="#" class="text-info">View all</a>
-                  </div>
-                  <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                  <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <p class="card-title">Sales Report</p>
-                    <a href="#" class="text-info">View all</a>
-                  </div>
-                  <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                  <div id="sales-legend" class="chartjs-legend mt-4 mb-2"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 grid-margin stretch-card">
-              <div class="card position-relative">
-                <div class="card-body">
-                  <div id="detailedReports" class="carousel slide detailed-report-carousel position-static pt-2" data-ride="carousel">
-                    <div class="carousel-inner">
-                      <div class="carousel-item active">
-                        <div class="row">
-                          <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
-                            <div class="ml-xl-4 mt-3">
-                            <p class="card-title">Detailed Reports</p>
-                              <h1 class="text-primary">$34040</h1>
-                              <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
-                              <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                            </div>  
-                            </div>
-                          <div class="col-md-12 col-xl-9">
-                            <div class="row">
-                              <div class="col-md-6 border-right">
-                                <div class="table-responsive mb-3 mb-md-0 mt-3">
-                                  <table class="table table-borderless report-table">
-                                    <tr>
-                                      <td class="text-muted">Illinois</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">713</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Washington</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">583</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Mississippi</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">924</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">California</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">664</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Maryland</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">560</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Alaska</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">793</h5></td>
-                                    </tr>
-                                  </table>
-                                </div>
-                              </div>
-                              <div class="col-md-6 mt-3">
-                                <canvas id="north-america-chart"></canvas>
-                                <div id="north-america-legend"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="carousel-item">
-                        <div class="row">
-                          <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
-                            <div class="ml-xl-4 mt-3">
-                            <p class="card-title">Detailed Reports</p>
-                              <h1 class="text-primary">$34040</h1>
-                              <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
-                              <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
-                            </div>  
-                            </div>
-                          <div class="col-md-12 col-xl-9">
-                            <div class="row">
-                              <div class="col-md-6 border-right">
-                                <div class="table-responsive mb-3 mb-md-0 mt-3">
-                                  <table class="table table-borderless report-table">
-                                    <tr>
-                                      <td class="text-muted">Illinois</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">713</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Washington</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">583</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Mississippi</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">924</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">California</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">664</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Maryland</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">560</h5></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="text-muted">Alaska</td>
-                                      <td class="w-100 px-0">
-                                        <div class="progress progress-md mx-4">
-                                          <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                      </td>
-                                      <td><h5 class="font-weight-bold mb-0">793</h5></td>
-                                    </tr>
-                                  </table>
-                                </div>
-                              </div>
-                              <div class="col-md-6 mt-3">
-                                <canvas id="south-america-chart"></canvas>
-                                <div id="south-america-legend"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <a class="carousel-control-prev" href="#detailedReports" role="button" data-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#detailedReports" role="button" data-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="sr-only">Next</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-7 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <p class="card-title mb-0">Top Products</p>
-                  <div class="table-responsive">
-                    <table class="table table-striped table-borderless">
-                      <thead>
-                        <tr>
-                          <th>Product</th>
-                          <th>Price</th>
-                          <th>Date</th>
-                          <th>Status</th>
-                        </tr>  
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Search Engine Marketing</td>
-                          <td class="font-weight-bold">$362</td>
-                          <td>21 Sep 2018</td>
-                          <td class="font-weight-medium"><div class="badge badge-success">Completed</div></td>
-                        </tr>
-                        <tr>
-                          <td>Search Engine Optimization</td>
-                          <td class="font-weight-bold">$116</td>
-                          <td>13 Jun 2018</td>
-                          <td class="font-weight-medium"><div class="badge badge-success">Completed</div></td>
-                        </tr>
-                        <tr>
-                          <td>Display Advertising</td>
-                          <td class="font-weight-bold">$551</td>
-                          <td>28 Sep 2018</td>
-                          <td class="font-weight-medium"><div class="badge badge-warning">Pending</div></td>
-                        </tr>
-                        <tr>
-                          <td>Pay Per Click Advertising</td>
-                          <td class="font-weight-bold">$523</td>
-                          <td>30 Jun 2018</td>
-                          <td class="font-weight-medium"><div class="badge badge-warning">Pending</div></td>
-                        </tr>
-                        <tr>
-                          <td>E-Mail Marketing</td>
-                          <td class="font-weight-bold">$781</td>
-                          <td>01 Nov 2018</td>
-                          <td class="font-weight-medium"><div class="badge badge-danger">Cancelled</div></td>
-                        </tr>
-                        <tr>
-                          <td>Referral Marketing</td>
-                          <td class="font-weight-bold">$283</td>
-                          <td>20 Mar 2018</td>
-                          <td class="font-weight-medium"><div class="badge badge-warning">Pending</div></td>
-                        </tr>
-                        <tr>
-                          <td>Social media marketing</td>
-                          <td class="font-weight-bold">$897</td>
-                          <td>26 Oct 2018</td>
-                          <td class="font-weight-medium"><div class="badge badge-success">Completed</div></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-5 grid-margin stretch-card">
-							<div class="card">
-								<div class="card-body">
-									<h4 class="card-title">To Do Lists</h4>
-									<div class="list-wrapper pt-2">
-										<ul class="d-flex flex-column-reverse todo-list todo-list-custom">
-											<li>
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox">
-														Meeting with Urban Team
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li class="completed">
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox" checked>
-														Duplicate a project for new customer
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li>
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox">
-														Project meeting with CEO
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li class="completed">
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox" checked>
-														Follow up of team zilla
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li>
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox">
-														Level up for Antony
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-										</ul>
-                  </div>
-                  <div class="add-items d-flex mb-0 mt-2">
-										<input type="text" class="form-control todo-list-input"  placeholder="Add new task">
-										<button class="add btn btn-icon text-primary todo-list-add-btn bg-transparent"><i class="icon-circle-plus"></i></button>
-									</div>
-								</div>
-							</div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-4 stretch-card grid-margin">
-              <div class="card">
-                <div class="card-body">
-                  <p class="card-title mb-0">Projects</p>
-                  <div class="table-responsive">
-                    <table class="table table-borderless">
-                      <thead>
-                        <tr>
-                          <th class="pl-0  pb-2 border-bottom">Places</th>
-                          <th class="border-bottom pb-2">Orders</th>
-                          <th class="border-bottom pb-2">Users</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="pl-0">Kentucky</td>
-                          <td><p class="mb-0"><span class="font-weight-bold mr-2">65</span>(2.15%)</p></td>
-                          <td class="text-muted">65</td>
-                        </tr>
-                        <tr>
-                          <td class="pl-0">Ohio</td>
-                          <td><p class="mb-0"><span class="font-weight-bold mr-2">54</span>(3.25%)</p></td>
-                          <td class="text-muted">51</td>
-                        </tr>
-                        <tr>
-                          <td class="pl-0">Nevada</td>
-                          <td><p class="mb-0"><span class="font-weight-bold mr-2">22</span>(2.22%)</p></td>
-                          <td class="text-muted">32</td>
-                        </tr>
-                        <tr>
-                          <td class="pl-0">North Carolina</td>
-                          <td><p class="mb-0"><span class="font-weight-bold mr-2">46</span>(3.27%)</p></td>
-                          <td class="text-muted">15</td>
-                        </tr>
-                        <tr>
-                          <td class="pl-0">Montana</td>
-                          <td><p class="mb-0"><span class="font-weight-bold mr-2">17</span>(1.25%)</p></td>
-                          <td class="text-muted">25</td>
-                        </tr>
-                        <tr>
-                          <td class="pl-0">Nevada</td>
-                          <td><p class="mb-0"><span class="font-weight-bold mr-2">52</span>(3.11%)</p></td>
-                          <td class="text-muted">71</td>
-                        </tr>
-                        <tr>
-                          <td class="pl-0 pb-0">Louisiana</td>
-                          <td class="pb-0"><p class="mb-0"><span class="font-weight-bold mr-2">25</span>(1.32%)</p></td>
-                          <td class="pb-0">14</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 stretch-card grid-margin">
+
+            <!-- Income and Expense Cards -->
+            <div class="col-md-5 grid-margin">
               <div class="row">
-                <div class="col-md-12 grid-margin stretch-card">
+                <!-- Left Column - Main Info Cards -->
+                <div class="col-md-6">
                   <div class="card">
                     <div class="card-body">
-                      <p class="card-title">Charts</p>
-                      <div class="charts-data">
-                        <div class="mt-3">
-                          <p class="mb-0">Data 1</p>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div class="progress progress-md flex-grow-1 mr-4">
-                              <div class="progress-bar bg-inf0" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <p class="mb-0">5k</p>
-                          </div>
-                        </div>
-                        <div class="mt-3">
-                          <p class="mb-0">Data 2</p>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div class="progress progress-md flex-grow-1 mr-4">
-                              <div class="progress-bar bg-info" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <p class="mb-0">1k</p>
-                          </div>
-                        </div>
-                        <div class="mt-3">
-                          <p class="mb-0">Data 3</p>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div class="progress progress-md flex-grow-1 mr-4">
-                              <div class="progress-bar bg-info" role="progressbar" style="width: 48%" aria-valuenow="48" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <p class="mb-0">992</p>
-                          </div>
-                        </div>
-                        <div class="mt-3">
-                          <p class="mb-0">Data 4</p>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div class="progress progress-md flex-grow-1 mr-4">
-                              <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <p class="mb-0">687</p>
-                          </div>
-                        </div>
-                      </div>  
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-12 stretch-card grid-margin grid-margin-md-0">
-                  <div class="card data-icon-card-primary">
-                    <div class="card-body">
-                      <p class="card-title text-white">Number of Meetings</p>                      
-                      <div class="row">
-                        <div class="col-8 text-white">
-                          <h3>34040</h3>
-                          <p class="text-white font-weight-500 mb-0">The total number of sessions within the date range.It is calculated as the sum . </p>
-                        </div>
-                        <div class="col-4 background-icon">
-                        </div>
+                      <!-- Income Section -->
+                      <div class="expense-card">
+                        <div class="expense-label">지출 목표</div>
+                        <div class="expense-amount income-amount">₩ 300,000</div>
+                      </div>
+
+                      <!-- Subtracted Amount -->
+                      <div class="expense-card">
+                        <div class="expense-label">하루 목표</div>
+                        <div class="expense-amount" style="color: #6b7280;">₩ 10,000</div>
+                      </div>
+
+                      <!-- Today's Expense -->
+                      <div class="expense-card">
+                        <div class="expense-label">오늘 지출</div>
+                        <div class="expense-amount expense-amount-red">₩ 12,000</div>
+                      </div>
+
+                      <!-- Current Expense -->
+                      <div class="expense-card">
+                        <div class="expense-label">현재 지출</div>
+                        <div class="expense-amount">₩ 460,000</div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4 stretch-card grid-margin">
-              <div class="card">
-                <div class="card-body">
-                  <p class="card-title">Notifications</p>
-                  <ul class="icon-data-list">
-                    <li>
-                      <div class="d-flex">
-                        <img src="images/faces/face1.jpg" alt="user">
-                        <div>
-                          <p class="text-info mb-1">Isabella Becker</p>
-                          <p class="mb-0">Sales dashboard have been created</p>
-                          <small>9:30 am</small>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="d-flex">
-                        <img src="images/faces/face2.jpg" alt="user">
-                        <div>
-                          <p class="text-info mb-1">Adam Warren</p>
-                          <p class="mb-0">You have done a great job #TW111</p>
-                          <small>10:30 am</small>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="d-flex">
-                      <img src="images/faces/face3.jpg" alt="user">
-                     <div>
-                      <p class="text-info mb-1">Leonard Thornton</p>
-                      <p class="mb-0">Sales dashboard have been created</p>
-                      <small>11:30 am</small>
-                     </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="d-flex">
-                        <img src="images/faces/face4.jpg" alt="user">
-                        <div>
-                          <p class="text-info mb-1">George Morrison</p>
-                          <p class="mb-0">Sales dashboard have been created</p>
-                          <small>8:50 am</small>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="d-flex">
-                        <img src="images/faces/face5.jpg" alt="user">
-                        <div>
-                        <p class="text-info mb-1">Ryan Cortez</p>
-                        <p class="mb-0">Herbs are fun and easy to grow.</p>
-                        <small>9:00 am</small>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12 grid-margin stretch-card">
-              <div class="card">
-                <div class="card-body">
-                  <p class="card-title">Advanced Table</p>
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="table-responsive">
-                        <table id="example" class="display expandable-table" style="width:100%">
-                          <thead>
-                            <tr>
-                              <th>Quote#</th>
-                              <th>Product</th>
-                              <th>Business type</th>
-                              <th>Policy holder</th>
-                              <th>Premium</th>
-                              <th>Status</th>
-                              <th>Updated at</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                      </table>
-                      </div>
-                    </div>
-                  </div>
                   </div>
                 </div>
 
-                
+                <!-- Right Column - Monthly Summary Cards -->
+                <div class="col-md-6">
+                  <!-- Monthly Income Card -->
+                  <div class="card mb-3">
+                    <div class="card-body">
+                      <div class="total-label">이번 달 수입</div>
+                      <div class="savings-amount" style="font-size: 28px; font-weight: 700;">₩ 300,000</div>
+                    </div>
+                  </div>
+
+                  <!-- Monthly Expense Card -->
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="total-label">이번 달 지출</div>
+                      <div class="total-amount">₩ 460,000</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <%-- 가계부 목록 테이블 --%>
+                    <div class="col-12">
+                      <div class="table-responsive" style="height: 400px; overflow-y: auto;">
+                        <table id="accountTable" class="table dataTable display expandable-table" style="width:100%">
+                          <thead style="position: sticky; top: 0; background-color: #fff; z-index: 10;">
+                          <tr>
+                            <th>날짜</th>
+                            <th>구분</th>
+                            <th>분류</th>
+                            <th>내용</th>
+                            <th>금액</th>
+                            <th>결제수단</th>
+                            <th>비고</th>
+                            <th>
+                            </th>
+                            <th>
+                            </th>
+                          </tr>
+                          </thead>
+                          <tbody id="accountTableBody">
+
+                          </tbody>
+                          <tfoot style="position: sticky; bottom: 0; background-color: #fff; z-index: 10;">
+                            <tr id="addAccListForm">
+                              <td>
+                                <input type="date" name="acc_date" class="form-control" aria-describedby="inputGroup-sizing-sm" value="${currentDate}"/>
+                              </td>
+                              <td>
+                                <select name="acc_income" class="form-control" aria-describedby="inputGroup-sizing-sm"
+                                  style="width: fit-content;">
+                                  <option value='0'>지출</option>
+                                  <option value='1'>수입</option>
+                                </select>
+                              </td>
+                              <td>
+                                <input type="text" name="acc_category" class="form-control" aria-describedby="inputGroup-sizing-sm"/>
+                              </td>
+                              <td>
+                                <input type="text" name="acc_desc" class="form-control" aria-describedby="inputGroup-sizing-sm"/>
+                              </td>
+                              <td>
+                                <input type="number" name="acc_amount" class="form-control" aria-describedby="inputGroup-sizing-sm"/>
+                              </td>
+                              <td>
+                                <input type="text" name="acc_payment" class="form-control" aria-describedby="inputGroup-sizing-sm"/>
+                              </td>
+                              <td>
+                                <input type="text" name="acc_etc" class="form-control" aria-describedby="inputGroup-sizing-sm"/>
+                              </td>
+                              <td>
+                                <button type="button" class="btn btn-sm btn-success mr-1" id="addAccListBtn" title="추가">
+                                   <i class="fas fa-plus">+</i>
+                                </button>
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
@@ -818,16 +385,181 @@
 
   <!-- End plugin js for this page -->
   <!-- inject:js -->
-  <script src="/js/off-canvas.js"></script>
-  <script src="/js/hoverable-collapse.js"></script>
-  <script src="/js/template.js"></script>
-  <script src="/js/settings.js"></script>
-  <script src="/js/todolist.js"></script>
+  <script src="<c:url value="/js/off-canvas.js"/>"></script>
+  <script src="<c:url value="/js/hoverable-collapse.js"/>"></script>
+  <script src="<c:url value="/js/template.js"/>"></script>
+  <script src="<c:url value="/js/settings.js"/>"></script>
+  <script src="<c:url value="/js/todolist.js"/>"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
-  <script src="/js/dashboard.js"></script>
-  <script src="/js/Chart.roundedBarCharts.js"></script>
+  <script src="<c:url value="/js/dashboard.js"/>"></script>
+  <script src="<c:url value="/js/Chart.roundedBarCharts.js"/>"></script>
   <!-- End custom js for this page-->
+  <script>
+    $(document).ready(function() {
+      console.log("=== DataTable 초기화 시작 ===");
+
+      // 1. jQuery와 DataTable 확인
+      console.log("jQuery 버전:", $.fn.jquery);
+      console.log("DataTable 사용 가능:", typeof $.fn.DataTable !== 'undefined');
+
+      // 2. 테이블 요소 확인
+      console.log("테이블 존재 여부:", $('#accountTable').length > 0);
+
+      // 3. 먼저 일반 Ajax로 데이터 확인
+      $.ajax({
+        url: '/getMonthAcc',
+        type: 'GET',
+        success: function(data) {
+          console.log("=== 서버 응답 데이터 ===");
+          console.log("데이터 타입:", typeof data);
+          console.log("데이터 내용:", data);
+
+          if (Array.isArray(data)) {
+            console.log("배열 길이:", data.length);
+            if (data.length > 0) {
+              console.log("첫 번째 데이터:", data[0]);
+            }
+          } else if (typeof data === 'object') {
+            console.log("객체 키:", Object.keys(data));
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error("Ajax 에러:", error);
+          console.error("상태 코드:", xhr.status);
+          console.error("응답 텍스트:", xhr.responseText);
+        }
+      });
+
+      // 4. DataTable 초기화 (심플 버전)
+      try {
+        var table = $('#accountTable').DataTable({
+          "ajax": {
+            "url": "/getMonthAcc",
+            "type": "GET",
+            "dataType": "json",
+            "error": function(xhr, error, thrown) {
+              console.error("DataTable Ajax 에러:");
+              console.error("Error:", error);
+              console.error("Thrown:", thrown);
+              console.error("Status:", xhr.status);
+              console.error("Response:", xhr.responseText);
+            },
+            "dataSrc": function(response) {
+              console.log("DataTable dataSrc 응답:", response);
+
+              // 다양한 응답 형식 처리
+              if (Array.isArray(response)) {
+                console.log("응답이 배열입니다. 길이:", response.length);
+                return response;
+              } else if (response && response.data) {
+                console.log("응답에 data 속성이 있습니다. 길이:", response.data.length);
+                return response.data;
+              } else if (response && response.result) {
+                console.log("응답에 result 속성이 있습니다. 길이:", response.result.length);
+                return response.result;
+              } else {
+                console.warn("예상치 못한 응답 형식:", response);
+                return [];
+              }
+            }
+          },
+          "columns": [
+            {
+              "data": "accDate",
+              "defaultContent": "-"
+            },
+            {
+              "data": "accIncome",
+              "defaultContent": false,
+              "render": function(data) {
+                return data ? "수입" : "지출";
+              }
+            },
+            {
+              "data": "accCategory",
+              "defaultContent": "-"
+            },
+            {
+              "data": "accDesc",
+              "defaultContent": "-"
+            },
+            {
+              "data": "accAmount",
+              "defaultContent": "0",
+              "render": function(data) {
+                return Number(data || 0).toLocaleString() + "원";
+              }
+            },
+            {
+              "data": "accPayment",
+              "defaultContent": "-"
+            },
+            {
+              "data": "accEtc",
+              "defaultContent": "-"
+            },
+            {
+              "data": "accId",
+              "defaultContent": "",
+              "orderable": false,
+              "render": function(data) {
+                if (data) {
+                  return '<button class="btn btn-sm btn-danger delete-btn" data-id="' + data + '">삭제</button>';
+                }
+                return '';
+              }
+            }
+          ],
+          "language": {
+            "emptyTable": "데이터가 없습니다.",
+            "loadingRecords": "로딩중...",
+            "processing": "처리중..."
+          },
+          "initComplete": function(settings, json) {
+            console.log("=== DataTable 초기화 완료 ===");
+            console.log("초기화 데이터:", json);
+            console.log("행 개수:", this.api().rows().count());
+          }
+        });
+
+        console.log("DataTable 인스턴스 생성 성공");
+
+      } catch(e) {
+        console.error("DataTable 초기화 실패:", e);
+      }
+
+      // 5. 대안: 수동으로 데이터 로드 (DataTable이 안 되는 경우)
+      $('#testLoadBtn').on('click', function() {
+        $.ajax({
+          url: '/getMonthAcc',
+          type: 'GET',
+          success: function(data) {
+            console.log("수동 로드 데이터:", data);
+
+            // 기존 방식으로 테이블 렌더링
+            if (data && data.length > 0) {
+              let html = '';
+              data.forEach(function(account) {
+                html += '<tr>' +
+                        '<td>' + (account.accDate || '-') + '</td>' +
+                        '<td>' + (account.accIncome ? "수입" : "지출") + '</td>' +
+                        '<td>' + (account.accCategory || '-') + '</td>' +
+                        '<td>' + (account.accDesc || '-') + '</td>' +
+                        '<td>' + (account.accAmount || 0) + '</td>' +
+                        '<td>' + (account.accPayment || '-') + '</td>' +
+                        '<td>' + (account.accEtc || '-') + '</td>' +
+                        '<td><button class="delete-btn" data-id="' + account.accId + '">삭제</button></td>' +
+                        '</tr>';
+              });
+              $('#accountTable tbody').html(html);
+              console.log("테이블 수동 렌더링 완료");
+            }
+          }
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>
