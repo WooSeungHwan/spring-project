@@ -1,11 +1,14 @@
 package com.service.spring.domain;
 
+import java.time.LocalDate;
+
 public class Health {
 	private int healId;
 	private String healName;
 	private int healAmount;
 	private boolean healDone;
 	private int memId;
+	private LocalDate healDate;
 	
 	public Health() {}
 
@@ -64,11 +67,21 @@ public class Health {
 		this.memId = memId;
 	}
 
+	public LocalDate getHealDate() {
+		return healDate;
+	}
+
+	public void setHealDate(LocalDate healDate) {
+		this.healDate = healDate;
+	}
+
 	@Override
 	public String toString() {
 		return "Health [healId=" + healId + ", healName=" + healName + ", healAmount=" + healAmount + ", healDone="
-				+ healDone +", memId=" + memId + "]";
+				+ healDone + ", memId=" + memId + ", healDate=" + healDate + "]";
 	}
+
+
 	
 	
 }
