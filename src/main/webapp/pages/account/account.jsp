@@ -583,22 +583,61 @@
   <script src="<c:url value="/js/account/account-charts.js"/>"></script>
 
   <script>
+    // 가계부 테이블
+    let table;
+    // 해당 달의 가계부 리스트
+    let accMonthList
+
+
+    (async () => {
+      await getMonthAccList('2025-08-01');
+      sumMonthIncome();
+      //sumMonthOutcome();
+    })();
+
+    /* 이벤트 목록 */
+    // 페이지 로드 시 실행
     $(document).ready(function() {
+      getAccList();
+    });
+
+    // 추가 버튼 이벤트 (동적 요소이므로 위임)
+    $(document).on("click", "#addAccListBtn", function () {
+      const accId = $('#addAccListBtn').data('id');
+      console.log(accId);
+      addAccount(accId);
+      table.ajax.reload(null, false);
+    });
+
+    // 삭제 버튼 이벤트 (동적 요소이므로 위임)
+    $(document).on("click", "#delete-btn", function () {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        const accId = $('#delete-btn').data('id');
+        console.log(accId);
+        deleteAccount(accId);
+        table.ajax.reload(null, false);
+      }
+    });
+
+    /* 함수 목록 */
+
+    // 가계부 목록 가져오기
+    function getAccList() {
       // 4. DataTable 초기화 (심플 버전)
       try {
-        var table = $('#accountTable').DataTable({
+        table = $('#accountTable').DataTable({
           "ajax": {
             "url": "/getMonthAcc",
             "type": "GET",
             "dataType": "json",
-            "error": function(xhr, error, thrown) {
+            "error": function (xhr, error, thrown) {
               console.error("DataTable Ajax 에러:");
               console.error("Error:", error);
               console.error("Thrown:", thrown);
               console.error("Status:", xhr.status);
               console.error("Response:", xhr.responseText);
             },
-            "dataSrc": function(response) {
+            "dataSrc": function (response) {
               console.log("DataTable dataSrc 응답:", response);
 
               // 다양한 응답 형식 처리
@@ -625,7 +664,7 @@
             {
               "data": "accIncome",
               "defaultContent": false,
-              "render": function(data) {
+              "render": function (data) {
                 return data ? "수입" : "지출";
               }
             },
@@ -640,7 +679,7 @@
             {
               "data": "accAmount",
               "defaultContent": "0",
-              "render": function(data) {
+              "render": function (data) {
                 return Number(data || 0).toLocaleString() + "원";
               }
             },
@@ -656,9 +695,9 @@
               "data": "accId",
               "defaultContent": "",
               "orderable": false,
-              "render": function(data) {
+              "render": function (data) {
                 if (data) {
-                  return '<button class="btn btn-sm btn-danger delete-btn" data-id="' + data + '">삭제</button>';
+                  return '<button id="delete-btn" class="btn btn-sm btn-danger delete-btn" data-id="' + data + '">삭제</button>';
                 }
                 return '';
               }
@@ -669,60 +708,152 @@
             "loadingRecords": "로딩중...",
             "processing": "처리중..."
           },
-          "initComplete": function(settings, json) {
+          "initComplete": function (settings, json) {
             console.log("=== DataTable 초기화 완료 ===");
             console.log("초기화 데이터:", json);
             console.log("행 개수:", this.api().rows().count());
-          }
+          },
         });
-
-        console.log("DataTable 인스턴스 생성 성공");
-
-      } catch(e) {
-        console.error("DataTable 초기화 실패:", e);
+      } catch (e) {
+        console.log(e);
       }
-    });
+    }
 
-    // 현재 가계부 리스트만 가져오기
-    function getMonthAccList(date) {
+    // 가계부 생성
+    // 2. 가계부 추가
+    function saveAccount() {
+      // 폼 데이터 수집
+      const formData = {
+        accDate: $('input[name="acc_date"]').val(),
+        accIncome: $("select[name=acc_income] option:selected").val() === "1",
+        accCategory: $('input[name="acc_category"]').val(),
+        accDesc: $('input[name="acc_desc"]').val(),
+        accAmount: $('input[name="acc_amount"]').val() || 0,
+        accPayment: $('input[name="acc_payment"]').val(),
+        accEtc: $('input[name="acc_etc"]').val(),
+      };
+
+      // 유효성 검사
+      if (!formData.accDate) {
+        alert("날짜를 입력해주세요.");
+        return;
+      }
+
+      if (!formData.accAmount || isNaN(formData.accAmount)) {
+        alert("금액을 올바르게 입력해주세요.");
+        return;
+      }
+
+      // Ajax 요청
       $.ajax({
-        url: '/getMonthAcc',
-        type: 'GET',
-        success: function(result) {
+        url: "/addAcc",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(formData),
+        success: function (result) {
+          // 폼 초기화
+          clearForm();
 
-        }
+          table.ajax.reload(null, false);
+        },
       });
     }
 
+    // 가계부 삭제
+    function deleteAccount(accId) {
+      $.ajax({
+        url: "/deleteAcc",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(accId),
+        success: function (result) {
+          if (result !== -1) {
+            // DataTable 새로고침
+            table.ajax.reload(null, false);
+            alert("삭제되었습니다.");
+          }
+        },
+        error: function (xhr, status, error) {
+          alert("삭제 중 오류가 발생했습니다.");
+        },
+      });
+    }
+
+
+    // 현재 가계부 리스트만 가져오기
+    async function getMonthAccList(date) {
+      const queryParams = new URLSearchParams({
+        date: date.toString()
+      });
+
+      fetch('/getMonthAcc?' + queryParams, {
+        method: 'GET'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('네트워크 오류');
+          }
+
+          accMonthList = response;
+
+        })
+        .catch(error => {
+         console.error('에러 발생:', error);
+        });
+    }
+
     // 해당 달의 총 수입
-    function sumMonthIncome(accList) {
-      if (accList === null)
+    function sumMonthIncome() {
+      if (accMonthList === null)
         return 0;
 
       let sumMonthIncome = 0;
 
-      console.log(accList);
+      console.log(accMonthList);
 
       return sumMonthIncome;
     }
 
     // 해당 달의 총 지출
-    function sumMonthOutcome(accList) {
-      if (accList === null)
+    function sumMonthOutcome() {
+      if (accMonthList === null)
         return 0;
 
       let sumMonthOutcome = 0;
 
-      accList.forEach((acc) => {
+      accMonthList.forEach((acc) => {
 
       })
 
       return sumMonthOutcome;
     }
 
-    const accList = getMonthAccList('2025-08');
-    console.log(sumMonthIncome(accList));
+    function clearForm() {
+      $('#addAccListForm input[type="text"]').val("");
+      // 날짜는 현재 날짜로 유지
+      const today = new Date().toISOString().split("T")[0];
+      $('input[name="acc_date"]').val(today);
+      // 금액을 0원으로
+      $('input[name="acc_amount"]').val(0);
+    }
 
+    // 가계부 리스트 로드
+    function loadAccountList() {
+      console.log("Load Account List!");
+
+      $.ajax({
+        url: "/getMonthAcc",
+        type: "GET",
+        success: function (data) {
+          if (data && data.length > 0) {
+            renderAccountTable(data);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("Error loading account list:", error);
+        },
+      });
+    }
   </script>
 </body>
 
