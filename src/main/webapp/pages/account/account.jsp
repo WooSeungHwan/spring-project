@@ -12,6 +12,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Spending Management</title>
+  <!-- Chart.js 로드 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
   <!-- plugins:css -->
   <link rel="stylesheet" href="<c:url value="/vendors/feather/feather.css"/>">
   <link rel="stylesheet" href="<c:url value="/vendors/ti-icons/css/themify-icons.css"/>">
@@ -26,6 +29,190 @@
   <link rel="stylesheet" href="<c:url value="/css/vertical-layout-light/style.css"/>">
   <!-- endinject -->
   <link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />
+  <style>
+    body {
+      background-color: #f5f7fa;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .main-container {
+      padding: 30px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* Chart Card */
+    .chart-card {
+      height: 100%;
+      min-height: 380px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+
+    /* Equal height cards */
+    .h-100 {
+      height: 100%;
+    }
+
+    .info-card-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .info-card {
+      min-height: 380px;
+    }
+
+    .summary-cards-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .summary-card-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .summary-card-wrapper .card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .summary-card-wrapper .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    .year-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .year-selector button {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+
+    .year-selector button:hover {
+      color: #374151;
+    }
+
+    /* Expense Info Cards */
+    .info-section {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .expense-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .expense-item:last-child {
+      border-bottom: none;
+    }
+
+    .expense-label {
+      font-size: 15px;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .expense-amount {
+      font-size: 20px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .amount-purple {
+      color: #8b5cf6;
+    }
+
+    .amount-gray {
+      color: #6b7280;
+    }
+
+    .amount-red {
+      color: #ef4444;
+    }
+
+    /* Summary Cards */
+    .summary-card {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .summary-label {
+      font-size: 15px;
+      color: #374151;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .summary-amount {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .amount-green {
+      color: #10b981;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 15px;
+      }
+
+      .card-body {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container-scroller">
@@ -211,72 +398,69 @@
       <div class="main-panel">
         <div class="content-wrapper">
           <div class="row">
-            <!-- Expense Overview Chart -->
-            <div class="col-md-7 grid-margin">
-              <div class="card">
+            <!-- Left Column - Expense Chart -->
+            <div class="col-md-7 mb-4">
+              <div class="card chart-card">
                 <div class="card-body">
                   <div class="chart-header">
-                    <p class="card-title mb-0">Expenses Overview</p>
+                    <p class="card-title">Expenses Overview</p>
                     <div class="year-selector">
                       <button onclick="changeYear(-1)">‹</button>
-                      <span>2021</span>
+                      <span id="yearDisplay">2021</span>
                       <button onclick="changeYear(1)">›</button>
                     </div>
                   </div>
-                  <canvas id="expenseChart"></canvas>
+                  <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Income and Expense Cards -->
-            <div class="col-md-5 grid-margin">
+            <!-- Right Column - Info Cards -->
+            <div class="col-md-5">
               <div class="row">
-                <!-- Left Column - Main Info Cards -->
-                <div class="col-md-6">
+                <!-- Left Info Card -->
+                <div class="col-md-6 mb-4">
                   <div class="card">
                     <div class="card-body">
-                      <!-- Income Section -->
-                      <div class="expense-card">
-                        <div class="expense-label">지출 목표</div>
-                        <div class="expense-amount income-amount">₩ 300,000</div>
-                      </div>
-
-                      <!-- Subtracted Amount -->
-                      <div class="expense-card">
-                        <div class="expense-label">하루 목표</div>
-                        <div class="expense-amount" style="color: #6b7280;">₩ 10,000</div>
-                      </div>
-
-                      <!-- Today's Expense -->
-                      <div class="expense-card">
-                        <div class="expense-label">오늘 지출</div>
-                        <div class="expense-amount expense-amount-red">₩ 12,000</div>
-                      </div>
-
-                      <!-- Current Expense -->
-                      <div class="expense-card">
-                        <div class="expense-label">현재 지출</div>
-                        <div class="expense-amount">₩ 460,000</div>
+                      <div class="info-section">
+                        <div class="expense-item">
+                          <span class="expense-label">지출 목표</span>
+                          <span class="expense-amount amount-purple">₩ 300,000</span>
+                        </div>
+                        <div class="expense-item">
+                          <span class="expense-label">하루 목표</span>
+                          <span class="expense-amount amount-gray">₩ 10,000</span>
+                        </div>
+                        <div class="expense-item">
+                          <span class="expense-label">오늘 지출</span>
+                          <span class="expense-amount amount-red">₩ 12,000</span>
+                        </div>
+                        <div class="expense-item">
+                          <span class="expense-label">현재 지출</span>
+                          <span class="expense-amount amount-red">₩ 460,000</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <!-- Right Column - Monthly Summary Cards -->
+                <!-- Right Summary Cards -->
                 <div class="col-md-6">
                   <!-- Monthly Income Card -->
                   <div class="card mb-3">
-                    <div class="card-body">
-                      <div class="total-label">이번 달 수입</div>
-                      <div class="savings-amount" style="font-size: 28px; font-weight: 700;">₩ 300,000</div>
+                    <div class="card-body summary-card">
+                      <div class="summary-label">이번 달 수입</div>
+                      <div class="summary-amount amount-green">₩ 300,000</div>
                     </div>
                   </div>
 
                   <!-- Monthly Expense Card -->
                   <div class="card">
-                    <div class="card-body">
-                      <div class="total-label">이번 달 지출</div>
-                      <div class="total-amount">₩ 460,000</div>
+                    <div class="card-body summary-card">
+                      <div class="summary-label">이번 달 지출</div>
+                      <div class="summary-amount amount-red">₩ 460,000</div>
                     </div>
                   </div>
                 </div>
@@ -395,42 +579,11 @@
   <script src="<c:url value="/js/dashboard.js"/>"></script>
   <script src="<c:url value="/js/Chart.roundedBarCharts.js"/>"></script>
   <!-- End custom js for this page-->
+
+  <script src="<c:url value="/js/account/account-charts.js"/>"></script>
+
   <script>
     $(document).ready(function() {
-      console.log("=== DataTable 초기화 시작 ===");
-
-      // 1. jQuery와 DataTable 확인
-      console.log("jQuery 버전:", $.fn.jquery);
-      console.log("DataTable 사용 가능:", typeof $.fn.DataTable !== 'undefined');
-
-      // 2. 테이블 요소 확인
-      console.log("테이블 존재 여부:", $('#accountTable').length > 0);
-
-      // 3. 먼저 일반 Ajax로 데이터 확인
-      $.ajax({
-        url: '/getMonthAcc',
-        type: 'GET',
-        success: function(data) {
-          console.log("=== 서버 응답 데이터 ===");
-          console.log("데이터 타입:", typeof data);
-          console.log("데이터 내용:", data);
-
-          if (Array.isArray(data)) {
-            console.log("배열 길이:", data.length);
-            if (data.length > 0) {
-              console.log("첫 번째 데이터:", data[0]);
-            }
-          } else if (typeof data === 'object') {
-            console.log("객체 키:", Object.keys(data));
-          }
-        },
-        error: function(xhr, status, error) {
-          console.error("Ajax 에러:", error);
-          console.error("상태 코드:", xhr.status);
-          console.error("응답 텍스트:", xhr.responseText);
-        }
-      });
-
       // 4. DataTable 초기화 (심플 버전)
       try {
         var table = $('#accountTable').DataTable({
@@ -528,37 +681,48 @@
       } catch(e) {
         console.error("DataTable 초기화 실패:", e);
       }
-
-      // 5. 대안: 수동으로 데이터 로드 (DataTable이 안 되는 경우)
-      $('#testLoadBtn').on('click', function() {
-        $.ajax({
-          url: '/getMonthAcc',
-          type: 'GET',
-          success: function(data) {
-            console.log("수동 로드 데이터:", data);
-
-            // 기존 방식으로 테이블 렌더링
-            if (data && data.length > 0) {
-              let html = '';
-              data.forEach(function(account) {
-                html += '<tr>' +
-                        '<td>' + (account.accDate || '-') + '</td>' +
-                        '<td>' + (account.accIncome ? "수입" : "지출") + '</td>' +
-                        '<td>' + (account.accCategory || '-') + '</td>' +
-                        '<td>' + (account.accDesc || '-') + '</td>' +
-                        '<td>' + (account.accAmount || 0) + '</td>' +
-                        '<td>' + (account.accPayment || '-') + '</td>' +
-                        '<td>' + (account.accEtc || '-') + '</td>' +
-                        '<td><button class="delete-btn" data-id="' + account.accId + '">삭제</button></td>' +
-                        '</tr>';
-              });
-              $('#accountTable tbody').html(html);
-              console.log("테이블 수동 렌더링 완료");
-            }
-          }
-        });
-      });
     });
+
+    // 현재 가계부 리스트만 가져오기
+    function getMonthAccList(date) {
+      $.ajax({
+        url: '/getMonthAcc',
+        type: 'GET',
+        success: function(result) {
+
+        }
+      });
+    }
+
+    // 해당 달의 총 수입
+    function sumMonthIncome(accList) {
+      if (accList === null)
+        return 0;
+
+      let sumMonthIncome = 0;
+
+      console.log(accList);
+
+      return sumMonthIncome;
+    }
+
+    // 해당 달의 총 지출
+    function sumMonthOutcome(accList) {
+      if (accList === null)
+        return 0;
+
+      let sumMonthOutcome = 0;
+
+      accList.forEach((acc) => {
+
+      })
+
+      return sumMonthOutcome;
+    }
+
+    const accList = getMonthAccList('2025-08');
+    console.log(sumMonthIncome(accList));
+
   </script>
 </body>
 

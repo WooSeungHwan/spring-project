@@ -20,18 +20,18 @@ public class AsyncAccountController {
     private AccountService accountService;
 
     @GetMapping("/getMonthAcc")
-    public List<Account> getMonthAcc(Model model, HttpSession session) {
+    public List<Account> getMonthAcc(LocalDate date, Model model, HttpSession session) {
         Member member;
-        LocalDate date;
+        LocalDate curDate;
 
         try {
             member = (Member)session.getAttribute("member");
             if (member == null)
                 return null;
 
-            date = LocalDate.now(); // TODO: 달 변경 가능하도록 할 것
+            curDate = LocalDate.now(); // TODO: 달 변경 가능하도록 할 것
 
-            return accountService.getMonthAcc(member.getMemId(), date);
+            return accountService.getMonthAcc(member.getMemId(), curDate);
         } catch (Exception e) {
             model.addAttribute("msg", e.getMessage());
             return null;
