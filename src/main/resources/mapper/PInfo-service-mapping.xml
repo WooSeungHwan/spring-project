@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ns.sql.PInfoMapper">
+	<!-- 신체정보 가져오기 -->
+	<select id="getPInfo" parameterType="int" resultType="PInfo">
+		SELECT height, weight
+		FROM p_info
+		WHERE mem_id = #{memId}
+	</select>
+	<!-- 신체정보 추가 -->
+	<insert id="addPInfo" parameterType="PInfo">
+		INSERT INTO p_info
+		(mem_id, height, weight)
+		VALUES (#{memId}, #{height}, #{weight})
+	</insert>
+	<!-- 신체정보 수정 -->
+	<update id="changePInfo" parameterType="PInfo">
+		UPDATE p_info
+		SET height=#{height}, weight=#{weight}
+		WHERE mem_id=#{memId}
+	</update>
+</mapper>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

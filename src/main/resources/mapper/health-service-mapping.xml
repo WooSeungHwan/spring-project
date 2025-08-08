@@ -4,8 +4,8 @@
 
 <mapper namespace="ns.sql.HealthMapper">
 	<!-- 건강관리 동적할당 all 과 특정 조건 전부 충족하게 -->
-	<select id="getHealth" parameterType="hashmap" resultType="health">
-		SELECT heal_id, heal_name, heal_amount, heal_done
+	<select id="getHealthList" parameterType="hashmap" resultType="health">
+		SELECT heal_id, heal_name, heal_amount, heal_done, heal_date
 		FROM health
 		<where>
 			<if test="memId != null">
@@ -17,13 +17,21 @@
 	        <if test="healDone != null">
 	            AND heal_done = #{healDone}
 	        </if>
+	        <if test="healDate != null">
+	        	AND heal_date = #{healDate}
+	        </if>
 		</where>
+	</select>
+	<select id="getHealth" parameterType="int" resultType="health">
+		SELECT heal_id, heal_name, heal_amount, heal_done, heal_date, mem_id
+		FROM health
+		WHERE heal_id=#{VALUE}
 	</select>
 	<!-- 건강관리 목록 추가 -->
 	<insert id="addHealth" parameterType="health" useGeneratedKeys="true" keyProperty="healId">
 		INSERT INTO health
-		(heal_name, heal_amount, heal_done, mem_id)
-		VALUES (#{healName}, #{healAmount}, #{healDone}, #{memId})
+		(heal_name, heal_amount, heal_done, mem_id, heal_date)
+		VALUES (#{healName}, #{healAmount}, #{healDone}, #{memId}, curdate())
 	</insert>
 	<!-- 건강관리 목록 제거 -->
 	<delete id="deleteHealth" parameterType="int">

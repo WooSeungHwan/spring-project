@@ -35,6 +35,7 @@
 		<mapper resource="mapper/note-service-mapping.xml"/>
 		<mapper resource="mapper/todo-service-mapping.xml"/>
 		<mapper resource="mapper/target_account-service-mapping.xml"/>
+		<mapper resource="mapper/PInfo-service-mapping.xml"/>
 	</mappers>
 	
 </configuration>

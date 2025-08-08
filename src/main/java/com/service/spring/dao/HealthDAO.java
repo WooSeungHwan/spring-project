@@ -18,8 +18,12 @@ public class HealthDAO{
 	@Autowired
 	private SqlSession sqlSession;
 	
-	public List<Object> getHealth(HashMap<String, Object> map) throws SQLException {
-		return sqlSession.selectList(NS + "getHealth", map);
+	public List<Health> getHealth(HashMap<String, Object> map) throws SQLException {
+		return sqlSession.selectList(NS + "getHealthList", map);
+	}
+	
+	public Health getHealth(int healId) throws SQLException {
+		return sqlSession.selectOne(NS + "getHealth", healId);
 	}
 	
 	public int addHealth(Health health) throws SQLException {
