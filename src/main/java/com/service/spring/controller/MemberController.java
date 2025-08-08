@@ -18,13 +18,21 @@ public class MemberController {
 	private MemberService memberService;
 
 	@GetMapping("/")
-	public String getDefault(HttpSession session) {
+	public String getDefault(HttpSession session, Model model) {
 		// 로그인되어있다면 main, 아니면 login으로
 		Member member = (Member)session.getAttribute("member");
-		if (member != null)
+		if (member != null) {
+			model.addAttribute("currentMenu", "dashboard");
 			return "main";
+		}
 		else
 			return "pages/member/login";
+	}
+
+	@GetMapping("/main")
+	public String getMain(Model model) {
+		model.addAttribute("currentMenu", "dashboard");
+		return "main";
 	}
 	
 	@GetMapping("/login")
@@ -75,11 +83,6 @@ public class MemberController {
 		}
 
 		return "/pages/member/login";
-	}
-
-	@GetMapping("/main")
-	public String getMain() {
-		return "main";
 	}
 }
 

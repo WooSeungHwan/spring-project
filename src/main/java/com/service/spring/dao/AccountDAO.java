@@ -1,6 +1,9 @@
 package com.service.spring.dao;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +21,12 @@ public class AccountDAO {
 	@Autowired	
 	private SqlSession sqlSession;
 	
-	public List<Account> getMonthAcc(Account account) throws SQLException {
-		return sqlSession.selectList(NS + "getMonthAcc", account);
+	public List<Account> getMonthAcc(int memId, LocalDate date) throws SQLException {
+		Map<String, Object> params = new HashMap<>();
+		params.put("memId", memId);
+		params.put("accDate", date);
+
+		return sqlSession.selectList(NS + "getMonthAcc", params);
 	}
 
 	public int addAcc(Account account) throws SQLException {
