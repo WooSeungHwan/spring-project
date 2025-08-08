@@ -33,7 +33,7 @@ public class NoteDAO {
 	}
 
 	// 중요 여부 수정
-	public int isImpNote(int vo) throws Exception {
+	public int isImpNote(Note vo) throws Exception {
 		return sqlSession.update(NS + "isImpNote", vo);
 	}
 
