@@ -37,21 +37,214 @@
 		font-family: 'Jua', sans-serif;
 		font-size: 33px;
 	}
+
 	h3{
 		font-family: 'Jua', sans-serif;
 	}
 	.hide-scrollbar::-webkit-scrollbar {
     width: 0;
     background: transparent;
-}
+	}   
+	.underweight {
+	  color: #3498db;
+	}
+	
+	.normal {
+	  color: #27ae60;
+	}
+	
+	.overweight {
+	  color: #f1c40f;
+	}
+	
+	.obese {
+	  color: #e74c3c;
+	}
 </style>
 <script>
-	$(()=>{
-		$("#healthNameBox .dropdown-item").on("click", function(){
-			$("#healthNameBtn").html($(this).html());
-		});
-	});
+$(() => {
+
+	const renderHealthTable = (healthList) => {
+		  const incompleteTableBody = $('#healthTable table tbody');
+		  const completedTableBody = $('#completedHealthTable table');
+		  
+		  incompleteTableBody.empty();
+		  completedTableBody.empty();
+
+		  healthList.forEach(health => {
+		    if (health.healDone === false) {
+		      const row = $('<tr></tr>');
+		      const statusCheckbox = 
+		        '<div class="form-check" style="margin-bottom: 0;">' +
+		          '<input class="form-check-input complete-checkbox" type="checkbox" id="health-check-' + health.healId + '" data-health-id="' + health.healId + '">' +
+		          '<label class="form-check-label" for="health-check-' + health.healId + '">완료</label>' +
+		        '</div>';
+
+		      row.append(
+		        $('<td></td>').addClass('col-width-1').css({ height : '51.67px', padding: '5px 0' }).text(health.healName),
+		        $('<td></td>').addClass('col-width-2').css({ height : '51.67px', padding: '5px 0' }).text(health.healAmount),
+		        $('<td></td>').addClass('col-width-3').css({ height : '51.67px', padding: '5px 0' }).append(statusCheckbox)
+		      );
+		      incompleteTableBody.append(row);
+		    } else if (health.healDone === true) {
+		      const row = $('<tr></tr>');
+		      row.append(
+		        $('<td></td>').css({ height: '51.67px', padding: '5px 0' }).text(health.healName),
+		        $('<td></td>').css({ height: '51.67px', padding: '5px 0' }).text(health.healAmount)
+		      );
+		      completedTableBody.append(row);
+		    }
+		  });
+	};
+    const updateBMIStatus = (bmi) => {
+        const bmiDesc = $('#BMIDesc');
+        const bmiEl = $('#BMI');
+        bmiEl.html(bmi);
+        bmiDesc.removeClass("underweight normal overweight obese");
+        bmiEl.removeClass("underweight normal overweight obese");
+        let status;
+        if (bmi < 18.5) {
+            status = "underweight";
+            bmiDesc.html("저체중");
+        } else if (bmi < 24.9) {
+            status = "normal";
+            bmiDesc.html("정상체중");
+        } else if (bmi < 29.9) {
+            status = "overweight";
+            bmiDesc.html("과체중");
+        } else {
+            status = "obese";
+            bmiDesc.html("비만");
+        }
+        bmiDesc.addClass(status);
+        bmiEl.addClass(status);
+    };
+
+    updateBMIStatus(${pInfo.bMI});
+
+    $("#healthNameContainer .dropdown-item").on("click", function() {
+        const selectedText = $(this).text();     
+        if (selectedText === '기타') {
+            $("#healthNameBtn").hide().html("");
+            $("#otherHealthName").show().val('').focus();
+            $("#cancelOtherBtn").show();
+        } else {
+            $("#healthNameBtn").html(selectedText).show();
+            $("#otherHealthName").hide();
+            $("#cancelOtherBtn").hide();
+        }
+    });
+
+    $("#cancelOtherBtn").on("click", function() {
+        $("#healthNameBtn").html("추가할 운동을 선택해 주세요.").show();
+        $("#otherHealthName").hide().val('');
+        $("#cancelOtherBtn").hide();
+    });
 	
+    $('#healthAddForm').on('submit', function(event) {
+        event.preventDefault();
+        const defaultText = "추가할 운동을 선택해 주세요.";
+        const healthNameBtnText = $('#healthNameBtn').text().trim();
+        const otherHealthNameInput = $('#otherHealthName');
+        let healthName;
+        if (healthNameBtnText === defaultText) {
+            alert("추가할 운동을 선택하거나 입력해 주세요.");
+            return;
+        }
+        if (otherHealthNameInput.is(':visible')) {
+            healthName = otherHealthNameInput.val().trim();
+            if (healthName === '') {
+                alert("운동 이름을 직접 입력해 주세요.");
+                return;
+            }
+        } else {
+            healthName = healthNameBtnText;
+        }
+
+        const formData = {
+            healthName: healthName,
+            healthAmount: $('#healthAmount').val()
+        };
+        
+        $.ajax({
+            type: "POST",
+            url: "/addHealth",
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    renderHealthTable(response.healthList);
+                    $('#healthAddForm')[0].reset();
+                    $("#healthNameBtn").html("추가할 운동을 선택해 주세요.").show();
+                    $("#otherHealthName").hide().val('');
+                    $("#cancelOtherBtn").hide();
+                } else {
+                    alert("운동 추가에 실패했습니다: " + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('서버 오류로 인해 운동 추가에 실패했습니다.');
+            }
+        });
+    });
+        
+    $('#pInfoForm').on('submit', function(event) {
+        event.preventDefault();
+        const formData = {
+            height: $('input[name="height"]').val(),
+            weight: $('input[name="weight"]').val()
+        };
+        $.ajax({
+            type: "POST",
+            url: "/changePInfo",
+            data: formData,
+            success: function(result) {
+                $('input[name="height"]').val(result.height);
+                $('input[name="weight"]').val(result.weight);
+                updateBMIStatus(result.bMI);
+            },
+            error: function(xhr, status, error) {
+                alert('개인정보 변경에 실패했습니다. 다시 시도해 주세요.');
+            }
+        });
+    });
+    
+    $('#healthTable').on('change', '.complete-checkbox', function() {
+        const checkbox = $(this);
+        const healthId = parseInt(checkbox.attr('data-health-id'));
+        const isChecked = checkbox.is(':checked');
+
+        if (isChecked) {
+            if (confirm('운동을 완료 처리하시겠습니까?')) {
+                if (typeof healthId !== 'number' || isNaN(healthId) || healthId === 0) {
+                    alert("운동 ID가 유효하지 않아 요청을 보낼 수 없습니다. 다시 시도해 주세요.");
+                    checkbox.prop('checked', false);
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/changeHealthDone",
+                    data: { healId: healthId },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('완료 처리되었습니다!');
+                            renderHealthTable(response.healthList);
+                        } else {
+                            alert('완료 처리에 실패했습니다: ' + response.message);
+                            checkbox.prop('checked', false);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('서버 오류로 실패했습니다.');
+                        checkbox.prop('checked', false);
+                    }
+                });
+            } else {
+                checkbox.prop('checked', false);
+            }
+        }
+    });
+});
 </script>
 </head>
 <body>
@@ -448,31 +641,39 @@
 					    </tr>
 					  </thead>
 			 	  </table>
-                  <div class="hide-scrollbar" style="height: 200px; overflow-y: scroll;">
+                  <div class="hide-scrollbar" id="healthTable" style="height: 200px; overflow-y: scroll;">
 					    <table class="table table-hover" style="text-align: center;">
 					        <tbody>
 					            <c:forEach items="${healthList}" var="health">
 					            	<c:if test="${health.healDone == false}">
 						                <tr>
-						                    <td class="col-width-1" style="height:33px; padding-left:0;padding-right: 0;">${health.healName}</td>
-						                    <td class="col-width-2" style="height:33px; padding-left:0;padding-right: 0;">${health.healAmount}</td>
-						                    <td class="col-width-3" style="height:33px; padding-left:0;padding-right: 0;">${health.healDone}</td>
+						                    <td class="col-width-1" style="height:40px; padding : 5px 0">${health.healName}</td>
+						                    <td class="col-width-2" style="height:40px; padding : 5px 0">${health.healAmount}</td>
+						                    <td class="col-width-3" style="height:40px; padding : 5px 0">
+						                    
+						                    	<div class="form-check">
+											        <input class="form-check-input complete-checkbox" type="checkbox" id="health-check-${health.healId}" data-health-id="${health.healId}" ${health.healDone ? 'checked disabled' : ''}>
+											      	<label class="form-check-label" for="health-check-${health.healId}">
+											            체크
+											        </label>  
+											    </div>
+                    						</td>
 						                </tr>
 					                </c:if>
 					            </c:forEach>
 					        </tbody>
 					    </table>
 					</div>
-                    <form>
+                    <form id="healthAddForm">
                     <div class="row" style="width:90%;background:white; margin:0 auto; margin-right: 50px;justify-content:space-around;">
                     	
                     	<div class="col-md-5 grid-margin stretch-card" >
                     		<div class="card tale-bg">
-                    			<div class="dropdown" id="healthNameBox">
-								    <button type="button" id="healthNameBtn" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"  style="width:100%; height:45px; background-color:#F5F7F9;color:black; border:none;">
+                    			<div id="healthNameContainer" style="width:100%; display: flex; align-items: center; justify-content: center; gap: 5px;">
+								    <button type="button" id="healthNameBtn" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width:100%; height:45px; background-color:#F5F7F9;color:black; border:none; text-align: center;">
 								      추가할 운동을 선택해 주세요.
 								    </button>
-								    <div class="dropdown-menu"  style="width:100%;">
+								    <div class="dropdown-menu" style="width:100%;">
 								      <a class="dropdown-item" href="#">달리기</a>
 								      <a class="dropdown-item" href="#">스쿼트</a>
 								      <a class="dropdown-item" href="#">자전거 타기</a>
@@ -480,13 +681,18 @@
 								      <a class="dropdown-item" href="#">윗몸일으키기</a>
 								      <a class="dropdown-item" href="#">기타</a>
 								    </div>
-								  </div>
-								 
-                    		</div>
+								
+								    <input type="text" id="otherHealthName" class="form-control" placeholder="운동 이름 직접 입력" style="display:none; width:80%; height: 45px;">
+								    
+								    <button type="button" id="cancelOtherBtn" class="btn" style="display:none; padding: 0; width:20%"> 선택
+								     </button>
+								</div>
+							</div>
                     	</div>
+                    	
                     	<div class="col-md-3 grid-margin stretch-card">
                     		<div class="card tale-bg"  style="background:#F5F7F9;height:45px; align-items: center">
-                    			<input type="number" placeholder="목표량을 입력해주세요." style="height:45px;background:#F5F7F9;border:none;border-radius:15px;text-align: center;font-size:15px" >
+                    			<input id="healthAmount" type="number" placeholder="목표량을 입력해주세요." style="height:45px;background:#F5F7F9;border:none;border-radius:15px;text-align: center;font-size:15px" required>
                     		</div>
                     	</div>
                     	<div class="col-md-2 grid-margin stretch-card" style="margin-left: 60px">
@@ -505,13 +711,13 @@
                 		<h3>완료한 운동 목록</h3>
                	</div>
                 <div class="hide-scrollbar" style="height: 250px; overflow-y: scroll;">
-                	<div class="card-body">
+                	<div class="card-body" id="completedHealthTable">
 	                	<table class="table table-hover" style="text-align: center;">
 		                	<c:forEach items="${healthList}" var="health">
 								<c:if test="${health.healDone == true}">				
 									<tr>
-								    	<td style="height:33px">${health.healName}</td>
-								        <td style="height:33px">${health.healAmount}</td>
+								    	<td style="height:40px">${health.healName}</td>
+								        <td style="height:40px">${health.healAmount}</td>
 								    </tr>
 							    </c:if>
 							</c:forEach>
@@ -526,15 +732,38 @@
             <div class="col-md-4 grid-margin stretch-card" style="height:350px;" >
               <div class="card tale-bg"  style="background:white;">
               
-              	<form>
+              	<form id="pInfoForm" method="post">
 	              	<div class="row">
-	              		
-		                <div class="col-md-6 transparent">
+	              	<c:choose>
+	              		<c:when test="${pInfo != null}">
+			                <div class="col-md-6 transparent">
+			                	<div class="card-body" style="padding-bottom:0;background:none">
+			                		<h3>키</h3>
+			                	</div>
+			                	<div class="card-body" style="padding-top:0;">
+			                		
+			                		<input type="number" step="0.1" value="${pInfo.height}" name="height" style="width:100%; border:none;height:45px; background:#F5F7F9;text-align: center;border-radius:15px">
+			                		
+			                	</div>
+			                </div>
+			                <div class="col-md-6 transparent">
+			                	<div class="card-body" style="padding-bottom:0;background:none">
+			                		<h3>몸무게</h3>
+			                	</div>
+			                	<div class="card-body" style="padding-top:0;">
+			                		<input type="number" step="0.1" value="${pInfo.weight}" name="weight" style="width:100%;border:none;height:45px;background:#F5F7F9; text-align: center; border-radius:15px">
+			                	</div>
+			                </div>
+		                </c:when>
+		                <c:otherwise>
+		                	<div class="col-md-6 transparent">
 		                	<div class="card-body" style="padding-bottom:0;background:none">
 		                		<h3>키</h3>
 		                	</div>
 		                	<div class="card-body" style="padding-top:0;">
-		                		<input type="number" value="" name="height" style="width:100%; border:none;height:45px; background:#F5F7F9;text-align: center;border-radius:15px">
+		                		
+		                		<input id="height" type="number" value="" name="height" style="width:100%; border:none;height:45px; background:#F5F7F9;text-align: center;border-radius:15px">
+		                		
 		                	</div>
 		                </div>
 		                <div class="col-md-6 transparent">
@@ -542,11 +771,11 @@
 		                		<h3>몸무게</h3>
 		                	</div>
 		                	<div class="card-body" style="padding-top:0;">
-		                		<input type="number" value="" name="weight" style="width:100%;border:none;height:45px;background:#F5F7F9; text-align: center; border-radius:15px">
+		                		<input id="weight" type="number" value="" name="weight" style="width:100%;border:none;height:45px;background:#F5F7F9; text-align: center; border-radius:15px">
 		                	</div>
 		                </div>
-		                
-		                
+		                </c:otherwise>
+		            </c:choose>
 	              	</div>
 		            <div class="card-header" style="padding-top:0;padding-bottom:5px;background:white">
 		              	<div class="row">
@@ -560,14 +789,14 @@
               	</form>
               	<div class="card-body" style="padding:20px;padding-bottom:0;padding-top:10;background:none">
               		<h3>BMI</h3>
-              	</div>
-              	<div class="row">
-              		<div class="col-md-6 transparent">
-              			
-              		</div>
-              		<div class="col-md-6 transparent">
-              		
-              		</div>
+	              	<div class="row">
+	              		<div class="col-md-6 transparent" style="display:flex; justify-content: center; align-items: center; height: 120px">
+	              			<h3 id="BMI">${pInfo.bMI}</h3>
+	              		</div>
+	              		<div class="col-md-6 transparent" style="display:flex; justify-content: center; align-items: center; height: 120px">
+	              			<h3 id="BMIDesc"></h3>
+	              		</div>
+	              	</div>
               	</div>
               </div>
             </div>
@@ -580,7 +809,7 @@
                         <tr>
                           <th>순위</th>
                           <th>이름</th>
-                          <th>퍼센트</th>
+                          <th>완료율</th>
                         </tr>
                       </thead>
                       <tbody style="height:200px">

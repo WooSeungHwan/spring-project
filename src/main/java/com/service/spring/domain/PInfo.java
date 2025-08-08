@@ -4,6 +4,7 @@ public class PInfo {
 	private int memId;
 	private double height;
 	private double weight;
+	private double bMI;
 	
 	public PInfo() {}
 
@@ -37,11 +38,19 @@ public class PInfo {
 		this.weight = weight;
 	}
 
+	public double getbMI() {
+		return bMI;
+	}
+
+	public void setBMI(double bMI) {
+		this.bMI = bMI;
+	}
+
 	@Override
 	public String toString() {
-		return "PInfo [memId=" + memId + ", height=" + height + ", weight=" + weight + "]";
+		return "PInfo [memId=" + memId + ", height=" + height + ", weight=" + weight + ", bMI=" + bMI + "]";
 	}
-	
+
 	
 	
 }

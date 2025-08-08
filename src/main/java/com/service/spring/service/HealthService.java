@@ -20,6 +20,10 @@ public class HealthService {
 		return healthDAO.getHealth(map);
 	}
 	
+	public Health getHealth(int healId) throws SQLException {
+		return healthDAO.getHealth(healId);
+	}
+	
 	public int addHealth(Health health) throws SQLException {
 		return healthDAO.addHealth(health);
 	}
