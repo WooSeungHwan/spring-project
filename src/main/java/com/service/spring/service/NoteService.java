@@ -18,23 +18,23 @@ public class NoteService {
 		return noteDAO.addNote(note);
 	}
 	
-	public int deleteNote(int vo) throws Exception {
-		return noteDAO.deleteNote(vo);
+	public int deleteNote(int noteId) throws Exception {
+		return noteDAO.deleteNote(noteId);
 	}
 	
-	public Note changNote(Note note) throws Exception{
+	public Note changeNote(Note note) throws Exception{
 		return noteDAO.changeNote(note);
 	}
 	
-	public int isImpNote(int vo) throws Exception{
-		return noteDAO.isImpNote(vo);
+	public int isImpNote(Note note) throws Exception{
+		return noteDAO.isImpNote(note);
 	}
 	
-	public List<Note> getAllNote(int vo) throws Exception{
-		return noteDAO.getAllNote(vo);
+	public List<Note> getAllNote(int memId) throws Exception{
+		return noteDAO.getAllNote(memId);
 	}
 	
-	public List<Note> getImpNote(int vo) throws Exception{
-		return noteDAO.getImpNote(vo);
+	public List<Note> getImpNote(int memId) throws Exception{
+		return noteDAO.getImpNote(memId);
 	}
 }
