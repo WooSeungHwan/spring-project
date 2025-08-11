@@ -46,11 +46,11 @@ public class HealthController {
 				pInfo.setBMI(Math.round(bmi * 100) / 100.0);
 				model.addAttribute("healthList", list);
 				model.addAttribute("pInfo", pInfo);
-			} catch (SQLException e) {
-				e.getMessage();
+			} catch (Exception e) {
+				model.addAttribute("msg", e.getMessage());
 			}
 		}
-		return "health";
+		return "pages/health/health";
 	}
 	
 	@ResponseBody

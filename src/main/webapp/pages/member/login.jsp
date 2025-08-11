@@ -143,7 +143,7 @@
             <h1>로그인</h1>
         </div>
         
-        <form method="post" action="login" id="loginForm">
+        <form method="post" action="<c:url value="/login"/>" id="loginForm">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required>

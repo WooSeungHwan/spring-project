@@ -2,6 +2,8 @@ package com.service.spring.controller;
 
 import java.util.List;
 
+import com.service.spring.domain.Member;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +19,21 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @GetMapping("/note.jsp")
-    public String notePage(@RequestParam int memId, Model model) {
+    @GetMapping("/note")
+    public String notePage(HttpSession session, Model model) {
+        int memId = -1;
+        Member member = (Member)session.getAttribute("member");
+
+        memId = member.getMemId();
+
         try {
             List<Note> noteList = noteService.getAllNote(memId);
             model.addAttribute("noteList", noteList);
         } catch (Exception e) {
-            e.printStackTrace(); // 로깅 또는 에러 처리
+            // e.printStackTrace(); // 로깅 또는 에러 처리
+            model.addAttribute("msg", e.getMessage());
         }
-        return "note"; // 뷰 리졸버 설정에 따라 note.jsp를 의미함
+        return "pages/note/note"; // 뷰 리졸버 설정에 따라 note.jsp를 의미함
     }
 
 
