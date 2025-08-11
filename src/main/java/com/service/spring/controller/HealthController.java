@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.service.spring.domain.Health;
 import com.service.spring.domain.PInfo;
@@ -28,7 +27,6 @@ public class HealthController {
 	@Autowired
 	private PInfoService pInfoService;
 	
-	
 	@GetMapping("/moveHealth")
 	public String moveHealth(HttpSession session, Model model) {
 		Object memIdAttr = session.getAttribute("memId");
@@ -41,11 +39,12 @@ public class HealthController {
 			try {
 				List<Health> list = healthService.getHealth(map);
 				PInfo pInfo = pInfoService.getPInfo(memId);
-				double heightMeter = pInfo.getHeight() / 100;
-				double bmi = pInfo.getWeight() / (heightMeter * heightMeter);
-				pInfo.setBMI(Math.round(bmi * 100) / 100.0);
+				pInfo.setBMI(pInfoService.getBMI(memId));
+				HashMap<String, List<?>> chartMap = healthService.getChartData(list);
 				model.addAttribute("healthList", list);
 				model.addAttribute("pInfo", pInfo);
+				model.addAttribute("chartData", chartMap.get("chartData"));
+				model.addAttribute("chartLabel", chartMap.get("chartLabel"));
 			} catch (SQLException e) {
 				e.getMessage();
 			}
@@ -68,9 +67,7 @@ public class HealthController {
 				pInfoService.addPInfo(newPInfo);
 			else
 				pInfoService.changePInfo(newPInfo);
-			double heightMeter = newPInfo.getHeight() / 100;
-			double bmi = newPInfo.getWeight() / (heightMeter * heightMeter);
-			newPInfo.setBMI(Math.round(bmi * 100) / 100.0);
+			newPInfo.setBMI(pInfoService.getBMI(memId)); 
 		}
 		return newPInfo;
 	}
@@ -92,6 +89,9 @@ public class HealthController {
 	            List<Health> newHealthList = healthService.getHealth(map);
 	            response.put("success", true);
 	            response.put("healthList", newHealthList);
+	            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
+				response.put("chartData", chartMap.get("chartData"));
+				response.put("chartLabel", chartMap.get("chartLabel"));
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	            response.put("success", false);
@@ -108,28 +108,24 @@ public class HealthController {
 	@PostMapping("/changeHealthDone")
 	public Map<String, Object> changeHealDone(@RequestParam("healId") int healId, HttpSession session) {
 	    Map<String, Object> response = new HashMap<>();
-	    
-	    // 테스트용 memId를 유지합니다.
 	    Object memIdAttr = session.getAttribute("memId");
 	    int memId = 1;
 		if (memIdAttr != null)
 			memId = 1;
 		if (memId != 0) {
 	    try {
-	        // healId로 Health 객체를 찾습니다.
 	        Health rHealth = healthService.getHealth(healId);
-	        
-	        // 🚨 여기에서 memId 확인 로직을 일시적으로 제거했습니다.
 	        if (rHealth != null) {
 	            rHealth.setHealDone(true);
 	            healthService.updateHealth(rHealth);
-	            
-	            // 업데이트 후 최신 목록을 다시 가져옵니다.
 	            HashMap<String, Object> map = new HashMap<String, Object>();
 	            map.put("memId", memId);
 	            List<Health> newHealthList = healthService.getHealth(map);
 	            response.put("success", true);
 	            response.put("healthList", newHealthList);
+	            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
+				response.put("chartData", chartMap.get("chartData"));
+				response.put("chartLabel", chartMap.get("chartLabel"));
 	        } else {
 	            response.put("success", false);
 	            response.put("message", "해당 운동을 찾을 수 없거나 소유자가 다릅니다.");
