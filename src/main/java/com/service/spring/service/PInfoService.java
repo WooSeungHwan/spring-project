@@ -25,4 +25,17 @@ public class PInfoService {
 	public int changePInfo(PInfo pInfo) {
 		return pInfoDAO.changePInfo(pInfo);
 	}
+	
+	private double calcBMI(PInfo pInfo) {
+		double heightMeter = pInfo.getHeight() / 100.0;
+		return Math.round(pInfo.getWeight() / (heightMeter * heightMeter) * 100) / 100.0;
+	}
+	
+	public double getBMI(int memId) {
+		PInfo pInfo = pInfoDAO.getPInfo(memId);
+		if (pInfo == null)
+			return 0;
+		pInfo.setBMI(calcBMI(pInfo));
+		return pInfo.getbMI();
+	}
 }
