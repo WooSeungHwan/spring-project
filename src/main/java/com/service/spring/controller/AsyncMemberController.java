@@ -24,6 +24,11 @@ public class AsyncMemberController {
             return true;
         }
 	}
+
+    @GetMapping("/get/member")
+    public Member getMember(HttpSession session) {
+        return (Member)session.getAttribute("member");
+    }
 }
 
 
