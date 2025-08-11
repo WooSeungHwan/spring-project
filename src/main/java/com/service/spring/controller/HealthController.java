@@ -43,15 +43,9 @@ public class HealthController {
 				HashMap<String, List<?>> chartMap = healthService.getChartData(list);
 				model.addAttribute("healthList", list);
 				model.addAttribute("pInfo", pInfo);
-<<<<<<< HEAD
 			} catch (Exception e) {
 				model.addAttribute("msg", e.getMessage());
-=======
-				model.addAttribute("chartData", chartMap.get("chartData"));
-				model.addAttribute("chartLabel", chartMap.get("chartLabel"));
-			} catch (SQLException e) {
 				e.getMessage();
->>>>>>> 65109c7a46415bd1e11b8f8157e33f9cbbdd3af3
 			}
 		}
 		return "pages/health/health";

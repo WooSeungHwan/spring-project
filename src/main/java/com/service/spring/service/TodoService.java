@@ -30,8 +30,8 @@ public class TodoService {
 		return todoDAO.isTodoDone(vo);
 	}
 	
-	public List<Todo> getTodoByToday(String date) throws Exception{
-		return todoDAO.getTodoByToday(date);
+	public List<Todo> getTodoByToday(int memId) throws Exception{
+		return todoDAO.getTodoByToday(memId);
 	}
 	
 	public List<Todo> getTodoByImportant(Todo vo) throws Exception{

@@ -33,8 +33,8 @@ public class TodoDAO {
 		return sqlSession.update(NS+"isTodoDone", vo);
 	}
 	
-	public List<Todo> getTodoByToday(String date) throws Exception{
-		List<Todo> list = sqlSession.selectList(NS+"getTodoByToday", date);
+	public List<Todo> getTodoByToday(int memId) throws Exception{
+		List<Todo> list = sqlSession.selectList(NS+"getTodoByToday", memId);
 		return list;
 	}
 	

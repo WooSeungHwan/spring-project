@@ -4,14 +4,14 @@
 
 <mapper namespace="ns.sql.TodoMapper">
 	<sql id="select-todo">
-		SELECT todo_id, todo_done, todo_content, todo_date, todo_important
+		SELECT todo_id, todo_done, todo_content, todo_date, todo_important, mem_id
 		FROM todo
 	</sql>
 	
 	<insert id="addTodo" parameterType="todo">	
 		INSERT INTO 
-		todo (todo_id, todo_done, todo_content, todo_date, todo_important)
-		VALUES(#{todoId}, #{todoDone}, #{todoContent}, #{todoDate}, #{todoImportant})
+		todo (todo_done, todo_content, todo_date, todo_important, mem_id)
+		VALUES(#{todoDone}, #{todoContent}, #{todoDate}, #{todoImportant}, #{memId})
 	</insert>
 	
 	<delete id="deleteTodo" parameterType="int">
@@ -33,13 +33,17 @@
 	
 	<select id="getTodoByToday" parameterType="String" resultType="todo">
 		<include refid="select-todo"></include>
-			WHERE todo_date = #{value}
+			WHERE mem_id = #{value}
+			AND todo_important = 1
+			ORDER BY todo_date DESC, todo_id DESC
 		
 	</select>
 	
 	<select id="getTodoByImportant" parameterType="int" resultType="todo"> 
 		<include refid="select-todo"></include>
-		WHERE todo_important= 1 AND todo_done = 1;
+		WHERE mem_id = #{value}
+		AND todo_important = 1
+		ORDER BY todo_date DESC, todo_id DESC
 	</select>
 
 </mapper>

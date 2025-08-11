@@ -1,36 +1,32 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Skydash Admin</title>
+
   <!-- plugins:css -->
-  <link rel="stylesheet" href="vendors/feather/feather.css">
-  <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
-  <!-- endinject -->
+  <link rel="stylesheet" href="<c:url value='/vendors/feather/feather.css'/>">
+  <link rel="stylesheet" href="<c:url value='/vendors/ti-icons/css/themify-icons.css'/>">
+  <link rel="stylesheet" href="<c:url value='/vendors/css/vendor.bundle.base.css'/>">
   <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-  <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" type="text/css" href="js/select.dataTables.min.css">
-  <!-- End plugin css for this page -->
+  <link rel="stylesheet" href="<c:url value='/vendors/datatables.net-bs4/dataTables.bootstrap4.css'/>">
+  <link rel="stylesheet" type="text/css" href="<c:url value='/js/select.dataTables.min.css'/>">
   <!-- inject:css -->
-  <link rel="stylesheet" href="css/vertical-layout-light/style.css">
+  <link rel="stylesheet" href="<c:url value='/css/vertical-layout-light/style.css'/>">
   <!-- endinject -->
-  <link rel="shortcut icon" href="images/favicon.png" />
+  <link rel="shortcut icon" href="<c:url value='/images/favicon.png'/>" />
 </head>
 <body>
   <div class="container-scroller">
-    <!-- partial:partials/_navbar.html -->
-    <!-- 헤더 컴포넌트 -->
+    <!-- Header (상단 네비) -->
     <jsp:include page="/components/header.jsp"/>
-    <!-- partial -->
+
     <div class="container-fluid page-body-wrapper">
-      <!-- partial:partials/_settings-panel.html -->
+      <!-- 오른쪽 설정 패널 (필요 시 유지) -->
       <div class="theme-setting-wrapper">
         <div id="settings-trigger"><i class="ti-settings"></i></div>
         <div id="theme-settings" class="settings-panel">
@@ -49,6 +45,7 @@
           </div>
         </div>
       </div>
+
       <div id="right-sidebar" class="settings-panel">
         <i class="settings-close ti-close"></i>
         <ul class="nav nav-tabs border-top" id="setting-panel" role="tablist">
@@ -144,7 +141,7 @@
             </div>
             <ul class="chat-list">
               <li class="list active">
-                <div class="profile"><img src="images/faces/face1.jpg" alt="image"><span class="online"></span></div>
+                <div class="profile"><img src="<c:url value='/images/faces/face1.jpg'/>" alt="image"><span class="online"></span></div>
                 <div class="info">
                   <p>Thomas Douglas</p>
                   <p>Available</p>
@@ -152,7 +149,7 @@
                 <small class="text-muted my-auto">19 min</small>
               </li>
               <li class="list">
-                <div class="profile"><img src="images/faces/face2.jpg" alt="image"><span class="offline"></span></div>
+                <div class="profile"><img src="<c:url value='/images/faces/face2.jpg'/>" alt="image"><span class="offline"></span></div>
                 <div class="info">
                   <div class="wrapper d-flex">
                     <p>Catherine</p>
@@ -163,7 +160,7 @@
                 <small class="text-muted my-auto">23 min</small>
               </li>
               <li class="list">
-                <div class="profile"><img src="images/faces/face3.jpg" alt="image"><span class="online"></span></div>
+                <div class="profile"><img src="<c:url value='/images/faces/face3.jpg'/>" alt="image"><span class="online"></span></div>
                 <div class="info">
                   <p>Daniel Russell</p>
                   <p>Available</p>
@@ -171,7 +168,7 @@
                 <small class="text-muted my-auto">14 min</small>
               </li>
               <li class="list">
-                <div class="profile"><img src="images/faces/face4.jpg" alt="image"><span class="offline"></span></div>
+                <div class="profile"><img src="<c:url value='/images/faces/face4.jpg'/>" alt="image"><span class="offline"></span></div>
                 <div class="info">
                   <p>James Richardson</p>
                   <p>Away</p>
@@ -179,7 +176,7 @@
                 <small class="text-muted my-auto">2 min</small>
               </li>
               <li class="list">
-                <div class="profile"><img src="images/faces/face5.jpg" alt="image"><span class="online"></span></div>
+                <div class="profile"><img src="<c:url value='/images/faces/face5.jpg'/>" alt="image"><span class="online"></span></div>
                 <div class="info">
                   <p>Madeline Kennedy</p>
                   <p>Available</p>
@@ -187,7 +184,7 @@
                 <small class="text-muted my-auto">5 min</small>
               </li>
               <li class="list">
-                <div class="profile"><img src="images/faces/face6.jpg" alt="image"><span class="online"></span></div>
+                <div class="profile"><img src="<c:url value='/images/faces/face6.jpg'/>" alt="image"><span class="online"></span></div>
                 <div class="info">
                   <p>Sarah Graves</p>
                   <p>Available</p>
@@ -199,116 +196,115 @@
           <!-- chat tab ends -->
         </div>
       </div>
-      <!-- partial -->
-      <!-- partial:partials/_sidebar.html -->
-      <!-- 네비게이션 바 -->
+
+      <!-- Sidebar (좌측 사이드) -->
       <jsp:include page="/components/navbar.jsp"/>
-      <!-- partial -->
-      
-            <div class="col-md-10 grid-margin stretch-card " >
-							<div class="card">
-								<div class="card-body" >
-									<h4 class="card-title">오늘</h4>
-									<div class="list-wrapper pt-2" style="height: 1000px;">
-										<ul class="d-flex flex-column-reverse todo-list todo-list-custom">
-											<li>
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox">
-														기프티콘 사용
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li class="completed">
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox" checked>
-														선물 사기
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li>
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox">
-														꽃 사기
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li class="completed">
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox" checked>
-														치과 예약
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-											<li>
-												<div class="form-check form-check-flat">
-													<label class="form-check-label">
-														<input class="checkbox" type="checkbox">
-														빵 구입
-													</label>
-												</div>
-												<i class="remove ti-close"></i>
-											</li>
-										</ul>
+
+      <!-- ✅ 본문 래퍼 -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row justify-content-center">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">오늘</h4>
+                  <div class="list-wrapper pt-2" style="height: 1000px;">
+                    <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                      <li>
+                        <div class="form-check form-check-flat">
+                          <label class="form-check-label">
+                            <input class="checkbox" type="checkbox">
+                            기프티콘 사용
+                          </label>
+                        </div>
+                        <i class="remove ti-close"></i>
+                      </li>
+                      <li class="completed">
+                        <div class="form-check form-check-flat">
+                          <label class="form-check-label">
+                            <input class="checkbox" type="checkbox" checked>
+                            선물 사기
+                          </label>
+                        </div>
+                        <i class="remove ti-close"></i>
+                      </li>
+                      <li>
+                        <div class="form-check form-check-flat">
+                          <label class="form-check-label">
+                            <input class="checkbox" type="checkbox">
+                            꽃 사기
+                          </label>
+                        </div>
+                        <i class="remove ti-close"></i>
+                      </li>
+                      <li class="completed">
+                        <div class="form-check form-check-flat">
+                          <label class="form-check-label">
+                            <input class="checkbox" type="checkbox" checked>
+                            치과 예약
+                          </label>
+                        </div>
+                        <i class="remove ti-close"></i>
+                      </li>
+                      <li>
+                        <div class="form-check form-check-flat">
+                          <label class="form-check-label">
+                            <input class="checkbox" type="checkbox">
+                            빵 구입
+                          </label>
+                        </div>
+                        <i class="remove ti-close"></i>
+                      </li>
+                    </ul>
                   </div>
                   <div class="add-items d-flex mb-0 mt-2">
-										<input type="text" class="form-control todo-list-input"  placeholder="할일 추가">
-										<button class="add btn btn-icon text-primary todo-list-add-btn bg-transparent"><i class="icon-circle-plus"></i></button>
-									</div>
-								</div>
-							</div>
+                    <input type="text" class="form-control todo-list-input" placeholder="할일 추가">
+                    <button class="add btn btn-icon text-primary todo-list-add-btn bg-transparent"><i class="icon-circle-plus"></i></button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          
-        </div>
-        <!-- content-wrapper ends -->
-        <!-- partial:partials/_footer.html -->
+          </div> <!-- row -->
+        </div> <!-- content-wrapper -->
+
+        <!-- Footer -->
         <footer class="footer">
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2021.  Premium <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a> from BootstrapDash. All rights reserved.</span>
-            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i></span>
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+              Copyright © 2021.  Premium
+              <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap admin template</a>
+              from BootstrapDash. All rights reserved.
+            </span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+              Hand-crafted & made with <i class="ti-heart text-danger ml-1"></i>
+            </span>
           </div>
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Distributed by <a href="https://www.themewagon.com/" target="_blank">Themewagon</a></span> 
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">
+              Distributed by <a href="https://www.themewagon.com/" target="_blank">Themewagon</a>
+            </span>
           </div>
-        </footer> 
-        <!-- partial -->
-      </div>
-      <!-- main-panel ends -->
-    </div>   
-    <!-- page-body-wrapper ends -->
-  </div>
-  <!-- container-scroller -->
+        </footer>
+      </div> <!-- main-panel -->
+    </div> <!-- page-body-wrapper -->
+  </div> <!-- container-scroller -->
 
   <!-- plugins:js -->
-  <script src="vendors/js/vendor.bundle.base.js"></script>
-  <!-- endinject -->
+  <script src="<c:url value='/vendors/js/vendor.bundle.base.js'/>"></script>
   <!-- Plugin js for this page -->
-  <script src="vendors/chart.js/Chart.min.js"></script>
-  <script src="vendors/datatables.net/jquery.dataTables.js"></script>
-  <script src="vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-  <script src="js/dataTables.select.min.js"></script>
+  <script src="<c:url value='/vendors/chart.js/Chart.min.js'/>"></script>
+  <script src="<c:url value='/vendors/datatables.net/jquery.dataTables.js'/>"></script>
+  <script src="<c:url value='/vendors/datatables.net-bs4/dataTables.bootstrap4.js'/>"></script>
+  <script src="<c:url value='/js/dataTables.select.min.js'/>"></script>
 
-  <!-- End plugin js for this page -->
   <!-- inject:js -->
-  <script src="js/off-canvas.js"></script>
-  <script src="js/hoverable-collapse.js"></script>
-  <script src="js/template.js"></script>
-  <script src="js/settings.js"></script>
-  <script src="js/todolist.js"></script>
-  <!-- endinject -->
+  <script src="<c:url value='/js/off-canvas.js'/>"></script>
+  <script src="<c:url value='/js/hoverable-collapse.js'/>"></script>
+  <script src="<c:url value='/js/template.js'/>"></script>
+  <script src="<c:url value='/js/settings.js'/>"></script>
+  <script src="<c:url value='/js/todolist.js'/>"></script>
   <!-- Custom js for this page-->
-  <script src="js/dashboard.js"></script>
-  <script src="js/Chart.roundedBarCharts.js"></script>
-  <!-- End custom js for this page-->
+  <script src="<c:url value='/js/dashboard.js'/>"></script>
+  <script src="<c:url value='/js/Chart.roundedBarCharts.js'/>"></script>
 </body>
-
 </html>
-
