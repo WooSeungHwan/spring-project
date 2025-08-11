@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
   <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
   <link rel="stylesheet" type="text/css" href="js/select.dataTables.min.css">
+    <link rel="stylesheet" href="../../css/vertical-layout-light/style.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
@@ -60,17 +61,96 @@
 	.obese {
 	  color: #e74c3c;
 	}
+	#doughnutChart {
+ 	 width: 100% !important;
+}
 </style>
 <script>
+var doughnutChart;
 $(() => {
+	var doughnutPieData = {
+		    datasets: [{
+		      data: ${chartData},
+		      backgroundColor: [
+		        'rgba(122,94,231,0.5)',
+		        'rgba(122,128,139,0.5)',
+		        'rgba(255, 206, 86, 0.5)',
+		        'rgba(75, 192, 192, 0.5)',
+		        'rgba(153, 102, 255, 0.5)',
+		        'rgba(255, 159, 64, 0.5)'
+		      ],
+		      borderColor: [
+		        'rgba(122,94,231,1)',
+		        'rgba(122,128,139,1)',
+		        'rgba(255, 206, 86, 1)',
+		        'rgba(75, 192, 192, 1)',
+		        'rgba(153, 102, 255, 1)',
+		        'rgba(255, 159, 64, 1)'
+		      ],
+		    }],
+		    labels: [
+		        <c:forEach var="label" items="${chartLabel}" varStatus="loop">
+	            '${label}'
+	            <c:if test="${!loop.last}">, </c:if>
+	        </c:forEach>
+	    	]
+	};
+	const centerTextPlugin = {
+			  id: 'centerText',
+			  afterDraw(chart) {
+			    const { ctx, chartArea, data } = chart;
+			    if (!chartArea) return;
 
+			    const datasets = data && data.datasets;
+			    if (!datasets || datasets.length === 0) return;
+
+			    const raw = datasets[0].data || [];
+			    const values = raw.map(v => Number(v) || 0);
+
+			    const total = values.reduce((s, n) => s + n, 0);
+			    const completed = values[0] || 0;
+			    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+			    const text = percentage + '%';
+
+			    const centerX = (chartArea.left + chartArea.right) / 2;
+			    const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+			    ctx.save();
+			    const fontSize = Math.max(12, Math.floor(Math.min(chartArea.width, chartArea.height) / 6));
+			    ctx.font = 'bold ' + fontSize + 'px Jua';
+			    ctx.textAlign = 'center';
+			    ctx.textBaseline = 'middle';
+			    ctx.fillStyle = '#333';
+			    ctx.fillText(text, centerX, centerY);
+			    ctx.restore();
+		}
+	};
+	
+	const doughnutPieOptions = {
+	    responsive: true,
+	    animation: {
+	            animateScale: true,
+	            animateRotate: true
+	    },
+	    cutout: '70%'
+	};
+
+	if ($("#doughnutChart").length) {
+		var doughnutChartCanvas = $("#doughnutChart").get(0).getContext("2d");
+		var doughnutChart = new Chart(doughnutChartCanvas, {
+		        type: 'doughnut',
+		        data: doughnutPieData,
+		        options: doughnutPieOptions,
+		        plugins: [centerTextPlugin]
+		});
+	}
+		
 	const renderHealthTable = (healthList) => {
 		  const incompleteTableBody = $('#healthTable table tbody');
 		  const completedTableBody = $('#completedHealthTable table');
 		  
 		  incompleteTableBody.empty();
 		  completedTableBody.empty();
-
 		  healthList.forEach(health => {
 		    if (health.healDone === false) {
 		      const row = $('<tr></tr>');
@@ -79,7 +159,6 @@ $(() => {
 		          '<input class="form-check-input complete-checkbox" type="checkbox" id="health-check-' + health.healId + '" data-health-id="' + health.healId + '">' +
 		          '<label class="form-check-label" for="health-check-' + health.healId + '">완료</label>' +
 		        '</div>';
-
 		      row.append(
 		        $('<td></td>').addClass('col-width-1').css({ height : '51.67px', padding: '5px 0' }).text(health.healName),
 		        $('<td></td>').addClass('col-width-2').css({ height : '51.67px', padding: '5px 0' }).text(health.healAmount),
@@ -96,6 +175,7 @@ $(() => {
 		    }
 		  });
 	};
+	
     const updateBMIStatus = (bmi) => {
         const bmiDesc = $('#BMIDesc');
         const bmiEl = $('#BMI');
@@ -103,13 +183,13 @@ $(() => {
         bmiDesc.removeClass("underweight normal overweight obese");
         bmiEl.removeClass("underweight normal overweight obese");
         let status;
-        if (bmi < 18.5) {
+        if (bmi < 18.6) {
             status = "underweight";
             bmiDesc.html("저체중");
-        } else if (bmi < 24.9) {
+        } else if (bmi < 25) {
             status = "normal";
             bmiDesc.html("정상체중");
-        } else if (bmi < 29.9) {
+        } else if (bmi < 30) {
             status = "overweight";
             bmiDesc.html("과체중");
         } else {
@@ -177,6 +257,12 @@ $(() => {
                     $("#healthNameBtn").html("추가할 운동을 선택해 주세요.").show();
                     $("#otherHealthName").hide().val('');
                     $("#cancelOtherBtn").hide();
+                    doughnutChart.data.datasets[0].data = response.chartData;
+                    doughnutChart.data.labels = response.chartLabel;
+                    
+                    doughnutChart.update();
+                    
+                    $("#healthDonePer").html(response.healthDonePer);
                 } else {
                     alert("운동 추가에 실패했습니다: " + response.message);
                 }
@@ -229,6 +315,11 @@ $(() => {
                         if (response.success) {
                             alert('완료 처리되었습니다!');
                             renderHealthTable(response.healthList);
+                            doughnutChart.data.datasets[0].data = response.chartData;
+                            doughnutChart.data.labels = response.chartLabel;
+                            
+                            doughnutChart.update();
+                            $("#healthDonePer").html(response.healthDonePer);
                         } else {
                             alert('완료 처리에 실패했습니다: ' + response.message);
                             checkbox.prop('checked', false);
@@ -250,102 +341,8 @@ $(() => {
 <body>
   <div class="container-scroller">
     <!-- partial:partials/_navbar.html -->
-    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
-      <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="moveHealth"><img src="images/logo.svg" class="mr-2" alt="logo"/></a>
-        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="images/logo-mini.svg" alt="logo"/></a>
-      </div>
-      <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-          <span class="icon-menu"></span>
-        </button>
-        <ul class="navbar-nav mr-lg-2">
-          <li class="nav-item nav-search d-none d-lg-block">
-            <div class="input-group">
-              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-                <span class="input-group-text" id="search">
-                  <i class="icon-search"></i>
-                </span>
-              </div>
-              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
-            </div>
-          </li>
-        </ul>
-        <ul class="navbar-nav navbar-nav-right">
-          <li class="nav-item dropdown">
-            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-              <i class="icon-bell mx-0"></i>
-              <span class="count"></span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-              <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-success">
-                    <i class="ti-info-alt mx-0"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                  <p class="font-weight-light small-text mb-0 text-muted">
-                    Just now
-                  </p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-warning">
-                    <i class="ti-settings mx-0"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject font-weight-normal">Settings</h6>
-                  <p class="font-weight-light small-text mb-0 text-muted">
-                    Private message
-                  </p>
-                </div>
-              </a>
-              <a class="dropdown-item preview-item">
-                <div class="preview-thumbnail">
-                  <div class="preview-icon bg-info">
-                    <i class="ti-user mx-0"></i>
-                  </div>
-                </div>
-                <div class="preview-item-content">
-                  <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                  <p class="font-weight-light small-text mb-0 text-muted">
-                    2 days ago
-                  </p>
-                </div>
-              </a>
-            </div>
-          </li>
-          <li class="nav-item nav-profile dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-              <img src="images/faces/face28.jpg" alt="profile"/>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-              <a class="dropdown-item">
-                <i class="ti-settings text-primary"></i>
-                Settings
-              </a>
-              <a class="dropdown-item">
-                <i class="ti-power-off text-primary"></i>
-                Logout
-              </a>
-            </div>
-          </li>
-          <li class="nav-item nav-settings d-none d-lg-flex">
-            <a class="nav-link" href="#">
-              <i class="icon-ellipsis"></i>
-            </a>
-          </li>
-        </ul>
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-          <span class="icon-menu"></span>
-        </button>
-      </div>
-    </nav>
+    <!-- 헤더 컴포넌트 -->
+    <jsp:include page="/components/header.jsp"/>
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
       <!-- partial:partials/_settings-panel.html -->
@@ -519,110 +516,8 @@ $(() => {
       </div>
       <!-- partial -->
       <!-- partial:partials/_sidebar.html -->
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">
-              <i class="icon-grid menu-icon"></i>
-              <span class="menu-title">Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-              <i class="icon-layout menu-icon"></i>
-              <span class="menu-title">UI Elements</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="ui-basic">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Dropdowns</a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
-              <i class="icon-columns menu-icon"></i>
-              <span class="menu-title">Form elements</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="form-elements">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-              <i class="icon-bar-graph menu-icon"></i>
-              <span class="menu-title">Charts</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="charts">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
-              <i class="icon-grid-2 menu-icon"></i>
-              <span class="menu-title">Tables</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="tables">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/tables/basic-table.html">Basic table</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
-              <i class="icon-contract menu-icon"></i>
-              <span class="menu-title">Icons</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="icons">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/icons/mdi.html">Mdi icons</a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-              <i class="icon-head menu-icon"></i>
-              <span class="menu-title">User Pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#error" aria-expanded="false" aria-controls="error">
-              <i class="icon-ban menu-icon"></i>
-              <span class="menu-title">Error pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="error">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="pages/documentation/documentation.html">
-              <i class="icon-paper menu-icon"></i>
-              <span class="menu-title">Documentation</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <!-- 네비게이션 바 -->
+      <jsp:include page="/components/navbar.jsp"/>
       <!-- partial -->
       <div class="main-panel">
         <div class="content-wrapper">
@@ -824,6 +719,9 @@ $(() => {
               <div class="card tale-bg"  style="background:white;">
               	<div class="card-body">
               		<h3>완료율</h3>
+              		<div class="card-body" style="width:400px; height:400px;">
+                  <canvas id="doughnutChart"></canvas>      		
+					</div>
               	</div>
               </div>
             </div>

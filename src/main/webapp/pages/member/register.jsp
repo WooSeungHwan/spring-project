@@ -66,7 +66,8 @@
 		input[type="text"],
         input[type="email"],
         input[type="password"],
-        input[type="date"] {
+        input[type="date"],
+        select {
             width: 100%;
 			height: 50px;
             padding: 16px;
@@ -80,22 +81,37 @@
 		input[type="text"]:focus,
         input[type="email"]:focus,
         input[type="password"]:focus,
-        input[type="date"]:focus {
+        input[type="date"]:focus,
+        select:focus {
             outline: none;
             border-color: #0071e3;
             background-color: white;
         }
 
-        .password-confirm-message {
-			text-align: end;
-            font-size: 12px;
-            color: #34c759;
-            margin-top: 8px;
-            display: none;
+        select {
+            font-size: 14px;
         }
 
-        .password-confirm-message.show {
-            display: block;
+        #password-confirm-message {
+			text-align: end;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .match {
+            color: #34c759;
+        }
+
+        .mismatch {
+            color: #c73434;
+        }
+
+        #emailForm {
+            display: flex;
+        }
+
+        #emailForm #email {
+            margin-right: 10px;
         }
 
         .date-row {
@@ -162,7 +178,13 @@
         <form action="register" method="post" id="signupForm">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <div id="emailForm">
+                    <input type="email" id="email" name="email" required>
+                    <button type="button" id="checkEmail">중복 확인</button>
+                </div>
+                <div id="email-check">
+
+                </div>
             </div>
             
             <div class="form-group">
@@ -173,8 +195,8 @@
             <div class="form-group">
                 <label for="passwordConfirm">비밀번호 확인</label>
                 <input type="password" id="passwordConfirm" name="passwordConfirm" required>
-                <div class="password-confirm-message" id="passwordMessage">
-                    비밀번호가 일치합니다.
+                <div id="password-confirm-message">
+
                 </div>
             </div>
             
@@ -201,6 +223,59 @@
     </div>
 </body>
 <script>
-	
+    // 비밀번호 일치 여부 확인
+    const pass = document.querySelector('#password');
+    const passConfirm = document.querySelector('#passwordConfirm');
+    const passConfirmMessage = document.querySelector('#password-confirm-message');
+
+    function checkPasswordMatch() {
+        if (pass.value === '' || passConfirm.value === '') {
+            passConfirmMessage.textContent = '';
+            passConfirmMessage.className = '';
+            return;
+        }
+
+        if (pass.value === passConfirm.value) {
+            passConfirmMessage.textContent = '비밀번호가 일치합니다';
+            passConfirmMessage.className = 'match';
+        } else {
+            passConfirmMessage.textContent = '비밀번호가 일치하지 않습니다';
+            passConfirmMessage.className = 'mismatch';
+        }
+    }
+
+    pass.addEventListener('input', checkPasswordMatch);
+    passConfirm.addEventListener('input', checkPasswordMatch);
+
+    // 이메일 중복여부 확인
+    const email = document.querySelector('#email');
+    const checkEmailBtn = document.querySelector('#checkEmail');
+    const checkEmailMsg = document.querySelector('#email-check');
+
+    async function checkEmailDuplicate() {
+        if (email.value === '') {
+            checkEmailMsg.textContent = '';
+            checkEmailMsg.className = '';
+            return;
+        }
+
+        if (await checkEmail(email.value) === 'true') {
+            checkEmailMsg.textContent = '이메일이 중복됩니다';
+            checkEmailMsg.className = 'mismatch';
+        } else {
+            checkEmailMsg.textContent = '이메일이 중복되지 않습니다';
+            checkEmailMsg.className = 'match';
+        }
+    }
+
+    checkEmailBtn.addEventListener('click', checkEmailDuplicate);
+
+    // 이메일 중복 확인
+    async function checkEmail(email) {
+        const response = await fetch('check/email?email=' + email);
+
+        return response.text();
+    }
+
 </script>
 </html>
