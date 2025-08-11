@@ -19,6 +19,14 @@ public class MemberService {
 	public Member login(Member member) throws SQLException {
 		return memberDAO.login(member);
 	}
+
+    // 이메일 중복여부 확인
+    public Member checkEmail(String email) throws SQLException {
+        Member member = new Member();
+        member.setEmail(email);
+
+        return memberDAO.checkEmail(member);
+    }
 	
 	public List<Member> searchMember(String nickname) throws SQLException {
 		return memberDAO.searchMember(nickname);

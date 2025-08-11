@@ -22,6 +22,11 @@ public class MemberDAO {
 	public Member login(Member member) throws SQLException {
 		return sqlSession.selectOne(NS + "getMember", member);
 	}
+
+    // 이메일 중복여부 확인
+    public Member checkEmail(Member member) throws SQLException {
+        return sqlSession.selectOne(NS + "getMember", member);
+    }
 	
 	public List<Member> searchMember(String nickname) throws SQLException {
 		return sqlSession.selectList(NS + "searchMember", nickname);
