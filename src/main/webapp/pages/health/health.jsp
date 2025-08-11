@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="vendors/datatables.net-bs4/dataTables.bootstrap4.css">
   <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
   <link rel="stylesheet" type="text/css" href="js/select.dataTables.min.css">
+    <link rel="stylesheet" href="../../css/vertical-layout-light/style.css">
   <!-- End plugin css for this page -->
   <!-- inject:css -->
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
@@ -60,17 +61,96 @@
 	.obese {
 	  color: #e74c3c;
 	}
+	#doughnutChart {
+ 	 width: 100% !important;
+}
 </style>
 <script>
+var doughnutChart;
 $(() => {
+	var doughnutPieData = {
+		    datasets: [{
+		      data: ${chartData},
+		      backgroundColor: [
+		        'rgba(122,94,231,0.5)',
+		        'rgba(122,128,139,0.5)',
+		        'rgba(255, 206, 86, 0.5)',
+		        'rgba(75, 192, 192, 0.5)',
+		        'rgba(153, 102, 255, 0.5)',
+		        'rgba(255, 159, 64, 0.5)'
+		      ],
+		      borderColor: [
+		        'rgba(122,94,231,1)',
+		        'rgba(122,128,139,1)',
+		        'rgba(255, 206, 86, 1)',
+		        'rgba(75, 192, 192, 1)',
+		        'rgba(153, 102, 255, 1)',
+		        'rgba(255, 159, 64, 1)'
+		      ],
+		    }],
+		    labels: [
+		        <c:forEach var="label" items="${chartLabel}" varStatus="loop">
+	            '${label}'
+	            <c:if test="${!loop.last}">, </c:if>
+	        </c:forEach>
+	    	]
+	};
+	const centerTextPlugin = {
+			  id: 'centerText',
+			  afterDraw(chart) {
+			    const { ctx, chartArea, data } = chart;
+			    if (!chartArea) return;
 
+			    const datasets = data && data.datasets;
+			    if (!datasets || datasets.length === 0) return;
+
+			    const raw = datasets[0].data || [];
+			    const values = raw.map(v => Number(v) || 0);
+
+			    const total = values.reduce((s, n) => s + n, 0);
+			    const completed = values[0] || 0;
+			    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+			    const text = percentage + '%';
+
+			    const centerX = (chartArea.left + chartArea.right) / 2;
+			    const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+			    ctx.save();
+			    const fontSize = Math.max(12, Math.floor(Math.min(chartArea.width, chartArea.height) / 6));
+			    ctx.font = 'bold ' + fontSize + 'px Jua';
+			    ctx.textAlign = 'center';
+			    ctx.textBaseline = 'middle';
+			    ctx.fillStyle = '#333';
+			    ctx.fillText(text, centerX, centerY);
+			    ctx.restore();
+		}
+	};
+	
+	const doughnutPieOptions = {
+	    responsive: true,
+	    animation: {
+	            animateScale: true,
+	            animateRotate: true
+	    },
+	    cutout: '70%'
+	};
+
+	if ($("#doughnutChart").length) {
+		var doughnutChartCanvas = $("#doughnutChart").get(0).getContext("2d");
+		var doughnutChart = new Chart(doughnutChartCanvas, {
+		        type: 'doughnut',
+		        data: doughnutPieData,
+		        options: doughnutPieOptions,
+		        plugins: [centerTextPlugin]
+		});
+	}
+		
 	const renderHealthTable = (healthList) => {
 		  const incompleteTableBody = $('#healthTable table tbody');
 		  const completedTableBody = $('#completedHealthTable table');
 		  
 		  incompleteTableBody.empty();
 		  completedTableBody.empty();
-
 		  healthList.forEach(health => {
 		    if (health.healDone === false) {
 		      const row = $('<tr></tr>');
@@ -79,7 +159,6 @@ $(() => {
 		          '<input class="form-check-input complete-checkbox" type="checkbox" id="health-check-' + health.healId + '" data-health-id="' + health.healId + '">' +
 		          '<label class="form-check-label" for="health-check-' + health.healId + '">완료</label>' +
 		        '</div>';
-
 		      row.append(
 		        $('<td></td>').addClass('col-width-1').css({ height : '51.67px', padding: '5px 0' }).text(health.healName),
 		        $('<td></td>').addClass('col-width-2').css({ height : '51.67px', padding: '5px 0' }).text(health.healAmount),
@@ -96,6 +175,7 @@ $(() => {
 		    }
 		  });
 	};
+	
     const updateBMIStatus = (bmi) => {
         const bmiDesc = $('#BMIDesc');
         const bmiEl = $('#BMI');
@@ -103,13 +183,13 @@ $(() => {
         bmiDesc.removeClass("underweight normal overweight obese");
         bmiEl.removeClass("underweight normal overweight obese");
         let status;
-        if (bmi < 18.5) {
+        if (bmi < 18.6) {
             status = "underweight";
             bmiDesc.html("저체중");
-        } else if (bmi < 24.9) {
+        } else if (bmi < 25) {
             status = "normal";
             bmiDesc.html("정상체중");
-        } else if (bmi < 29.9) {
+        } else if (bmi < 30) {
             status = "overweight";
             bmiDesc.html("과체중");
         } else {
@@ -177,6 +257,12 @@ $(() => {
                     $("#healthNameBtn").html("추가할 운동을 선택해 주세요.").show();
                     $("#otherHealthName").hide().val('');
                     $("#cancelOtherBtn").hide();
+                    doughnutChart.data.datasets[0].data = response.chartData;
+                    doughnutChart.data.labels = response.chartLabel;
+                    
+                    doughnutChart.update();
+                    
+                    $("#healthDonePer").html(response.healthDonePer);
                 } else {
                     alert("운동 추가에 실패했습니다: " + response.message);
                 }
@@ -229,6 +315,11 @@ $(() => {
                         if (response.success) {
                             alert('완료 처리되었습니다!');
                             renderHealthTable(response.healthList);
+                            doughnutChart.data.datasets[0].data = response.chartData;
+                            doughnutChart.data.labels = response.chartLabel;
+                            
+                            doughnutChart.update();
+                            $("#healthDonePer").html(response.healthDonePer);
                         } else {
                             alert('완료 처리에 실패했습니다: ' + response.message);
                             checkbox.prop('checked', false);
@@ -628,6 +719,9 @@ $(() => {
               <div class="card tale-bg"  style="background:white;">
               	<div class="card-body">
               		<h3>완료율</h3>
+              		<div class="card-body" style="width:400px; height:400px;">
+                  <canvas id="doughnutChart"></canvas>      		
+					</div>
               	</div>
               </div>
             </div>

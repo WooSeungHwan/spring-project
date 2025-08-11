@@ -1,16 +1,26 @@
 package com.service.spring.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.service.spring.domain.Member;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.service.spring.domain.Note;
 import com.service.spring.service.NoteService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/note")
@@ -46,10 +56,15 @@ public class NoteController {
     // ✅ 전체 메모 목록 (JSON)
     @GetMapping("/list")
     @ResponseBody
-    public List<Note> getAllNote(@RequestParam int memId) throws Exception {
+    public List<Note> getNotes(@RequestParam int memId,
+                               @RequestParam(required = false) Boolean important) throws Exception {
+        if (Boolean.TRUE.equals(important)) {
+            return noteService.getImpNote(memId);
+        }
         return noteService.getAllNote(memId);
     }
 
+    
     // ✅ 메모 등록
     @PostMapping("/addNote")
     @ResponseBody
@@ -61,8 +76,19 @@ public class NoteController {
     // ✅ 메모 수정
     @PutMapping("/updateNote")
     @ResponseBody
-    public Note updateNote(@RequestBody Note note) throws Exception {
-        return noteService.changeNote(note);
+    public Map<String, Object> updateNote(@RequestBody Note note,
+                                          HttpSession session) throws Exception {
+        Integer memId = (Integer) session.getAttribute("memId");
+        if (memId == null) memId = 1; // 테스트용
+        note.setMemId(memId);
+
+        int updated = noteService.changeNote(note); // update count 반환하도록
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("success", updated > 0);
+        res.put("updated", updated);
+        res.put("noteId", note.getNoteId());
+        return res;
     }
 
     // ✅ 메모 삭제
