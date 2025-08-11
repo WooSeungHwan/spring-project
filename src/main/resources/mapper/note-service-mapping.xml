@@ -22,7 +22,7 @@
 	
 	<delete id="deleteNote" parameterType="int">
 		DELETE FROM note
-		WHERE note_id=#{VALUE}
+		WHERE note_id=#{value}
 	</delete>
 	
 	<update id="isImpNote" parameterType="note">		
@@ -38,7 +38,7 @@
 	
 	<select id="getImpNote" parameterType="int" resultType="note"> 
 		<include refid="select-note"/>
-		WHERE note_important = 1 AND mem_id = #{mem_id}
+		WHERE note_important = 1 AND mem_id = #{memId}
 	</select>
 
 </mapper>

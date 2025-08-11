@@ -453,6 +453,11 @@
             </div>
           </div>
 <div class="col-md-12 grid-margin transparent">
+<div class="d-flex align-items-center mb-2">
+  <input type="checkbox" id="favOnly" class="mr-2">
+  <label for="favOnly" class="mb-0">즐겨찾기만 보기</label>
+</div>
+
   <div class="row notes-container">
   </div>
 </div>
@@ -509,19 +514,177 @@
   $(document).ready(function () {
     const memId = 1;
 
-    // 🔁 별 아이콘 클릭 (동적 바인딩)
+ // 🔁 별 아이콘 클릭 (동적 바인딩 + 서버 토글)
     $(document).on('click', '.favorite-toggle', function () {
-      const isFav = $(this).attr('data-fav') === 'true';
-      if (isFav) {
-        $(this).removeClass('bi-star-fill').addClass('bi-star');
-        $(this).attr('data-fav', 'false');
-      } else {
-        $(this).removeClass('bi-star').addClass('bi-star-fill');
-        $(this).attr('data-fav', 'true');
-      }
+      const $icon = $(this);
 
-      // TODO: 여기서 AJAX로 서버에 중요 여부 변경 요청도 보낼 수 있음
-      // 예: /note/important
+      // 중복 클릭 방지
+      if ($icon.data('busy')) return;
+      $icon.data('busy', true);
+
+      const $card  = $icon.closest('[data-note-id]');
+      const noteId = parseInt($card.attr('data-note-id'), 10);
+
+      const current = $icon.attr('data-fav') === 'true';
+      const next    = !current;
+
+      $.ajax({
+        type: 'POST',
+        url: '/note/important',
+        contentType: 'application/json',
+        // ← 안전하게 0/1로 보낼게. (boolean으로 보내고 싶으면 next 로 바꿔도 됨)
+        data: JSON.stringify({
+          noteId: noteId,
+          noteImportant: next ? 1 : 0
+        }),
+        success: function (res) {
+          // 컨트롤러가 int를 돌려주면 res가 숫자, JSON을 돌려주면 객체
+          const ok = (typeof res === 'number') ? (res > 0) : (res && res.success);
+
+          if (!ok) {
+            alert('즐겨찾기 변경 실패');
+            return;
+          }
+
+          // ✅ UI 반영
+          if (next) {
+            $icon.removeClass('bi-star').addClass('bi-star-fill');
+            $icon.attr('data-fav', 'true');
+          } else {
+            $icon.removeClass('bi-star-fill').addClass('bi-star');
+            $icon.attr('data-fav', 'false');
+          }
+        },
+        error: function () {
+          alert('서버 오류로 즐겨찾기 변경 실패');
+        },
+        complete: function () {
+          $icon.data('busy', false);
+        }
+      });
+    });
+
+    // 즐겨찾기 항목만 보기
+    $(document).ready(function () {
+  // 목록 로딩 함수 (필터 상태 읽어서 호출)
+  function loadNotes() {
+    const favOnly = $('#favOnly').is(':checked');
+    $.ajax({
+      url: '/note/list',
+      method: 'GET',
+      data: { memId: memId, important: favOnly }, // important=true 면 즐겨찾기만
+      success: function (noteList) {
+        renderNoteList(noteList);
+      },
+      error: function () {
+        alert('메모 목록 불러오기 실패');
+      }
+    });
+  }
+
+  // 페이지 처음 진입 시 불러오기
+  loadNotes();
+
+  // 체크박스 변경 시 다시 불러오기
+  $('#favOnly').on('change', loadNotes);
+
+  // ⭐ 즐겨찾기 토글: 서버 반영 + (필터 ON이면) 목록 재로딩
+  $(document).on('click', '.favorite-toggle', function () {
+    const $icon = $(this);
+    if ($icon.data('busy')) return;
+    $icon.data('busy', true);
+
+    const $card  = $icon.closest('[data-note-id]');
+    const noteId = parseInt($card.attr('data-note-id'), 10);
+    const current = $icon.attr('data-fav') === 'true';
+    const next    = !current;
+
+    $.ajax({
+      type: 'POST',
+      url: '/note/important',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        noteId: noteId,
+        noteImportant: next ? 1 : 0
+      }),
+      success: function (res) {
+        const ok = (typeof res === 'number') ? (res > 0) : (res && res.success);
+        if (!ok) {
+          alert('즐겨찾기 변경 실패');
+          return;
+        }
+        // 필터가 켜져 있으면 목록을 다시 받자 (안 그러면 unstar된 카드가 남음)
+        if ($('#favOnly').is(':checked')) {
+          loadNotes();
+        } else {
+          // 필터 OFF면 아이콘만 토글
+          if (next) {
+            $icon.removeClass('bi-star').addClass('bi-star-fill').attr('data-fav', 'true');
+          } else {
+            $icon.removeClass('bi-star-fill').addClass('bi-star').attr('data-fav', 'false');
+          }
+        }
+      },
+      error: function () {
+        alert('서버 오류로 즐겨찾기 변경 실패');
+      },
+      complete: function () {
+        $icon.data('busy', false);
+      }
+    });
+  });
+
+  // 저장/수정/삭제 성공 후에도 loadNotes()만 호출하면 새로고침 없이 반영됨
+  // (네가 이미 가지고 있는 save/update/delete 코드의 location.reload()를 loadNotes()로 교체 추천)
+});
+
+    function deleteNote(noteId) {
+    	  if (!confirm('이 메모를 삭제할까요?')) return;
+
+    	  $.ajax({
+    	    type: 'POST',
+    	    url: '/note/delete',
+    	    data: { noteId: noteId }, // @RequestParam 으로 받음
+    	    success: function (deletedCount) {
+    	      // deletedCount가 "1" 같은 문자열일 수 있으니 숫자로 비교
+    	      if (Number(deletedCount) > 0) {
+    	        // 화면에서 해당 카드만 제거
+    	        const $card = $('[data-note-id="' + noteId + '"]');
+    	        // 카드가 들어있는 컬럼 통째로 제거
+    	        $card.closest('.col-md-3').remove();
+
+    	        // 혹시 수정중이던 메모면 상태 초기화
+    	        if (editingNoteId === noteId) {
+    	          editingNoteId = null;
+    	          $('#noteName').val('');
+    	          $('#noteContent').val('');
+    	          $('#saveBtn').text('저장');
+    	        }
+
+    	        alert('삭제 완료!');
+    	      } else {
+    	        alert('삭제 0건 (이미 삭제되었거나 ID가 잘못됨)');
+    	      }
+    	    },
+    	    error: function () {
+    	      alert('삭제 실패. 잠시 후 다시 시도해주세요.');
+    	    }
+    	  });
+    	}
+
+
+    // 🛠 수정 함수는 외부에 선언
+    $(document).on('click', '.clickable-icon[data-action="edit"]', function () {
+      // 클릭한 아이콘 기준으로 해당 카드만 스코프
+      const $card = $(this).closest('[data-note-id]');
+      const noteId = parseInt($card.attr('data-note-id'), 10);
+      const title = $card.find('.note-title').text().trim();
+      const content = $card.find('.note-content').text().trim();
+
+      $('#noteName').val(title);
+      $('#noteContent').val(content);
+      editingNoteId = noteId;
+      $('#saveBtn').text('수정완료');
     });
 
     // 💾 저장 및 수정
@@ -540,11 +703,17 @@
           url: '/note/updateNote',
           contentType: 'application/json',
           data: JSON.stringify({
-            noteId: editingNoteId,
+            noteId: Number(editingNoteId),
             noteName: title,
             noteContent: content
           }),
-          success: function () {
+          success: function (res) {
+        	  if (!res || !res.success) {
+        		    alert('수정 0건 (noteId=' + (res && res.noteId) + ')');
+        		    return;
+        		  }
+
+        	  
             alert('메모 수정 완료!');
             $('#noteName').val('');
             $('#noteContent').val('');
@@ -578,7 +747,11 @@
         });
       }
     });
+    
 
+      
+      
+      
     // 📥 메모 리스트 불러오기
     $.ajax({
   url: '/note/list',
@@ -606,49 +779,50 @@
     });
     // 🔁 카드 렌더링 함수
     function renderNoteList(noteList) {
-      const $container = $('.notes-container');
-      $container.empty();
-      
+    	  const $container = $('.notes-container').empty();
 
-      noteList.forEach(note => {
-    	  console.log('🧾 note 객체:', note);
-    	  console.log('📌 note.noteName:', note.noteName);
-    	  console.log('🎯 noteName:', note.noteName);
-				
-        const cardHtml = `
-          <div class="col-md-3 mb-4 stretch-card transparent">
-            <div class="card card-white position-relative" style="aspect-ratio: 1 / 1; max-width: 315px; " data-note-id="${note.noteId}">
-              <i class="favorite-toggle bi ${note.noteImportant ? 'bi-star-fill' : 'bi-star'} position-absolute mt-3 mr-3" style="top:1; right:0; margin:1rem;" data-fav="${note.noteImportant}"></i>
-              <div class="card-body">
-	              <p class="mb-2 note-title" style="font-size: 1.25rem; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: black;">${note.noteName}</p>
-	              <p class="mb-3 note-content" style="font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color:black;">${note.noteContent || '내용 없음'}${note.noteContent}</p>
+    	  noteList.forEach(note => {
+    	    const $col  = $('<div class="col-md-3 mb-4 stretch-card transparent"></div>');
+    	    const $card = $('<div class="card card-white position-relative" style="aspect-ratio:1/1; max-width:315px;"></div>')
+    	                    .attr('data-note-id', note.noteId); // ✅ 순수 JS 값
 
-              </div>
-              <div class="mt-3 d-flex position-absolute" style="bottom:0.75rem; right:0.75rem; margin:1rem;">
-                <i class="bi bi-pencil clickable-icon" title="수정" onclick="updateNote('${note.noteId}')"></i>
-                <i class="bi bi-trash clickable-icon" title="삭제" onclick="deleteNote(${note.noteId})"></i>
-              </div>
-            </div>
-          </div>
-        `;
-        $container.append(cardHtml);
-        
+    	    // 즐겨찾기 아이콘
+    	    $('<i class="favorite-toggle bi position-absolute mt-3 mr-3"></i>')
+    	      .addClass(note.noteImportant ? 'bi-star-fill' : 'bi-star')
+    	      .attr('data-fav', String(!!note.noteImportant))
+    	      .css({ top:'0.1rem', right:0, margin:'1rem' })
+    	      .appendTo($card);
 
-      });
-    }
-  });
+    	    // 본문
+    	    const $body = $('<div class="card-body"></div>')
+    	      .css({
+			    maxHeight: '250px',     // 카드 높이에 맞춰 숫자만 조절하면 됨
+			    overflow: 'auto',
+			    paddingBottom: '2.5rem' // 하단 아이콘(연필/휴지통)에 가리지 않게 여유
+			  })
 
-  // 🛠 수정 함수는 외부에 선언
-  function updateNote(noteId) {
-    const card = $(`[data-note-id="${noteId}"]`);
-    const title = card.find('.note-title').text().trim();
-    const content = card.find('.note-content').text().trim();
+    	    .appendTo($card);
+    	    $('<p class="mb-2 note-title" style="font-size:1.25rem;font-weight:bold;white-space:normal;overflow-wrap:anywhere;color:black;"></p>')
+    	    .text(note.noteName || '')
+    	    .appendTo($body);
 
-    $('#noteName').val(title);
-    $('#noteContent').val(content);
-    editingNoteId = noteId;
-    $('#saveBtn').text('수정완료');
-  }
+    	  $('<p class="mb-3 note-content" style="font-size:1rem;white-space:normal;overflow-wrap:anywhere;color:black;"></p>')
+    	    .text(note.noteContent || '')
+    	    .appendTo($body);
+
+    	    // 액션
+    	    const $actions = $('<div class="mt-3 d-flex position-absolute" style="bottom:.75rem; right:.75rem; margin:1rem;"></div>').appendTo($card);
+    	    $('<i class="bi bi-pencil clickable-icon" title="수정" data-action="edit"></i>').appendTo($actions);
+    	    $('<i class="bi bi-trash clickable-icon" title="삭제"></i>')
+    	      .on('click', () => deleteNote(note.noteId))
+    	      .appendTo($actions);
+
+    	    $col.append($card);
+    	    $container.append($col);
+    	  });
+    	}
+  });	//ready
+
 
 </script>
 
