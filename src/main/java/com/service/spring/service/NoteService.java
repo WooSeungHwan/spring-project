@@ -22,7 +22,7 @@ public class NoteService {
 		return noteDAO.deleteNote(noteId);
 	}
 	
-	public Note changeNote(Note note) throws Exception{
+	public int changeNote(Note note) throws Exception{
 		return noteDAO.changeNote(note);
 	}
 	

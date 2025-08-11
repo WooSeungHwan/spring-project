@@ -22,9 +22,9 @@ public class NoteDAO {
 	}
 
 	// 노트 수정
-	public Note changeNote(Note vo) throws Exception {
-		sqlSession.update(NS + "changeNote", vo);
-		return vo;
+	public int changeNote(Note vo) throws Exception {
+		return sqlSession.update(NS + "changeNote", vo);
+
 	}
 
 	// 노트 삭제
