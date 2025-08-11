@@ -25,14 +25,20 @@ public class MemberController {
 			model.addAttribute("currentMenu", "dashboard");
 			return "main";
 		}
-		else
-			return "pages/member/login";
+		else {
+            return "pages/member/login";
+        }
 	}
 
 	@GetMapping("/main")
-	public String getMain(Model model) {
-		model.addAttribute("currentMenu", "dashboard");
-		return "main";
+	public String getMain(HttpSession session, Model model) {
+        Member member = (Member)session.getAttribute("member");
+        if (member != null) {
+            model.addAttribute("currentMenu", "dashboard");
+            return "main";
+        } else {
+            return "pages/member/login";
+        }
 	}
 	
 	@GetMapping("/login")
