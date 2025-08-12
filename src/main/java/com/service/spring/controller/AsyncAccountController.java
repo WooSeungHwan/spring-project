@@ -20,16 +20,15 @@ public class AsyncAccountController {
     private AccountService accountService;
 
     @GetMapping("/getMonthAcc")
-    public List<Account> getMonthAcc(LocalDate date, Model model, HttpSession session) {
+    public List<Account> getMonthAcc(String date, Model model, HttpSession session) {
         Member member;
-        LocalDate curDate;
 
         try {
             member = (Member)session.getAttribute("member");
             if (member == null)
                 return null;
 
-            curDate = LocalDate.now(); // TODO: 달 변경 가능하도록 할 것
+            LocalDate curDate = LocalDate.parse(date);
 
             return accountService.getMonthAcc(member.getMemId(), curDate);
         } catch (Exception e) {
@@ -38,7 +37,7 @@ public class AsyncAccountController {
         }
     }
 
-    @PostMapping("addAcc")
+    @PostMapping("/addAcc")
     @ResponseBody
     public Account addAcc(HttpSession session, @RequestBody Account acc) { // json으로 데이터를 받음
         Member member = (Member)session.getAttribute("member");

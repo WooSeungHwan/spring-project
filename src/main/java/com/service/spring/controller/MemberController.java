@@ -1,5 +1,6 @@
 package com.service.spring.controller;
 
+import com.service.spring.domain.Goal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -79,7 +80,13 @@ public class MemberController {
 
 	@PostMapping("/register")
 	public String doRegister(Member member, Model model) {
-		System.out.println(member);
+		// System.out.println(member);
+        Goal goal = new Goal();
+        goal.setGoalLv(1);
+        goal.setGoalName("Lv 1");
+
+        member.setGoal(goal);
+
 		try {
 			memberService.addMember(member);
 		} catch (Exception e) {

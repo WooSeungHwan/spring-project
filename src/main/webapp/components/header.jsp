@@ -69,8 +69,8 @@
                     </a>
                 </div>
             </li>
-            <li class="nav-item nav-settings d-none d-lg-flex">
-                <button class="btn btn-primary" href="/logout">로그아웃</button>
+            <li class="nav-item d-none d-lg-flex">
+                <button type="button" class="btn btn-primary" onclick="location.href='/logout'">로그아웃</button>
             </li>
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
