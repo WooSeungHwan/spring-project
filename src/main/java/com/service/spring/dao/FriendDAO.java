@@ -23,6 +23,10 @@ public class FriendDAO{
 		return sqlSession.selectList(NS + "getFriendList", memId);
 	}
 	
+	public List<Member> getPendingFriendList(int memId) throws SQLException{
+		return sqlSession.selectList(NS + "getPendingFriendList", memId);
+	}
+	
 	public Friend getFriend(HashMap<String, Integer> map) throws SQLException {
 		return sqlSession.selectOne(NS + "getFriend", map);
 	}
@@ -35,8 +39,8 @@ public class FriendDAO{
 		return sqlSession.update(NS + "updateFriendStatus", friend);
 	}
 	
-	public int deleteFriend(HashMap<String,Integer> map) throws SQLException {
-		return sqlSession.delete(NS + "deleteFriend", map);
+	public int deleteFriend(Friend friend) throws SQLException {
+		return sqlSession.delete(NS + "deleteFriend", friend);
 	}
 }
 

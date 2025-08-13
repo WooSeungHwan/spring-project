@@ -24,9 +24,15 @@ public class FriendService {
 		return friendDAO.getFriendList(memId);
 	}
 	
+	public List<Member> getPendingFriendList(int memId) throws SQLException{
+		
+		return friendDAO.getPendingFriendList(memId);
+	}
+	
 	public Friend getFriend(HashMap<String, Integer> map)throws SQLException {
 		return friendDAO.getFriend(map);
 	}
+	
 	
 	public int addFriend(Friend friend) throws SQLException {
 		int mem1 = friend.getMem1Id();
@@ -40,10 +46,21 @@ public class FriendService {
 	}
 	
 	public int updateFriendStatus(Friend friend)throws SQLException {
+		int mem1 = friend.getMem1Id();
+	    int mem2 = friend.getMem2Id();
+	    
+		friend.setMemberIdMin(Math.min(mem1, mem2));
+        friend.setMemberIdMax(Math.max(mem1, mem2));
+        friend.setStatus("accepted");
 		return friendDAO.updateFriendStatus(friend);
 	}
 	
-	public int deleteFriend(HashMap<String,Integer> map)throws SQLException {
-		return friendDAO.deleteFriend(map);
+	public int deleteFriend(Friend friend)throws SQLException {
+		int mem1 = friend.getMem1Id();
+	    int mem2 = friend.getMem2Id();
+	    
+		friend.setMemberIdMin(Math.min(mem1, mem2));
+        friend.setMemberIdMax(Math.max(mem1, mem2));
+		return friendDAO.deleteFriend(friend);
 	}
 }

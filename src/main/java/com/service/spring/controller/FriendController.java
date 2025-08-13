@@ -40,12 +40,15 @@ public class FriendController {
 		if ((Member)session.getAttribute("member") == null)
 			return "pages/member/login";
 		Member member = (Member)session.getAttribute("member");
-			
 		try {
 			List<Member> friendList = friendService.getFriendList(member.getMemId());
+			List<Member> friendPendingList = friendService.getPendingFriendList(member.getMemId());
+			System.out.println("친구 대기 목록 개수: " + friendList.size());
+			friendPendingList.forEach(f -> System.out.println(f.getNickname()));
 			model.addAttribute("friendList", friendList);
+			model.addAttribute("friendPendingList", friendPendingList);
 		}catch(SQLException e) {
-			e.getMessage();
+			 e.printStackTrace();
 			return "redirect:/pages/member/login.jsp";
 		}
 		return "pages/profile/profile";
@@ -75,6 +78,35 @@ public class FriendController {
 			e.getMessage();
 		}
 		
-		return "pages/profile/profile";
+		return "redirect:/moveProfile";
+	}
+	
+	@PostMapping("/acceptFriend")
+	public String acceptFriend(@RequestParam int friendId, HttpSession session, Model model) {
+		if ((Member)session.getAttribute("member") == null)
+			return "pages/member/login";
+		Member member = (Member)session.getAttribute("member");
+		try {
+	        Friend friend = new Friend(member.getMemId(), friendId, "accepted");
+			friendService.updateFriendStatus(friend);
+		} catch(SQLException e) {
+			e.getMessage();
+		}
+		return "redirect:/moveProfile";
+	}
+	
+	@PostMapping("/deleteFriend")
+	public String deleteFriend(@RequestParam int friendId, HttpSession session, Model model) {
+		if ((Member)session.getAttribute("member") == null)
+			return "pages/member/login";
+		Member member = (Member)session.getAttribute("member");
+		try {
+			Friend friend = new Friend(member.getMemId(), friendId, null);
+			friendService.deleteFriend(friend);
+		}catch(SQLException e) {
+			e.getMessage();
+		}
+		
+		return "redirect:/moveProfile";
 	}
 }
