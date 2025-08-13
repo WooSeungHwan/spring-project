@@ -198,6 +198,148 @@
                 padding: 16px;
             }
         }
+
+        /* Chart Card Styles */
+        .chart-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background: white;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /*.chart-card:hover {*/
+        /*    transform: translateY(-5px);*/
+        /*    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);*/
+        /*}*/
+
+        .chart-card .card-body {
+            padding: 30px;
+        }
+
+        /* Chart Header Styles */
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .chart-header .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000;
+            margin: 0;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background: #000000;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Year Selector Styles */
+        .year-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .year-selector button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: #667eea;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .year-selector button:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .year-selector button:active {
+            transform: scale(0.95);
+        }
+
+        #yearDisplay {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3436;
+            min-width: 60px;
+            text-align: center;
+            user-select: none;
+        }
+
+        /* Chart Container Styles */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            padding: 20px 0;
+            /*background: linear-gradient(180deg, rgba(102, 126, 234, 0.03) 0%, rgba(255, 255, 255, 0) 100%); */
+            border-radius: 15px;
+        }
+
+        .chart-container canvas {
+            max-height: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chart-card .card-body {
+                padding: 20px;
+            }
+
+            .chart-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .chart-header .card-title {
+                font-size: 20px;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /*!* Loading Animation (optional) *!*/
+        /*@keyframes pulse {*/
+        /*    0% {*/
+        /*        opacity: 1;*/
+        /*    }*/
+        /*    50% {*/
+        /*        opacity: 0.5;*/
+        /*    }*/
+        /*    100% {*/
+        /*        opacity: 1;*/
+        /*    }*/
+        /*}*/
+
+        .chart-loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -409,7 +551,7 @@
                                     <p class="card-title">Expenses Overview</p>
                                     <div class="year-selector">
                                         <button onclick="changeYear(-1)">‹</button>
-                                        <span id="yearDisplay">2021</span>
+                                        <span id="yearDisplay">2025</span>
                                         <button onclick="changeYear(1)">›</button>
                                     </div>
                                 </div>
@@ -443,7 +585,7 @@
                                             <!-- 기타 지출 정보들 (읽기 전용) -->
                                             <div class="expense-item">
                                                 <span class="expense-label">하루 목표</span>
-                                                <span class="expense-amount amount-gray">₩ 10,000</span>
+                                                <span id="dailyTarget" class="expense-amount amount-gray">₩ 10,000</span>
                                             </div>
 
                                             <div class="expense-item">
@@ -626,6 +768,7 @@
     // 페이지 로드 시 실행
     $(document).ready(function () {
         getAccList();
+        getEdit();
     });
 
     // 추가 버튼 이벤트 (동적 요소이므로 위임)
@@ -889,6 +1032,8 @@
     const targetExpense = document.getElementById('targetExpense');
     const expenseInput = document.getElementById('expenseInput');
     const expenseBtn = document.getElementById('expenseBtn');
+    const dailyTarget = document.getElementById('dailyTarget');
+
     let isEditing = false;
     let originalValue = '';
 
@@ -973,6 +1118,22 @@
         }
     });
 
+    // 목표값 표시
+    function getEdit() {
+        // 현재 날짜 가져오기
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+
+        // 수정한 값을 DB에 저장
+        fetch("/get-target?year=" + year + "&month=" + month)
+            .then((res) => res.json())
+            .then((data) => {
+                expenseInput.value = '₩ ' + formatNumber(data);
+                dailyTarget.innerHTML = '₩ ' + formatNumber(Math.floor(data / getDaysInMonth(year, month)));
+            })
+    }
+
     function startEdit() {
         isEditing = true;
         originalValue = expenseInput.value;
@@ -1015,6 +1176,23 @@
 
         // 저장 로직
         console.log('저장된 값:', expenseInput.value);
+
+        // 현재 날짜 가져오기
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+
+        // 수정한 값을 DB에 저장
+        fetch("/change-target", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                year: Number(year),
+                month: Number(month),
+                targetAcc: Number(parseInt(currentValue.replace(/[^0-9]/g, ''), 10)), // 숫자 보장
+            }),
+        });
+
     }
 
     // 페이스트 이벤트 처리
@@ -1029,6 +1207,11 @@
             this.value = formatNumber(numbers);
         }
     });
+
+    function getDaysInMonth(year, month) {
+        // month는 0부터 시작 (0=1월, 1=2월, ..., 11=12월)
+        return new Date(year, month, 0).getDate();
+    }
 </script>
 </body>
 

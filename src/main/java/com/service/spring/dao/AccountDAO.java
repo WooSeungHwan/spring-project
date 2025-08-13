@@ -45,12 +45,12 @@ public class AccountDAO {
 		return sqlSession.selectOne(NS + "getMonthSum", account);
 	}
     
-	public TargetAccount getTarget(Account account) throws SQLException {
-		return sqlSession.selectOne(NS2 + "getTarget", account);
+	public TargetAccount getTarget(TargetAccount targetAccount) throws SQLException {
+		return sqlSession.selectOne(NS2 + "getTarget", targetAccount);
 	}
 
-	public List<TargetAccount> getAllTarget(Account account) throws SQLException {
-		return sqlSession.selectList(NS2 + "getAllTarget", account);
+	public List<TargetAccount> getAllTarget(TargetAccount targetAccount) throws SQLException {
+		return sqlSession.selectList(NS2 + "getAllTarget", targetAccount);
 	}
 
 	public int setTarget(TargetAccount targetAccount) throws SQLException {
@@ -58,6 +58,6 @@ public class AccountDAO {
 	}
 
 	public int changeTarget(TargetAccount targetAccount) throws SQLException {
-		return sqlSession.update(NS2 + "", targetAccount);
+		return sqlSession.update(NS2 + "changeTarget", targetAccount);
 	}
 }

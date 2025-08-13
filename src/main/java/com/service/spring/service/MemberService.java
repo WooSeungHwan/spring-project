@@ -21,7 +21,6 @@ public class MemberService {
 		return memberDAO.login(member);
 	}
 
-    // 이메일 중복여부 확인
     public Member checkEmail(String email) throws SQLException {
         Member member = new Member();
         member.setEmail(email);
@@ -31,6 +30,10 @@ public class MemberService {
 	
 	public List<Member> searchMember(String nickname) throws SQLException {
 		return memberDAO.searchMember(nickname);
+	}
+	
+	public Member searchMember(int memId) throws SQLException {
+		return memberDAO.searchMember(memId);
 	}
 	
 	public int addMember(Member member) throws SQLException {
@@ -45,18 +48,18 @@ public class MemberService {
 		return memberDAO.deleteMember(memId);
 	}
 
-	// Friend 도메인 관련
-	public int addFriend(HashMap<String, Integer> map) throws SQLException {
-		return memberDAO.addFriend(map);
-	}
-	
-	public int deleteFriend(HashMap<String, Integer> map) throws SQLException {
-		return memberDAO.deleteFriend(map);
-	}
-		
-	public List<Member> getFriend(int memId) throws SQLException {
-		return memberDAO.getFriend(memId);
-	}
+//	// Friend 도메인 관련
+//	public int addFriend(HashMap<String, Integer> map) throws SQLException {
+//		return memberDAO.addFriend(map);
+//	}
+//
+//	public int deleteFriend(HashMap<String, Integer> map) throws SQLException {
+//		return memberDAO.deleteFriend(map);
+//	}
+//
+//	public List<Member> getFriend(int memId) throws SQLException {
+//		return memberDAO.getFriend(memId);
+//	}
 
     // Goal 도메인
     public Goal getGoal(int memId) throws SQLException {
