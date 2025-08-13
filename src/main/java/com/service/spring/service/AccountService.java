@@ -37,12 +37,12 @@ public class AccountService {
 		return accountDAO.getMonthSum(account);
 	}
     
-	public TargetAccount getTarget(Account account) throws SQLException {
-		return accountDAO.getTarget(account);
+	public TargetAccount getTarget(TargetAccount targetAccount) throws SQLException {
+		return accountDAO.getTarget(targetAccount);
 	}
 
-	public List<TargetAccount> getAllTarget(Account account) throws SQLException {
-		return accountDAO.getAllTarget(account);
+	public List<TargetAccount> getAllTarget(TargetAccount targetAccount) throws SQLException {
+		return accountDAO.getAllTarget(targetAccount);
 	}
 
 	public int setTarget(TargetAccount targetAccount) throws SQLException {
@@ -50,6 +50,9 @@ public class AccountService {
 	}
 
 	public int changeTarget(TargetAccount targetAccount) throws SQLException {
+        if (accountDAO.getTarget(targetAccount) == null)
+            return accountDAO.setTarget(targetAccount);
+
 		return accountDAO.changeTarget(targetAccount);
 	}
 	

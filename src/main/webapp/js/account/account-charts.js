@@ -310,7 +310,7 @@ $('#addAccListBtn').on('click', function() {
                 loadMonthData();
 
                 // 입력 폼 초기화
-                $('#addAccListForm')[0].reset();
+                // $('#addAccListForm')[0].reset();
 
                 alert('추가되었습니다.');
             }

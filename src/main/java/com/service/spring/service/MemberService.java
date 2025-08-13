@@ -48,18 +48,18 @@ public class MemberService {
 		return memberDAO.deleteMember(memId);
 	}
 
-	// Friend 도메인 관련
-	public int addFriend(HashMap<String, Integer> map) throws SQLException {
-		return memberDAO.addFriend(map);
-	}
-	
-	public int deleteFriend(HashMap<String, Integer> map) throws SQLException {
-		return memberDAO.deleteFriend(map);
-	}
-		
-	public List<Member> getFriend(int memId) throws SQLException {
-		return memberDAO.getFriend(memId);
-	}
+//	// Friend 도메인 관련
+//	public int addFriend(HashMap<String, Integer> map) throws SQLException {
+//		return memberDAO.addFriend(map);
+//	}
+//
+//	public int deleteFriend(HashMap<String, Integer> map) throws SQLException {
+//		return memberDAO.deleteFriend(map);
+//	}
+//
+//	public List<Member> getFriend(int memId) throws SQLException {
+//		return memberDAO.getFriend(memId);
+//	}
 
     // Goal 도메인
     public Goal getGoal(int memId) throws SQLException {
