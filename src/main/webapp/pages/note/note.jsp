@@ -22,8 +22,14 @@
   <!-- endinject -->
   <link rel="shortcut icon" href="<c:url value='/images/favicon.png'/>" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<!-- Google Fonts Jua -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
 
   <style>
+    body {
+    font-family: 'Jua', sans-serif;
+  }
+  
     .card-white { background-color: #ffffff; }
     .favorite-toggle { font-size: 20px; cursor: pointer; color: black; }
     .clickable-icon { cursor: pointer; padding: 5px; border-radius: 5px; transition: background-color .2s; }

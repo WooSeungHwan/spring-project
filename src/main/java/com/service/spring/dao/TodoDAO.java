@@ -33,13 +33,14 @@ public class TodoDAO {
 		return sqlSession.update(NS+"isTodoDone", vo);
 	}
 	
-	public List<Todo> getTodoByToday(int memId) throws Exception{
-		List<Todo> list = sqlSession.selectList(NS+"getTodoByToday", memId);
-		return list;
+	public List<Todo> getAllByMember(int memId) throws Exception {
+		return sqlSession.selectList(NS + "getAllByMember", memId);
 	}
+
+	public List<Todo> getTodoByToday(int memId) throws Exception{
+		return sqlSession.selectList(NS+"getTodoByToday", memId); 	}
 	
-	public List<Todo> getTodoByImportant(Todo vo) throws Exception{
-		List<Todo> list = sqlSession.selectList(NS+"getTodoByImportant", vo);
-		return list;
+	public List<Todo> getTodoByImportant(Todo q) throws Exception{
+		return sqlSession.selectList(NS+"getTodoByImportant", q);
 	}
 }
