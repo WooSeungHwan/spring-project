@@ -30,6 +30,10 @@
     <!-- endinject -->
     <%--  <link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />  --%>
     <style>
+        body {
+            font-family:'Jua',sans-serif;
+        }
+
         tbody tr:first-child {
             background-color: #F5F8F8;
         }
