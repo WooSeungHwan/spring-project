@@ -21,7 +21,6 @@ public class TodoUnitTest {
 	@Test
 	public void addTodoTest() {
 		Date date = Date.valueOf("2025-08-10");
-		// System.out.println(sqlSession.insert("ns.sql.TodoMapper.addTodo", new Todo(true, "텍스트테스트입니당", date, false,1)));
 	}
 	
 		
@@ -29,14 +28,16 @@ public class TodoUnitTest {
 	public void deleteTodoTest() {
 		System.out.println(sqlSession.delete("ns.sql.TodoMapper.deleteTodo",109));
 	}
-
+/*
 	@Test
 	public void changeTodoTest() {
 		Date date = Date.valueOf("2025-10-10");
+		System.out.println(sqlSession.update("ns.sql.TodoMapper.changeTodo",
+			new Todo(110, true, "투두리스트 테스트하기2", date, true, 2)
+				));
 		// System.out.println(sqlSession.update("ns.sql.TodoMapper.changeTodo", new Todo(110, true, "투두리스트 테스트하기2", date, true, 2)));
-		
 	}
-
+*/
 	@Test
 	public void isTodoDoneTest() {
 		System.out.println(sqlSession.update("ns.sql.TodoMapper.isTodoDone",
