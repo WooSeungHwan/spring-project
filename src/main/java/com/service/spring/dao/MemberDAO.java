@@ -49,17 +49,17 @@ public class MemberDAO {
 		return sqlSession.delete(NS + "deleteMember", memId);
 	}	
 	
-	public int addFriend(HashMap<String, Integer> map) throws SQLException {
-		return sqlSession.insert(NS2 + "addFriend", map);
-	}
-		
-	public int deleteFriend(HashMap<String, Integer> map) throws SQLException {
-		return sqlSession.delete(NS2 + "deleteFriend", map);
-	}
-		
-	public List<Member> getFriend(int memId) throws SQLException {
-		return sqlSession.selectList(NS2 + "getFriend", memId);
-	}
+//	public int addFriend(HashMap<String, Integer> map) throws SQLException {
+//		return sqlSession.insert(NS2 + "addFriend", map);
+//	}
+//
+//	public int deleteFriend(HashMap<String, Integer> map) throws SQLException {
+//		return sqlSession.delete(NS2 + "deleteFriend", map);
+//	}
+//
+//	public List<Member> getFriend(int memId) throws SQLException {
+//		return sqlSession.selectList(NS2 + "getFriend", memId);
+//	}
     
     // Goal 도메인
     public Goal getGoal(int memId) throws SQLException {

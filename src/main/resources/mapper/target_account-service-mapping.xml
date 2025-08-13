@@ -17,25 +17,21 @@
 	</sql>
 	
 	<!-- 사용자의 해당 월의 목표 지출을 가져옴 -->
-	<select id="getTarget" parameterType="account" resultMap="targetAccountRM">
+	<select id="getTarget" parameterType="targetAccount" resultMap="targetAccountRM">
 	    <include refid="select-target_account" />
 	    <where>
 	        mem_id = #{memId}
-	        <if test="accDate != null">
-	        	AND year = #{accDate.year}
-	            AND month = #{accDate.monthValue}
-	        </if>
+	        AND year = #{year}
+	        AND month = #{month}
 	    </where>
 	</select>
 	
 	<!-- 사용자의 총 목표 지출의 리스트를 가져옴 -->
-	<select id="getAllTarget" parameterType="account" resultMap="targetAccountRM">
+	<select id="getAllTarget" parameterType="targetAccount" resultMap="targetAccountRM">
 		<include refid="select-target_account" />
 	    <where>
 	        mem_id = #{memId}
-	        <if test="accDate != null">
-	        	AND year = #{accDate.year}
-	        </if>
+	        AND year = #{year}
 	    </where>
 	</select>
 	

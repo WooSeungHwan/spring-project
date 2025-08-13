@@ -2,6 +2,7 @@ package com.service.spring.controller;
 
 import com.service.spring.domain.Account;
 import com.service.spring.domain.Member;
+import com.service.spring.domain.TargetAccount;
 import com.service.spring.service.AccountService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -82,5 +83,85 @@ public class AsyncAccountController {
         }
 
         return accId;
+    }
+
+    @GetMapping("/get-target")
+    public int getTarget(HttpSession session, int year, int month) {
+        Member member = (Member)session.getAttribute("member");
+
+        try {
+            if (member == null) {
+                System.out.println("Member is Null!");
+                return -1;
+            }
+            TargetAccount targetAccount = new TargetAccount();
+            targetAccount.setMemId(member.getMemId());
+            targetAccount.setYear(year);
+            targetAccount.setMonth(month);
+
+            return Math.toIntExact(accountService.getTarget(targetAccount).getTargetAcc());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
+
+    @GetMapping("/get-all-target")
+    public int getAllTarget(HttpSession session, int year) {
+        Member member = (Member)session.getAttribute("member");
+
+        try {
+            if (member == null) {
+                System.out.println("Member is Null!");
+                return -1;
+            }
+            TargetAccount targetAccount = new TargetAccount();
+            targetAccount.setMemId(member.getMemId());
+            targetAccount.setYear(year);
+
+            return Math.toIntExact(accountService.getTarget(targetAccount).getTargetAcc());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
+
+    @PostMapping("/change-target")
+    public int changeTarget(HttpSession session, @RequestBody TargetAccount targetAccount) {
+        Member member = (Member)session.getAttribute("member");
+
+        try {
+            if (member == null) {
+                System.out.println("Member is Null!");
+                return -1;
+            }
+            targetAccount.setMemId(member.getMemId());
+
+            accountService.changeTarget(targetAccount);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
+
+        return 0;
+    }
+
+    @GetMapping("/get-month-sum")
+    public int getMonthSum(HttpSession session, LocalDate date) {
+        Member member = (Member)session.getAttribute("member");
+
+        try {
+            if (member == null) {
+                System.out.println("Member is Null!");
+                return -1;
+            }
+            Account account = new Account();
+            account.setAccDate(date);
+
+            return accountService.getMonthSum(account);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return -1;
+        }
     }
 }

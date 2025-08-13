@@ -68,9 +68,10 @@
 <script>
 var doughnutChart;
 $(() => {
+	var chartData = ${chartData != null && !chartData.isEmpty() ? chartData : "[]"};
 	var doughnutPieData = {
 		    datasets: [{
-		      data: ${chartData},
+		      data: chartData,
 		      backgroundColor: [
 		        'rgba(122,94,231,0.5)',
 		        'rgba(122,128,139,0.5)',
@@ -202,7 +203,9 @@ $(() => {
 
     updateBMIStatus(${pInfo.bMI});
 
-    $("#healthNameContainer .dropdown-item").on("click", function() {
+    $("#healthNameContainer").on("click", ".dropdown-item", function(event) {
+        event.preventDefault(); // 링크 기본동작 막기
+
         const selectedText = $(this).text();     
         if (selectedText === '기타') {
             $("#healthNameBtn").hide().html("");
@@ -220,7 +223,6 @@ $(() => {
         $("#otherHealthName").hide().val('');
         $("#cancelOtherBtn").hide();
     });
-	
     $('#healthAddForm').on('submit', function(event) {
         event.preventDefault();
         const defaultText = "추가할 운동을 선택해 주세요.";
