@@ -1,5 +1,6 @@
 package com.service.spring.controller;
 
+import com.service.spring.domain.Goal;
 import com.service.spring.domain.Member;
 import com.service.spring.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -28,6 +29,24 @@ public class AsyncMemberController {
     @GetMapping("/get/member")
     public Member getMember(HttpSession session) {
         return (Member)session.getAttribute("member");
+    }
+
+    @GetMapping("/friend")
+    public Member getFriend(HttpSession session) {
+        return (Member)session.getAttribute("member");
+    }
+
+    @GetMapping("/goal-data")
+    public Goal getGoal(HttpSession session, Model model) {
+        Member member = (Member)session.getAttribute("member");
+
+        try {
+            return memberService.getGoal(member.getMemId());
+        } catch (Exception e) {
+            model.addAttribute("msg", e.getMessage());
+
+            return null;
+        }
     }
 }
 

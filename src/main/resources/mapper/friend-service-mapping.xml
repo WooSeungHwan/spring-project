@@ -3,30 +3,50 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ns.sql.FriendMapper">
-	<!-- 친구 목록 추가 -->
-	<insert id="addFriend" parameterType="hashmap">
-		INSERT INTO friend
-		(mem1_id, mem2_id)
-		VALUES (#{mem1Id}, #{mem2Id})
+	<!-- 내 친구 목록 불러오기 -->
+	<select id="getFriendList" parameterType="int" resultType="member">
+	    SELECT m.mem_id, m.nickName, m.email
+	    FROM friend f
+	    JOIN member m ON (
+	        (f.member_id_min = #{VALUE} AND m.mem_id = f.member_id_max) OR
+	        (f.member_id_max = #{VALUE} AND m.mem_id = f.member_id_min)
+	    )
+	    WHERE (f.member_id_min = #{VALUE} OR f.member_id_max = #{VALUE})
+	      AND f.status = 'accepted'
+	</select>
+	
+	<select id="getPendingFriendList" parameterType="int" resultType="member">
+    SELECT m.mem_id, m.nickname, m.email
+    FROM friend f
+    JOIN member m ON m.mem_id = f.mem1_id
+    WHERE f.mem2_id = #{VALUE}
+      AND f.status = 'pending'
+</select>
+
+	<select id="getFriend" parameterType="hashmap" resultType="friend">
+	    SELECT friend_id, member_id_min, member_id_max, status
+	    FROM friend
+	    WHERE member_id_min = LEAST(#{memId1}, #{memId2})
+	      AND member_id_max = GREATEST(#{memId1}, #{memId2})
+	</select>
+	<insert id="addFriend" parameterType="friend" useGeneratedKeys="true" keyProperty="friendId">
+    	INSERT INTO friend (mem1_id, mem2_id, member_id_min, member_id_max, status)
+    	VALUES (#{mem1Id}, #{mem2Id}, #{memberIdMin}, #{memberIdMax}, #{status})
 	</insert>
-	<!-- 특정 친구 목록 삭제 -->
-	<delete id="deleteFriend" parameterType="hashmap">
-        DELETE FROM friend
-        WHERE
-            (mem1_id = #{mem1Id} AND mem2_id = #{mem2Id})
-            OR (mem1_id = #{mem2Id} AND mem2_id = #{mem1Id})
-    </delete>
-    <!-- 친구 목록 멤버리스트로 가져오기 -->
-	<select id="getFriend" parameterType="int" resultType="member">
-        SELECT m.mem_id, m.email, m.password, m.nickname, m.gender, m.profile_img
-        FROM friend f JOIN member m
-	    	ON (
-	    		(f.mem1_id = #{VALUE} AND m.mem_id = f.mem2_id)
-	            OR (f.mem2_id = #{VALUE} AND m.mem_id = f.mem1_id)
-	       	)
-        WHERE f.mem1_id = #{VALUE} OR f.mem2_id = #{VALUE}
-        ORDER BY m.mem_id
-    </select>
+
+	
+	<update id="updateFriendStatus" parameterType="friend">
+    UPDATE friend
+    SET status = #{status}
+    WHERE member_id_min = LEAST(#{mem1Id}, #{mem2Id})
+      AND member_id_max = GREATEST(#{mem1Id}, #{mem2Id})
+      AND status = 'pending'
+</update>
+	<delete id="deleteFriend" parameterType="friend">
+    DELETE FROM friend
+    WHERE member_id_min = #{memberIdMin}
+      AND member_id_max = #{memberIdMax}
+	</delete>
 </mapper>
 
  

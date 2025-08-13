@@ -12,12 +12,12 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item ${param.currentMenu == 'todo' ? 'active' : ''}">
-            <a class="nav-link" data-toggle="collapse" href="/todo" aria-expanded="false" aria-controls="ui-basic">
-                <i class="icon-layout menu-icon"></i>
-                <span class="menu-title">To Do</span>
-            </a>
-        </li>
+	    <li class="nav-item ${param.currentMenu == 'todo' ? 'active' : ''}">
+	      <a class="nav-link" href="<c:url value='/todo'/>">
+	        <i class="icon-layout menu-icon"></i>
+	        <span class="menu-title">To Do</span>
+	      </a>
+	    </li>
         <li class="nav-item ${param.currentMenu == 'account' ? 'active' : ''}">
             <a class="nav-link" href="<c:url value="/account"/>">
                 <i class="icon-columns menu-icon"></i>
@@ -30,12 +30,12 @@
                 <span class="menu-title">Health Care</span>
             </a>
         </li>
-        <li class="nav-item ${param.currentMenu == 'notes' ? 'active' : ''}">
-            <a class="nav-link" href="<c:url value="/note/note"/>">
-                <i class="icon-grid-2 menu-icon"></i>
-                <span class="menu-title">Notes</span>
-            </a>
-        </li>
+    <li class="nav-item ${param.currentMenu == 'notes' ? 'active' : ''}">
+      <a class="nav-link" href="<c:url value='/note'/>">
+        <i class="icon-grid-2 menu-icon"></i>
+        <span class="menu-title">Notes</span>
+      </a>
+    </li>
         <li class="nav-item ${param.currentMenu == 'goal' ? 'active' : ''}">
             <a class="nav-link" href="<c:url value="/goal"/>">
                 <i class="icon-target menu-icon"></i>

@@ -28,8 +28,12 @@
     <!-- inject:css -->
     <link rel="stylesheet" href="<c:url value="/css/vertical-layout-light/style.css"/>">
     <!-- endinject -->
-    <link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />
+    <%--  <link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />  --%>
     <style>
+        tbody tr:first-child {
+            background-color: #F5F8F8;
+        }
+
         .main-panel {
             background-color: #F5F8F8;
         }
@@ -90,17 +94,11 @@
         }
 
         .level-badge {
+            text-align: center;
             font-size: 2.5rem;
             font-weight: bold;
             color: #6c757d;
             margin-bottom: 10px;
-        }
-
-        .character-name {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
         }
 
         .exp-container {
@@ -222,10 +220,6 @@
             .level-badge {
                 font-size: 2rem;
             }
-
-            .character-name {
-                font-size: 1.5rem;
-            }
         }
     </style>
 </head>
@@ -237,24 +231,6 @@
     <!-- partial -->
     <div class="container-fluid page-body-wrapper">
         <!-- partial:partials/_settings-panel.html -->
-        <div class="theme-setting-wrapper">
-            <div id="settings-trigger"><i class="ti-settings"></i></div>
-            <div id="theme-settings" class="settings-panel">
-                <i class="settings-close ti-close"></i>
-                <p class="settings-heading">SIDEBAR SKINS</p>
-                <div class="sidebar-bg-options selected" id="sidebar-light-theme"><div class="img-ss rounded-circle bg-light border mr-3"></div>Light</div>
-                <div class="sidebar-bg-options" id="sidebar-dark-theme"><div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark</div>
-                <p class="settings-heading mt-2">HEADER SKINS</p>
-                <div class="color-tiles mx-0 px-4">
-                    <div class="tiles success"></div>
-                    <div class="tiles warning"></div>
-                    <div class="tiles danger"></div>
-                    <div class="tiles info"></div>
-                    <div class="tiles dark"></div>
-                    <div class="tiles default"></div>
-                </div>
-            </div>
-        </div>
         <div id="right-sidebar" class="settings-panel">
             <i class="settings-close ti-close"></i>
             <ul class="nav nav-tabs border-top" id="setting-panel" role="tablist">
@@ -424,15 +400,12 @@
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <div class="level-badge">LV 5</div>
-                            <div class="character-name">아직은 새싹</div>
-
+                            <div id="level" class="level-badge">LV 5</div>
                             <div class="exp-container">
-                                <div class="exp-label">EXP</div>
+                                <div id="exp" class="exp-label">EXP</div>
                                 <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div id="progress" class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
-                                <div class="exp-text">2 / 10</div>
                             </div>
                         </div>
                     </div>
@@ -509,13 +482,13 @@
 <!-- container-scroller -->
 
 <!-- plugins:js -->
-<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="<c:url value="/vendors/js/vendor.bundle.base.js"/>"></script>
 <!-- endinject -->
 <!-- Plugin js for this page -->
-<script src="/vendors/chart.js/Chart.min.js"></script>
-<script src="/vendors/datatables.net/jquery.dataTables.js"></script>
-<script src="/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-<script src="/js/dataTables.select.min.js"></script>
+<script src="<c:url value="/vendors/chart.js/Chart.min.js"/>"></script>
+<script src="<c:url value="/vendors/datatables.net/jquery.dataTables.js"/>"></script>
+<script src="<c:url value="/vendors/datatables.net-bs4/dataTables.bootstrap4.js"/>"></script>
+<script src="<c:url value="/js/dataTables.select.min.js"/>"></script>
 
 <!-- End plugin js for this page -->
 <!-- inject:js -->
@@ -530,9 +503,22 @@
 <script src="<c:url value="/js/Chart.roundedBarCharts.js"/>"></script>
 <!-- End custom js for this page-->
 
-<script src="<c:url value="/js/account/account-charts.js"/>"></script>
-
 <script>
+    // 친구 리스트를 가져와서 레벨순으로 정렬해서 출력
+    // const friendList = fetch("/get");
+
+    // 내 Goal를 가져워서 출력
+    const level = document.querySelector('#level');
+
+    fetch('/get/member')
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data);
+            level.textContent = "Lv " + data.goal.goalLv;
+
+        })
+        .catch(error => console.error('Error:', error));
+
 
 </script>
 </body>

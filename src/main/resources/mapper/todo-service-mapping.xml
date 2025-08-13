@@ -3,15 +3,34 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ns.sql.TodoMapper">
+	 <!-- 공통 컬럼 -->
+	<!-- SELECT 시에는 초 제거해서 보내기 (항상 HH:mm) -->
+	<sql id="todo_cols">
+  todo_id, todo_done, todo_content, todo_date, todo_time, todo_important, mem_id
+</sql>
+
+
 	<sql id="select-todo">
-		SELECT todo_id, todo_done, todo_content, todo_date, todo_important
+		SELECT todo_id, todo_done, todo_content, todo_date, todo_time, todo_important, mem_id
 		FROM todo
 	</sql>
 	
-	<insert id="addTodo" parameterType="todo">	
-		INSERT INTO 
-		todo (todo_id, todo_done, todo_content, todo_date, todo_important)
-		VALUES(#{todoId}, #{todoDone}, #{todoContent}, #{todoDate}, #{todoImportant})
+	<!-- mapper/todo-service-mapping.xml -->
+	<insert id="addTodo" parameterType="todo">
+	  INSERT INTO todo
+	    (todo_done, todo_content, todo_date, todo_time, todo_important, mem_id)
+	  VALUES
+	    (#{todoDone},
+	     #{todoContent},
+	     #{todoDate},
+	     <choose>
+	       <when test="todoTime != null and todoTime != ''">
+	         CAST(CONCAT(#{todoTime}, ':00') AS TIME)
+	       </when>
+	       <otherwise>NULL</otherwise>
+	     </choose>,
+	     #{todoImportant},
+	     #{memId})
 	</insert>
 	
 	<delete id="deleteTodo" parameterType="int">
@@ -19,11 +38,26 @@
 		WHERE todo_id=#{VALUE}
 	</delete>
 	
-	<update id="changeTodo" parameterType="todo">	
-		UPDATE todo
-		SET todo_done=#{todoDone}, todo_content=#{todoContent}, todo_date=#{todoDate}, todo_important=#{todoImportant}, mem_id=#{memId}
-		WHERE todo_id = #{todoId}
+		<!-- UPDATE -->
+	<update id="changeTodo" parameterType="todo">
+	  UPDATE todo
+	  SET
+	    todo_done = #{todoDone},
+	    todo_content = #{todoContent},
+	    todo_date = #{todoDate},
+	    todo_time =
+	      <choose>
+	        <when test="todoTime != null and todoTime != ''">
+	          STR_TO_DATE(CONCAT(#{todoTime}, ':00'), '%H:%i:%s')
+	        </when>
+	        <otherwise>NULL</otherwise>
+	      </choose>,
+	    todo_important = #{todoImportant},
+	    mem_id = #{memId}
+	  WHERE todo_id = #{todoId}
 	</update>
+
+
 	
 	<update id="isTodoDone" parameterType="todo">		
 		UPDATE todo
@@ -31,15 +65,28 @@
 		WHERE todo_id=#{todoId}
 	</update>
 	
-	<select id="getTodoByToday" parameterType="String" resultType="todo">
-		<include refid="select-todo"></include>
-			WHERE todo_date = #{value}
-		
-	</select>
+	<!-- ✅ 회원의 모든 To-Do -->
+	  <select id="getAllByMember" parameterType="int" resultType="todo">
+	    SELECT <include refid="todo_cols"/>
+	    FROM todo
+	    WHERE mem_id = #{value}
+	    ORDER BY todo_date DESC, todo_id DESC
+	  </select>
+	
+	  <!-- (참고) 오늘 것만 보고 싶을 때 쓰는 기존 쿼리도 mem_id 조건 포함 권장 -->
+	  <select id="getTodoByToday" parameterType="map" resultType="todo">
+	    SELECT <include refid="todo_cols"/>
+	    FROM todo
+	    WHERE mem_id = #{memId}
+	      AND DATE(todo_date) = #{date}   <!-- date는 'yyyy-MM-dd' -->
+	    ORDER BY todo_date DESC, todo_id DESC
+	  </select>
 	
 	<select id="getTodoByImportant" parameterType="int" resultType="todo"> 
 		<include refid="select-todo"></include>
-		WHERE todo_important= 1 AND todo_done = 1;
+		WHERE mem_id = #{value}
+		AND todo_important = 1
+		ORDER BY todo_date DESC, todo_id DESC
 	</select>
 
 </mapper>

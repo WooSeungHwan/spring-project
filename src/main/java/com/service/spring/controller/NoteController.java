@@ -28,8 +28,8 @@ public class NoteController {
 
     @Autowired
     private NoteService noteService;
-
-    @GetMapping("/note")
+    
+    @GetMapping({"", "/"})
     public String notePage(HttpSession session, Model model) {
         int memId = -1;
         Member member = (Member)session.getAttribute("member");
