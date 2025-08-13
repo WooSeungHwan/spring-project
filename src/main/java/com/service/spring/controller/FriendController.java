@@ -48,7 +48,6 @@ public class FriendController {
 			model.addAttribute("friendList", friendList);
 			model.addAttribute("friendPendingList", friendPendingList);
 		}catch(SQLException e) {
-			 e.printStackTrace();
 			return "redirect:/pages/member/login.jsp";
 		}
 		return "pages/profile/profile";
