@@ -1,5 +1,6 @@
 package com.service.spring.controller;
 
+import com.service.spring.domain.Goal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,14 +26,20 @@ public class MemberController {
 			model.addAttribute("currentMenu", "dashboard");
 			return "main";
 		}
-		else
-			return "pages/member/login";
+		else {
+            return "pages/member/login";
+        }
 	}
 
 	@GetMapping("/main")
-	public String getMain(Model model) {
-		model.addAttribute("currentMenu", "dashboard");
-		return "main";
+	public String getMain(HttpSession session, Model model) {
+        Member member = (Member)session.getAttribute("member");
+        if (member != null) {
+            model.addAttribute("currentMenu", "dashboard");
+            return "main";
+        } else {
+            return "pages/member/login";
+        }
 	}
 	
 	@GetMapping("/login")
@@ -73,7 +80,13 @@ public class MemberController {
 
 	@PostMapping("/register")
 	public String doRegister(Member member, Model model) {
-		System.out.println(member);
+		// System.out.println(member);
+        Goal goal = new Goal();
+        goal.setGoalLv(1);
+        goal.setGoalName("Lv 1");
+
+        member.setGoal(goal);
+
 		try {
 			memberService.addMember(member);
 		} catch (Exception e) {

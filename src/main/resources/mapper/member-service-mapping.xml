@@ -3,6 +3,13 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 <mapper namespace="ns.sql.MemberMapper">
+    <!-- Goal ResultMap -->
+    <resultMap id="goalRM" type="goal">
+        <result property="goalLv" column="goal_lv"/>
+        <result property="goalName" column="goal_name"/>
+        <result property="goalExp" column="goal_exp"/>
+    </resultMap>
+
 	<!-- Member ResultMap -->
 	<resultMap id="memberRM" type="member">
 		<id property="memId" column="mem_id"/>
@@ -11,17 +18,25 @@
         <result property="nickname" column="nickname"/>
         <result property="gender" column="gender"/>
         <result property="profileImg" column="profile_img"/>
+
+        <!-- Goal 객체 매핑 -->
+        <association property="goal" javaType="Goal">
+            <result property="goalLv" column="goal_lv"/>
+            <result property="goalName" column="goal_name"/>
+            <result property="goalExp" column="goal_exp"/>
+        </association>
 	</resultMap>
 
 	<!-- 1) 로그인(ID, Password) 2) getMember (ID)-->
-	<select id="getMember" parameterType="member" resultMap="memberRM">		
-		SELECT mem_id, email, password, nickname, gender, profile_img
-		FROM member
-		WHERE email=#{email}
-		<if test="password != null">
-			AND password=#{password}
-		</if>
-	</select>
+    <select id="getMember" parameterType="member" resultMap="memberRM">
+        SELECT mem_id, email, password, nickname, gender, profile_img,
+        goal_lv, goal_name, goal_exp
+        FROM member
+        WHERE email=#{email}
+        <if test="password != null">
+            AND password=#{password}
+        </if>
+    </select>
 	
 	<!-- 사용자 검색 -->
 	<select id="searchMember" parameterType="string" resultMap="memberRM">		
@@ -51,13 +66,6 @@
 	</delete>
 	
 	<!-- Goal 관련 쿼리문 -->
-		
-	<!-- Goal ResultMap -->
-	<resultMap id="goalRM" type="goal">
-		<result property="goalLv" column="goal_lv"/>
-        <result property="goalName" column="goal_name"/>
-        <result property="goalExp" column="goal_exp"/>	
-	</resultMap>
 
 	<!-- 사용자의 목표를 가져옴 -->
 	<select id="getGoal" parameterType="int" resultMap="goalRM">
