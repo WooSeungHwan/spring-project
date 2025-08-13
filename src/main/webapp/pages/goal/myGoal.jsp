@@ -395,7 +395,7 @@
                             <div class="character-circle">
                                 <%--<div class="sprout-character">🌱</div>--%>
                                 <div>
-                                    <img class="sprout-character" src="../../image/goal/tree01.png" alt="tree-img"/>
+                                    <img id="character-img" class="sprout-character" src="../../image/goal/tree01.png" alt="tree-img"/>
                                 </div>
                             </div>
                         </div>
@@ -509,17 +509,72 @@
 
     // 내 Goal를 가져워서 출력
     const level = document.querySelector('#level');
+    const characterImg = document.querySelector('#character-img');
+    const progress = document.querySelector("#progress");
+
+    // 함수 호출
+    // checkTargetAndCalculateScore();
+
+    fetch('/get-all-target')
+        .then(res => res.json())
+        .then((data) => {
+            if (data.check !== 1) {
+
+            }
+        })
+        .catch(error => console.error('Error:', error));
 
     fetch('/get/member')
         .then(res => res.json())
         .then((data) => {
-            console.log(data);
-            level.textContent = "Lv " + data.goal.goalLv;
-
+            // console.log(data);
+            //level.textContent = "Lv " + data.goal.goalLv;
+            level.textContent = "Lv " + data.goal.goalExp / 50;
+            if (data.goal.goalLv <= 3) {
+                characterImg.src = "/image/goal/tree0" + (data.goal.goalExp / 50 + 1) + ".png";
+            } else {
+                let level = data.goal.goalExp / 50 - 4
+                characterImg.src = "/image/goal/tree0" + ((level % 6) + 4)  + ".png";
+            }
+            progress.style.width = ((data.goal.goalExp % 50) / 50) + '%';
         })
         .catch(error => console.error('Error:', error));
 
+    <%--async function checkTargetAndCalculateScore() {--%>
+    <%--    try {--%>
+    <%--        const targetResponse = await fetch('/get-all-target');--%>
+    <%--        const targetData = await targetResponse.json();--%>
 
+    <%--        if (targetData.check !== 1) {--%>
+    <%--            // targetAcc가 없으면 0으로 설정--%>
+    <%--            const targetAcc = targetData.targetAcc || 0;--%>
+
+    <%--            // 이번 달의 합계 가져오기--%>
+    <%--            const monthResponse = await fetch('/get-month-sum');--%>
+    <%--            const monthData = await monthResponse.json();--%>
+    <%--            const monthSum = monthData.sum || 0;--%>
+
+    <%--            let score = 0;--%>
+
+    <%--            // targetAcc와 비교하여 점수 계산--%>
+    <%--            if (targetAcc === 0) {--%>
+    <%--                score = 0;  // 목표가 없으면 점수 변동 없음--%>
+    <%--            } else if (monthSum >= targetAcc) {--%>
+    <%--                score = 25;  // 목표 달성--%>
+    <%--            } else {--%>
+    <%--                score = -25;  // 목표 미달성--%>
+    <%--            }--%>
+
+    <%--            console.log(`목표: ${targetAcc}, 실적: ${monthSum}, 점수: ${score > 0 ? '+' : ''}${score}`);--%>
+
+    <%--            // 점수 반환 또는 추가 처리--%>
+    <%--            return score;--%>
+    <%--        }--%>
+    <%--    } catch (error) {--%>
+    <%--        console.error('Error:', error);--%>
+    <%--        return 0;  // 에러 발생 시 0점 반환--%>
+    <%--    }--%>
+    <%--}--%>
 </script>
 </body>
 

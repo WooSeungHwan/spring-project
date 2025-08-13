@@ -101,10 +101,30 @@
             <div class="col-12 col-md-4 mb-3">
               <section class="dash-card">
                 <div class="dash-card__header">
-                  <h5 class="dash-card__title">결과 요약</h5>  <a class="dash-btn" href="<c:url value='/goal'/>" aria-label="결과 요약 페이지로 이동">+</a>
-
+                  <h5 class="dash-card__title">결과 요약</h5>
+                  <a class="dash-btn" href="<c:url value='/goal'/>" aria-label="결과 요약 페이지로 이동">+</a>
                 </div>
-                <div class="dash-card__body" id="card-body-5"><div class="dash-card__empty">데이터를 불러오는 중…</div></div>
+                <div class="dash-card__body" id="card-body-5">
+                    <div class="dash-card-goal">
+                        <div class="col-md-4 text-center">
+                            <div class="character-circle">
+                                <%--<div class="sprout-character">🌱</div>--%>
+                                <div>
+                                    <img id="character-img" class="sprout-character" src="../../image/goal/tree01.png" alt="tree-img"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="level" class="level-badge">LV 5</div>
+                            <div class="exp-container">
+                                <div id="exp" class="exp-label">EXP</div>
+                                <div class="progress">
+                                    <div id="progress" class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
               </section>
             </div>
             <!-- 6 -->
@@ -291,9 +311,39 @@
 	  function krw(n){ return '₩ ' + Number(n||0).toLocaleString('ko-KR'); }
 	});
   
-  
-  
-  
+  // 목표 요약 관련 스크립트
+  // 내 Goal를 가져워서 출력
+  const level = document.querySelector('#level');
+  const characterImg = document.querySelector('#character-img');
+  const progress = document.querySelector("#progress");
+
+  // 함수 호출
+  // checkTargetAndCalculateScore();
+
+  fetch('/get-all-target')
+      .then(res => res.json())
+      .then((data) => {
+          if (data.check !== 1) {
+
+          }
+      })
+      .catch(error => console.error('Error:', error));
+
+  fetch('/get/member')
+      .then(res => res.json())
+      .then((data) => {
+          // console.log(data);
+          //level.textContent = "Lv " + data.goal.goalLv;
+          level.textContent = "Lv " + data.goal.goalExp / 50;
+          if (data.goal.goalLv <= 3) {
+              characterImg.src = "/image/goal/tree0" + (data.goal.goalExp / 50 + 1) + ".png";
+          } else {
+              let level = data.goal.goalExp / 50 - 4
+              characterImg.src = "/image/goal/tree0" + ((level % 6) + 4)  + ".png";
+          }
+          progress.style.width = ((data.goal.goalExp % 50) / 50) + '%';
+      })
+      .catch(error => console.error('Error:', error));
 </script>
 </body>
 </html>

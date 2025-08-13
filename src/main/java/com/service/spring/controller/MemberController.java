@@ -38,7 +38,7 @@ public class MemberController {
 		Member member = (Member)session.getAttribute("member");
 		if (member != null) {
 			model.addAttribute("currentMenu", "dashboard");
-			return "main";
+			return "pages/main/main";
 		}
 		else {
             return "pages/member/login";
@@ -50,7 +50,7 @@ public class MemberController {
         Member member = (Member)session.getAttribute("member");
         if (member != null) {
             model.addAttribute("currentMenu", "dashboard");
-            return "main";
+            return "pages/main/main";
         } else {
             return "pages/member/login";
         }
@@ -74,7 +74,7 @@ public class MemberController {
 			return "error";
 		}
 
-		return "main";
+		return "pages/main/main";
 	}
 
 	// 로그아웃
