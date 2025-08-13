@@ -45,6 +45,44 @@
     .dash-card__body{ flex:1; padding:12px 14px; overflow:auto; }
     .dash-card__empty{ color:#9aa0a6; font-size:.95rem; }
     .dash-btn{ border:none; background:#f5f6f8; width:28px; height:28px; border-radius:8px; line-height:28px; text-align:center; cursor:pointer; }
+
+    /* 목표 확인 스타일 */
+    .character-circle {
+        width: 150px;
+        height: 150px;
+        border: 3px solid #e0e0e0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        margin: 0 auto 20px;
+        position: relative;
+    }
+
+    .sprout-character {
+        width: 100px;  /* 이미지 크기 조절 */
+        height: 100px;
+        object-fit: contain;  /* 비율 유지하며 크기 조절 */
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .level-badge {
+        text-align: center;
+    }
+
+    .progress {
+        height: 30px;
+        border-radius: 15px;
+        background-color: #e9ecef;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        transition: width 0.5s ease;
+    }
   </style>
 </head>
 
@@ -106,18 +144,16 @@
                 </div>
                 <div class="dash-card__body" id="card-body-5">
                     <div class="dash-card-goal">
-                        <div class="col-md-4 text-center">
+                        <div>
                             <div class="character-circle">
-                                <%--<div class="sprout-character">🌱</div>--%>
                                 <div>
                                     <img id="character-img" class="sprout-character" src="../../image/goal/tree01.png" alt="tree-img"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-8">
+                        <div>
                             <div id="level" class="level-badge">LV 5</div>
                             <div class="exp-container">
-                                <div id="exp" class="exp-label">EXP</div>
                                 <div class="progress">
                                     <div id="progress" class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>

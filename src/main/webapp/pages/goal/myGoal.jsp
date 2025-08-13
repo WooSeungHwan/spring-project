@@ -30,6 +30,10 @@
     <!-- endinject -->
     <%--  <link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />  --%>
     <style>
+        body {
+            font-family:'Jua',sans-serif;
+        }
+
         tbody tr:first-child {
             background-color: #F5F8F8;
         }
@@ -506,6 +510,13 @@
 <script>
     // 친구 리스트를 가져와서 레벨순으로 정렬해서 출력
     // const friendList = fetch("/get");
+    getAllFriend();
+
+    function getAllFriend() {
+        fetch("/get-all-friend")
+            .then()
+    }
+
 
     // 내 Goal를 가져워서 출력
     const level = document.querySelector('#level');

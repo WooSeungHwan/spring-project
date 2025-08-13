@@ -32,7 +32,7 @@
     <style>
         body {
             background-color: #f5f7fa;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family:'Jua',sans-serif;
             margin: 0;
             padding: 20px;
         }

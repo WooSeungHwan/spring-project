@@ -161,6 +161,18 @@ $(() => {
 	    };
 	    reader.readAsDataURL(file);
 	});
+    
+    $('.dropdown-menu').on("click", ".dropdown-item", function(event) {
+        event.preventDefault();
+        const selectedText = $(this).text();
+        var gender = "";
+        $("#genderBtn").html(selectedText);
+        if (selectedText == "남자")
+        	gender = "M";
+        else if (selectedText == "여자")
+        	gender = "F";
+        $("#gender").val(gender);
+    });
 });
 </script>
 </head>
@@ -459,7 +471,14 @@ $(() => {
               					<div class="col-md-6 grid-margin stretch-card">
 	              					<div style="width:100%">
 	              						<h4>성별</h4>
-	              						<input type="text" name="gender" id="gender" placeholder="성별을 선택해주세요." style="width: 100%;height:45px;background:#F5F7F9;border:none;border-radius:15px;font-size:15px;padding-left:20px" required>
+	              						<button type="button" id="genderBtn" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="width:100%; height:45px; background-color:#F5F7F9;color:black; border:none; text-align: center;">
+								      		성별을 선택해주세요.
+								    	</button>
+		              					<div class="dropdown-menu" style="width:100%;width: 100%;height:45px;background:#F5F7F9;border:none;border-radius:15px;font-size:15px;padding-left:20px">
+									      <a class="dropdown-item" href="#">남자</a>
+									      <a class="dropdown-item" href="#">여자</a>
+									    </div>
+									    <input type="hidden" name="gender" id="gender" value="">
 	              					</div>
               					</div>
               				</div>

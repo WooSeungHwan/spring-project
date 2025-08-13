@@ -52,6 +52,20 @@ public class FriendController {
 		}
 		return "pages/profile/profile";
 	}
+
+    @GetMapping("/get-all-friend")
+    public List<Member> getAllFriend(HttpSession session, Model model) {
+        if ((Member)session.getAttribute("member") == null)
+            return null;
+
+        Member member = (Member)session.getAttribute("member");
+
+        try {
+            return friendService.getFriendList(member.getMemId());
+        } catch(SQLException e) {
+            return null;
+        }
+    }
 	
 	@PostMapping("/searchMembers")
 	@ResponseBody
