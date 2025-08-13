@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.service.spring.domain.Health;
+import com.service.spring.domain.Member;
 import com.service.spring.domain.PInfo;
 import com.service.spring.service.HealthService;
 import com.service.spring.service.PInfoService;
@@ -29,17 +30,21 @@ public class HealthController {
 	
 	@GetMapping("/moveHealth")
 	public String moveHealth(HttpSession session, Model model) {
-		Object memIdAttr = session.getAttribute("memId");
-		int memId = 1;
-		if (memIdAttr != null)
-			memId = (int)memIdAttr;
+		if ((Member)session.getAttribute("member") == null)
+			return "pages/member/login";
+		Member member = (Member)session.getAttribute("member");
+		System.out.println(member);
+		int memId = member.getMemId();
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		if (memId != 0) {
 			map.put("memId", memId);
 			try {
 				List<Health> list = healthService.getHealth(map);
 				PInfo pInfo = pInfoService.getPInfo(memId);
-				pInfo.setBMI(pInfoService.getBMI(memId));
+				if (pInfo != null)
+					pInfo.setBMI(pInfoService.getBMI(memId));
+				else {
+					pInfo = new PInfo(memId, 0, 0);
+				}
 				HashMap<String, List<?>> chartMap = healthService.getChartData(list);
 				model.addAttribute("healthList", list);
 				model.addAttribute("pInfo", pInfo);
@@ -49,19 +54,16 @@ public class HealthController {
 				model.addAttribute("msg", e.getMessage());
 				e.getMessage();
 			}
-		}
 		return "pages/health/health";
 	}
 	
 	@ResponseBody
 	@PostMapping("/changePInfo")
 	public PInfo changePInfo(@RequestParam("height") double height, @RequestParam("weight") double weight, HttpSession session, Model model) {
-		Object memIdAttr = session.getAttribute("memId");
+		Member member = (Member)session.getAttribute("member");
 		PInfo newPInfo = null;
-		int memId = 1;
-		if (memIdAttr != null)
-			memId = (int)memIdAttr;
-		if (memId != 0) {
+		int memId = member.getMemId();
+		if (member != null) {
 			PInfo prevPInfo = pInfoService.getPInfo(memId);
 			newPInfo = new PInfo(memId, height, weight);
 			if (prevPInfo == null)
@@ -76,12 +78,10 @@ public class HealthController {
 	@ResponseBody
 	@PostMapping("/addHealth")
 	public Map<String, Object> addHealth(@RequestParam("healthName") String healthName, @RequestParam("healthAmount") int healthAmount, HttpSession session){
-	    Object memIdAttr = session.getAttribute("memId");
-	    int memId = 1;
-	    if (memIdAttr != null)
-	        memId = (int)memIdAttr;
+		Member member = (Member)session.getAttribute("member");
+	    int memId = member.getMemId();
 	    Map<String, Object> response = new HashMap<>();    
-	    if (memId != 0) {
+	    if (member != null) {
 	        Health newHealth = new Health(healthName, healthAmount, false, memId);
 	        try {
 	            healthService.addHealth(newHealth);
@@ -98,9 +98,6 @@ public class HealthController {
 	            response.put("success", false);
 	            response.put("message", "데이터베이스 오류로 운동 추가에 실패했습니다.");
 	        }
-	    } else {
-	        response.put("success", false);
-	        response.put("message", "사용자 정보가 유효하지 않습니다.");
 	    }
 	    return response;
 	}
@@ -108,34 +105,32 @@ public class HealthController {
 	@ResponseBody
 	@PostMapping("/changeHealthDone")
 	public Map<String, Object> changeHealDone(@RequestParam("healId") int healId, HttpSession session) {
-	    Map<String, Object> response = new HashMap<>();
-	    Object memIdAttr = session.getAttribute("memId");
-	    int memId = 1;
-		if (memIdAttr != null)
-			memId = 1;
-		if (memId != 0) {
-	    try {
-	        Health rHealth = healthService.getHealth(healId);
-	        if (rHealth != null) {
-	            rHealth.setHealDone(true);
-	            healthService.updateHealth(rHealth);
-	            HashMap<String, Object> map = new HashMap<String, Object>();
-	            map.put("memId", memId);
-	            List<Health> newHealthList = healthService.getHealth(map);
-	            response.put("success", true);
-	            response.put("healthList", newHealthList);
-	            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
-				response.put("chartData", chartMap.get("chartData"));
-				response.put("chartLabel", chartMap.get("chartLabel"));
-	        } else {
-	            response.put("success", false);
-	            response.put("message", "해당 운동을 찾을 수 없거나 소유자가 다릅니다.");
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        response.put("success", false);
-	        response.put("message", "데이터베이스 오류가 발생했습니다.");
-	    }
+		Member member = (Member)session.getAttribute("member");
+		Map<String, Object> response = new HashMap<>();
+	    int memId = member.getMemId();
+		if (member != null) {
+		    try {
+		        Health rHealth = healthService.getHealth(healId);
+		        if (rHealth != null) {
+		            rHealth.setHealDone(true);
+		            healthService.updateHealth(rHealth);
+		            HashMap<String, Object> map = new HashMap<String, Object>();
+		            map.put("memId", memId);
+		            List<Health> newHealthList = healthService.getHealth(map);
+		            response.put("success", true);
+		            response.put("healthList", newHealthList);
+		            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
+					response.put("chartData", chartMap.get("chartData"));
+					response.put("chartLabel", chartMap.get("chartLabel"));
+		        } else {
+		            response.put("success", false);
+		            response.put("message", "해당 운동을 찾을 수 없거나 소유자가 다릅니다.");
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        response.put("success", false);
+		        response.put("message", "데이터베이스 오류가 발생했습니다.");
+		    }
 		}
 	    return response;
 	}

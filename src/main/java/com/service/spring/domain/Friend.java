@@ -21,46 +21,57 @@ public class Friend {
         this.status = status;
     }
 
-	public Friend(Integer friendId, Integer mem1Id, Integer mem2Id, String status) {
+	public Friend(int friendId, int mem1Id, int mem2Id, String status) {
 	    this.friendId = friendId;
 	    this.mem1Id = mem1Id;
 	    this.mem2Id = mem2Id;
 	    this.status = status;
 	}
 	
-	public Integer getFriendId() {
+	public int getFriendId() {
 		return friendId;
 	}
-	public void setFriendId(Integer friendId) {
+
+	public void setFriendId(int friendId) {
 		this.friendId = friendId;
 	}
-	public Integer getMem1Id() {
+
+	public int getMem1Id() {
 		return mem1Id;
 	}
-	public void setMem1Id(Integer mem1Id) {
+
+	public void setMem1Id(int mem1Id) {
 		this.mem1Id = mem1Id;
 	}
-	public Integer getMem2Id() {
+
+	public int getMem2Id() {
 		return mem2Id;
 	}
-	public void setMem2Id(Integer mem2Id) {
+
+	public void setMem2Id(int mem2Id) {
 		this.mem2Id = mem2Id;
 	}
-	public Integer getMemberIdMin() {
+
+	public int getMemberIdMin() {
 		return memberIdMin;
 	}
-	public void setMemberIdMin(Integer memberIdMin) {
+
+	public void setMemberIdMin(int memberIdMin) {
 		this.memberIdMin = memberIdMin;
 	}
-	public Integer getMemberIdMax() {
+
+	public int getMemberIdMax() {
 		return memberIdMax;
 	}
-	public void setMemberIdMax(Integer memberIdMax) {
+
+	public void setMemberIdMax(int memberIdMax) {
 		this.memberIdMax = memberIdMax;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}

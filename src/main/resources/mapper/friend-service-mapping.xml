@@ -5,15 +5,23 @@
 <mapper namespace="ns.sql.FriendMapper">
 	<!-- 내 친구 목록 불러오기 -->
 	<select id="getFriendList" parameterType="int" resultType="member">
-	    SELECT m.member_id, m.nickName, m.email
+	    SELECT m.mem_id, m.nickName, m.email
 	    FROM friend f
 	    JOIN member m ON (
-	        (f.member_id_min = #{VALUE} AND m.member_id = f.member_id_max) OR
-	        (f.member_id_max = #{VALUE} AND m.member_id = f.member_id_min)
+	        (f.member_id_min = #{VALUE} AND m.mem_id = f.member_id_max) OR
+	        (f.member_id_max = #{VALUE} AND m.mem_id = f.member_id_min)
 	    )
 	    WHERE (f.member_id_min = #{VALUE} OR f.member_id_max = #{VALUE})
 	      AND f.status = 'accepted'
 	</select>
+	
+	<select id="getPendingFriendList" parameterType="int" resultType="member">
+    SELECT m.mem_id, m.nickname, m.email
+    FROM friend f
+    JOIN member m ON m.mem_id = f.mem1_id
+    WHERE f.mem2_id = #{VALUE}
+      AND f.status = 'pending'
+</select>
 
 	<select id="getFriend" parameterType="hashmap" resultType="friend">
 	    SELECT friend_id, member_id_min, member_id_max, status
@@ -26,17 +34,19 @@
     	VALUES (#{mem1Id}, #{mem2Id}, #{memberIdMin}, #{memberIdMax}, #{status})
 	</insert>
 
+	
 	<update id="updateFriendStatus" parameterType="friend">
-    	UPDATE friend
-    	SET status = #{status}
-    	WHERE member_id_min = #{memberIdMin}
-      	AND member_id_max = #{memberIdMax}
-	</update>
-	<delete id="deleteFriend" parameterType="hashmap">
+    UPDATE friend
+    SET status = #{status}
+    WHERE member_id_min = LEAST(#{mem1Id}, #{mem2Id})
+      AND member_id_max = GREATEST(#{mem1Id}, #{mem2Id})
+      AND status = 'pending'
+</update>
+	<delete id="deleteFriend" parameterType="friend">
     DELETE FROM friend
     WHERE member_id_min = #{memberIdMin}
       AND member_id_max = #{memberIdMax}
-</delete>
+	</delete>
 </mapper>
 
  

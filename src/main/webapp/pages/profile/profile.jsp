@@ -89,7 +89,7 @@
 <script>
 $(() => {
 	let timeoutId;
-
+	
     // 닉네임 입력 시 검색
     $('#nicknameInput').on('input', function() {
         clearTimeout(timeoutId);
@@ -356,7 +356,7 @@ $(() => {
 	               		<form action="#">
 	               			<input type="text" id="nicknameInput" placeholder="등록할 친구의 닉네임을 입력해주세요." style="width: 100%;height:45px;background:#F5F7F9;border:none;border-radius:15px;font-size:15px;padding-left:20px" required>
 	               		</form>
-		                <div class="hide-scrollbar" style="height: 250px; overflow-y: scroll;">
+		                <div class="hide-scrollbar" style="height: 200px; overflow-y: scroll;">
 		                	<div class="card-body">
 			                	<table id="addFriendResultTable" class="table table-hover" style=" text-align: center;">
 				                	
@@ -365,33 +365,63 @@ $(() => {
 		                </div>
 	                </div>
               	</div>
+              	<c:choose>
+              		<c:when test="${not empty friendPendingList}">
+              			<div class="card tale-bg"  style="background:white; margin-top: 40px">
+              				<div class="card-body">
+              				<h3>친구 요청</h3>
+	              		<div class="acceptFriendTable">
+	              		<table class="table table-hover" style="text-align: center;">
+	              			<tbody>
+	              			<c:forEach items="${friendPendingList}" var="friend">
+	              				<tr>
+									<td class="col-width-1" style="height:40px">${friend.nickname} #${friend.memId}</td>
+									<td class="col-width-2" style="height:40px">${friend.email}</td>
+									<td class="col-width-3" style="height:40px">
+										<div class="row">
+										<form action="acceptFriend" method="POST">
+											<input type="hidden" name="friendId" value="${friend.memId}">
+											<input type="submit" value="수락" style="width:40px;height:30px;margin-right:20px;color:white;background-color: #7A5EE7;border: none; border-radius: 10px">
+										</form>
+										<form action="deleteFriend" method="POST">
+											<input type="hidden" name="friendId" value="${friend.memId}">
+											<input type="submit" value="거부" style="width:40px;height:30px;margin-right:20px;color:white;background-color: #FF4752;border: none; border-radius: 10px">
+										</form>
+										</div>
+									</td>
+								</tr>
+	              			</c:forEach>
+	              			</tbody>
+	              			</table>
+	              			</div>
+						</div>
+						</div>
+					</c:when>
+					<c:otherwise>
+					</c:otherwise>
+				</c:choose>
               	<div class="card tale-bg"  style="margin-top:40px; background:white;width:100%; height:300px;">
               		<div class="card-body">
               			<h3>친구 목록</h3>
               			<div style ="width: 80%; margin: 0 auto">
-              				<table class="table table-hover" style="text-align: center;">
-									<tr>
-									    <td class="col-width-1"  style="height:30px"><h4>닉네임</h4></td>
-									    <td class="col-width-2"  style="height:30px"><h4>email</h4></td>
-									    <td class="col-width-3"  style="height:30px"></td>
-									</tr>
-							</table>
-	              			<div class="hide-scrollbar" style="height: 250px; overflow-y: scroll;">
+	              			<div class="hide-scrollbar" style="height: 200px; overflow-y: scroll;">
 			                	<div class="card-body" style="margin-top: 0;">
 			                		
 				                	<table class="table table-hover" style=" text-align: center;">
+				                		<tbody>
 					                	<c:forEach items="${friendList}" var="friend">				
 											<tr>
 											   	<td class="col-width-1" style="height:40px">${friend.nickname} #${friend.memId}</td>
 												<td class="col-width-2" style="height:40px">${friend.email}</td>
 												<td class="col-width-3" style="height:40px">
-													<form action="deleteFriend">
-														<input type="submit" value="삭제" style="width:75px;height:40px;margin-right:20px;color:white;background-color: #7A5EE7;border: none; border-radius: 10px">
+													<form action="deleteFriend" method="POST">
+														<input type="hidden" name="friendId" value="${friend.memId}">
+														<input type="submit" value="삭제" style="width:75px;height:30px;margin-right:20px;color:white;background-color: #7A5EE7;border: none; border-radius: 10px">
 													</form>
 												</td>
-												
 											</tr>
 										</c:forEach>
+										</tbody>
 									</table>
 								</div>
 			                </div>
