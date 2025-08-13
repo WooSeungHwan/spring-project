@@ -292,32 +292,4 @@ $('#addAccListBtn').on('click', function() {
         alert('날짜와 금액은 필수 입력 항목입니다.');
         return;
     }
-
-    // 서버로 전송
-    $.ajax({
-        url: '/addAcc',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(formData),
-        success: function(response) {
-            if (response) {
-                // 테이블 새로고침
-                if (typeof table !== 'undefined' && table) {
-                    table.ajax.reload(null, false);
-                }
-
-                // 대시보드 데이터 새로고침
-                loadMonthData();
-
-                // 입력 폼 초기화
-                // $('#addAccListForm')[0].reset();
-
-                alert('추가되었습니다.');
-            }
-        },
-        error: function(xhr, status, error) {
-            alert('추가 중 오류가 발생했습니다.');
-            console.error('Error:', error);
-        }
-    });
 });

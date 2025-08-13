@@ -211,10 +211,10 @@
             margin: 0 auto;
         }
 
-        .chart-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
+        /*.chart-card:hover {*/
+        /*    transform: translateY(-5px);*/
+        /*    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);*/
+        /*}*/
 
         .chart-card .card-body {
             padding: 30px;
@@ -231,11 +231,12 @@
         }
 
         .chart-header .card-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
-            color: #2d3436;
+            color: #000000;
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background: #000000;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -294,7 +295,7 @@
             position: relative;
             height: 400px;
             padding: 20px 0;
-            background: linear-gradient(180deg, rgba(102, 126, 234, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+            /*background: linear-gradient(180deg, rgba(102, 126, 234, 0.03) 0%, rgba(255, 255, 255, 0) 100%); */
             border-radius: 15px;
         }
 
@@ -323,18 +324,18 @@
             }
         }
 
-        /* Loading Animation (optional) */
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
+        /*!* Loading Animation (optional) *!*/
+        /*@keyframes pulse {*/
+        /*    0% {*/
+        /*        opacity: 1;*/
+        /*    }*/
+        /*    50% {*/
+        /*        opacity: 0.5;*/
+        /*    }*/
+        /*    100% {*/
+        /*        opacity: 1;*/
+        /*    }*/
+        /*}*/
 
         .chart-loading {
             animation: pulse 1.5s ease-in-out infinite;
