@@ -1,12 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<style>
+  /* 메인 로고 */
+  .navbar-brand.brand-logo img {
+    height: 80px !important; /* 원하는 높이 */
+    width: auto;  /* 비율 유지 */
+  }
 
+</style>
 
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo mr-5" href="<c:url value="/main"/>"><img src="<c:url value="/image/Logo.png"/>" class="mr-2" alt="logo" style="height: 64px;"/></a>
-        <%--<a class="navbar-brand brand-logo-mini" href="<c:url value="/main"/>"><img src="/image/logo-mini.svg" alt="logo"/></a>--%>
+        <a class="navbar-brand brand-logo mr-5" href="<c:url value="/main"/>"><img src="/image/Logo.png" class="mr-2" alt="logo"/></a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
         <ul class="navbar-nav navbar-nav-right">
