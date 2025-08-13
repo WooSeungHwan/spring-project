@@ -15,7 +15,8 @@ import com.service.spring.domain.Member;
 @Repository
 public class MemberDAO {	
 	public static final String NS = "ns.sql.MemberMapper.";
-
+	public static final String NS2 = "";
+	
 	@Autowired
 	private SqlSession sqlSession;
 	
