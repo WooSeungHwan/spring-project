@@ -47,6 +47,7 @@ public class HealthController {
 				model.addAttribute("chartLabel", chartMap.get("chartLabel"));
 			} catch (Exception e) {
 				model.addAttribute("msg", e.getMessage());
+				e.getMessage();
 			}
 		}
 		return "pages/health/health";

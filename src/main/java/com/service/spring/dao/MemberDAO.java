@@ -3,6 +3,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
+import com.service.spring.domain.Goal;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -46,5 +47,25 @@ public class MemberDAO {
 	public int deleteMember(int memId) throws SQLException {
 		return sqlSession.delete(NS + "deleteMember", memId);
 	}	
+	
+	public int addFriend(HashMap<String, Integer> map) throws SQLException {
+		return sqlSession.insert(NS2 + "addFriend", map);
+	}
+		
+	public int deleteFriend(HashMap<String, Integer> map) throws SQLException {
+		return sqlSession.delete(NS2 + "deleteFriend", map);
+	}
+		
+	public List<Member> getFriend(int memId) throws SQLException {
+		return sqlSession.selectList(NS2 + "getFriend", memId);
+	}
+    
+    // Goal 도메인
+    public Goal getGoal(int memId) throws SQLException {
+        return sqlSession.selectOne(NS + "getGoal", memId);
+    }
 
+    public int updateGoal(Member member) throws SQLException {
+        return sqlSession.update(NS + "updateGoal", member);
+    }
 }

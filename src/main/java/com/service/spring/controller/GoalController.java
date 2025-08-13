@@ -11,6 +11,8 @@ public class GoalController {
     public String moveGoal(HttpSession session) {
         Member member = (Member)session.getAttribute("member");
 
+        System.out.println(member);
+
         if (member == null) {
             return "redirect:/pages/member/login.jsp";
         } else {
