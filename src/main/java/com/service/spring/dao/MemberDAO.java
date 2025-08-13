@@ -15,7 +15,6 @@ import com.service.spring.domain.Member;
 @Repository
 public class MemberDAO {	
 	public static final String NS = "ns.sql.MemberMapper.";
-	public static final String NS2 = "ns.sql.FriendMapper.";
 
 	@Autowired
 	private SqlSession sqlSession;
@@ -31,6 +30,10 @@ public class MemberDAO {
 	
 	public List<Member> searchMember(String nickname) throws SQLException {
 		return sqlSession.selectList(NS + "searchMember", nickname);
+	}
+	
+	public Member searchMember(int memId) throws SQLException {
+		return sqlSession.selectOne(NS + "searchMemberById", memId);
 	}
 	
 	public int addMember(Member member) throws SQLException {

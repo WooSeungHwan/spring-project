@@ -21,7 +21,6 @@ public class MemberService {
 		return memberDAO.login(member);
 	}
 
-    // 이메일 중복여부 확인
     public Member checkEmail(String email) throws SQLException {
         Member member = new Member();
         member.setEmail(email);
@@ -31,6 +30,10 @@ public class MemberService {
 	
 	public List<Member> searchMember(String nickname) throws SQLException {
 		return memberDAO.searchMember(nickname);
+	}
+	
+	public Member searchMember(int memId) throws SQLException {
+		return memberDAO.searchMember(memId);
 	}
 	
 	public int addMember(Member member) throws SQLException {
