@@ -30,6 +30,11 @@
 		WHERE nickname=#{VALUE}
 	</select>
 	
+	<select id="searchMemberById" parameterType="int" resultMap="memberRM">		
+		SELECT mem_id, email, password, nickname, gender, profile_img
+		FROM member
+		WHERE mem_id=#{VALUE}
+	</select>
 	<!-- 사용자 추가 -->
 	<insert id="addMember" parameterType="member" useGeneratedKeys="true" keyProperty="memId">		
 		INSERT INTO member (email, password, nickname, gender)
