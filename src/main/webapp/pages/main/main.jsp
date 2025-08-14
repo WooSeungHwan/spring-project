@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="<c:url value='/vendors/ti-icons/css/themify-icons.css'/>">
   <link rel="stylesheet" href="<c:url value='/vendors/css/vendor.bundle.base.css'/>">
   <link rel="stylesheet" href="<c:url value='/css/vertical-layout-light/style.css'/>">
-  <link rel="shortcut icon" href="<c:url value='/images/favicon.png'/>" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&display=swap">
 
@@ -356,25 +355,25 @@
   // 함수 호출
   // checkTargetAndCalculateScore();
 
-  fetch('/get-all-target')
-      .then(res => res.json())
-      .then((data) => {
-          if (data.check !== 1) {
-
-          }
-      })
-      .catch(error => console.error('Error:', error));
+  // fetch('/get-all-target')
+  //     .then(res => res.json())
+  //     .then((data) => {
+  //         if (data.check !== 1) {
+  //
+  //         }
+  //     })
+  //     .catch(error => console.error('Error:', error));
 
   fetch('/get/member')
       .then(res => res.json())
       .then((data) => {
           // console.log(data);
           //level.textContent = "Lv " + data.goal.goalLv;
-          level.textContent = "Lv " + data.goal.goalExp / 50;
+          level.textContent = "Lv " + data.goal.goalLv;
           if (data.goal.goalLv <= 3) {
-              characterImg.src = "/image/goal/tree0" + (data.goal.goalExp / 50 + 1) + ".png";
+              characterImg.src = "/image/goal/tree0" + (data.goal.goalLv) + ".png";
           } else {
-              let level = data.goal.goalExp / 50 - 4
+              let level = data.goal.goalLv - 4
               characterImg.src = "/image/goal/tree0" + ((level % 6) + 4)  + ".png";
           }
           progress.style.width = ((data.goal.goalExp % 50) / 50) + '%';

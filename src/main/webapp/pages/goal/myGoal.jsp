@@ -28,7 +28,6 @@
     <!-- inject:css -->
     <link rel="stylesheet" href="<c:url value="/css/vertical-layout-light/style.css"/>">
     <!-- endinject -->
-    <%--  <link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />  --%>
     <style>
         body {
             font-family:'Jua',sans-serif;
@@ -330,7 +329,6 @@
                     </div>
                     <ul class="chat-list">
                         <li class="list active">
-                            <div class="profile"><img src="images/faces/face1.jpg" alt="image"><span class="online"></span></div>
                             <div class="info">
                                 <p>Thomas Douglas</p>
                                 <p>Available</p>
@@ -338,7 +336,6 @@
                             <small class="text-muted my-auto">19 min</small>
                         </li>
                         <li class="list">
-                            <div class="profile"><img src="images/faces/face2.jpg" alt="image"><span class="offline"></span></div>
                             <div class="info">
                                 <div class="wrapper d-flex">
                                     <p>Catherine</p>
@@ -349,7 +346,6 @@
                             <small class="text-muted my-auto">23 min</small>
                         </li>
                         <li class="list">
-                            <div class="profile"><img src="images/faces/face3.jpg" alt="image"><span class="online"></span></div>
                             <div class="info">
                                 <p>Daniel Russell</p>
                                 <p>Available</p>
@@ -357,7 +353,6 @@
                             <small class="text-muted my-auto">14 min</small>
                         </li>
                         <li class="list">
-                            <div class="profile"><img src="images/faces/face4.jpg" alt="image"><span class="offline"></span></div>
                             <div class="info">
                                 <p>James Richardson</p>
                                 <p>Away</p>
@@ -365,7 +360,6 @@
                             <small class="text-muted my-auto">2 min</small>
                         </li>
                         <li class="list">
-                            <div class="profile"><img src="images/faces/face5.jpg" alt="image"><span class="online"></span></div>
                             <div class="info">
                                 <p>Madeline Kennedy</p>
                                 <p>Available</p>
@@ -373,7 +367,6 @@
                             <small class="text-muted my-auto">5 min</small>
                         </li>
                         <li class="list">
-                            <div class="profile"><img src="images/faces/face6.jpg" alt="image"><span class="online"></span></div>
                             <div class="info">
                                 <p>Sarah Graves</p>
                                 <p>Available</p>
@@ -508,84 +501,283 @@
 <!-- End custom js for this page-->
 
 <script>
-    // 친구 리스트를 가져와서 레벨순으로 정렬해서 출력
-    // const friendList = fetch("/get");
-    getAllFriend();
-
-    function getAllFriend() {
-        fetch("/get-all-friend")
-            .then()
-    }
-
-
     // 내 Goal를 가져워서 출력
     const level = document.querySelector('#level');
     const characterImg = document.querySelector('#character-img');
     const progress = document.querySelector("#progress");
-
-    // 함수 호출
-    // checkTargetAndCalculateScore();
-
-    fetch('/get-all-target')
-        .then(res => res.json())
-        .then((data) => {
-            if (data.check !== 1) {
-
-            }
-        })
-        .catch(error => console.error('Error:', error));
 
     fetch('/get/member')
         .then(res => res.json())
         .then((data) => {
             // console.log(data);
             //level.textContent = "Lv " + data.goal.goalLv;
-            level.textContent = "Lv " + data.goal.goalExp / 50;
+            level.textContent = "Lv " + data.goal.goalLv;
             if (data.goal.goalLv <= 3) {
-                characterImg.src = "/image/goal/tree0" + (data.goal.goalExp / 50 + 1) + ".png";
+                characterImg.src = "/image/goal/tree0" + (data.goal.goalLv) + ".png";
             } else {
-                let level = data.goal.goalExp / 50 - 4
+                let level = data.goal.goalLv - 4
                 characterImg.src = "/image/goal/tree0" + ((level % 6) + 4)  + ".png";
             }
             progress.style.width = ((data.goal.goalExp % 50) / 50) + '%';
         })
         .catch(error => console.error('Error:', error));
 
-    <%--async function checkTargetAndCalculateScore() {--%>
-    <%--    try {--%>
-    <%--        const targetResponse = await fetch('/get-all-target');--%>
-    <%--        const targetData = await targetResponse.json();--%>
+    fetch('/set-goal-exp', {
+        method: 'POST'
+    }).then((res) => console.log(res));
 
-    <%--        if (targetData.check !== 1) {--%>
-    <%--            // targetAcc가 없으면 0으로 설정--%>
-    <%--            const targetAcc = targetData.targetAcc || 0;--%>
+    /* 랭킹 관련 함수 */
+    // 랭킹 데이터를 처리하고 테이블에 표시하는 함수
+    function displayTreeRanking(currentUser, otherUsers = []) {
+        // 나와 다른 사용자들을 합쳐서 전체 사용자 목록 생성
+        const allUsers = [currentUser, ...otherUsers.filter(user => user.id !== currentUser.id)];
 
-    <%--            // 이번 달의 합계 가져오기--%>
-    <%--            const monthResponse = await fetch('/get-month-sum');--%>
-    <%--            const monthData = await monthResponse.json();--%>
-    <%--            const monthSum = monthData.sum || 0;--%>
+        // goalExp 순으로 정렬 (내림차순)
+        const sortedUsers = allUsers.sort((a, b) => b.goalExp - a.goalExp);
 
-    <%--            let score = 0;--%>
+        // 최대 5명까지만 선택
+        const topUsers = sortedUsers.slice(0, 5);
 
-    <%--            // targetAcc와 비교하여 점수 계산--%>
-    <%--            if (targetAcc === 0) {--%>
-    <%--                score = 0;  // 목표가 없으면 점수 변동 없음--%>
-    <%--            } else if (monthSum >= targetAcc) {--%>
-    <%--                score = 25;  // 목표 달성--%>
-    <%--            } else {--%>
-    <%--                score = -25;  // 목표 미달성--%>
-    <%--            }--%>
+        // 테이블 tbody 요소 선택
+        const tbody = document.querySelector('.ranking-table tbody');
 
-    <%--            console.log(`목표: ${targetAcc}, 실적: ${monthSum}, 점수: ${score > 0 ? '+' : ''}${score}`);--%>
+        // 기존 내용 삭제
+        tbody.innerHTML = '';
 
-    <%--            // 점수 반환 또는 추가 처리--%>
-    <%--            return score;--%>
-    <%--        }--%>
-    <%--    } catch (error) {--%>
-    <%--        console.error('Error:', error);--%>
-    <%--        return 0;  // 에러 발생 시 0점 반환--%>
-    <%--    }--%>
-    <%--}--%>
+        // 각 사용자에 대해 행 생성
+        topUsers.forEach((user, index) => {
+            const rank = index + 1; // 실제 표시 순위
+            const row = createRankingRow(user, rank, currentUser.id);
+            tbody.appendChild(row);
+        });
+    }
+
+    // 개별 랭킹 행을 생성하는 함수
+    function createRankingRow(user, rank, currentUserId) {
+        const row = document.createElement('tr');
+
+        // 현재 사용자인지 확인
+        const isCurrentUser = user.id === currentUserId;
+
+        // 순위 텍스트
+        const rankText = rank + '위';
+
+        // 사용자명 처리
+        const username = isCurrentUser ? '나' : (user.username || user.nickname || '사용자' + user.id);
+
+        // 레벨 계산 (goalExp 기반)
+        const level = calculateLevel(user.goalExp || 0);
+
+        // HTML 생성
+        const rankClass = isCurrentUser ? 'rank-number my-rank' : 'rank-number';
+        const userClass = isCurrentUser ? 'username my-username' : 'username';
+        const levelClass = isCurrentUser ? 'level-badge-small my-level' : 'level-badge-small';
+
+        row.innerHTML = '<td><span class="' + rankClass + '">' + rankText + '</span></td>' +
+            '<td><span class="' + userClass + '">' + username + '</span></td>' +
+            '<td><span class="' + levelClass + '">LV ' + level + '</span></td>';
+
+        // 현재 사용자 행에 특별한 클래스 추가
+        if (isCurrentUser) {
+            row.classList.add('my-ranking-row');
+        }
+
+        return row;
+    }
+
+    // goalExp를 기반으로 레벨을 계산하는 함수
+    function calculateLevel(goalExp) {
+        if (!goalExp || goalExp <= 0) return 1;
+        if (goalExp >= 10000) return Math.floor(goalExp / 1000);
+        if (goalExp >= 1000) return Math.floor(goalExp / 100);
+        return Math.max(1, Math.floor(goalExp / 50));
+    }
+
+    // 나의 데이터를 가져오는 함수
+    async function fetchMyData() {
+        try {
+            const response = await fetch('/get/member');
+            if (!response.ok) {
+                throw new Error('HTTP error! status: ' + response.status);
+            }
+            const myData = await response.json();
+            return myData;
+        } catch (error) {
+            console.error('내 데이터 로딩 실패:', error);
+            // 기본 데이터 반환
+            return {
+                id: 'unknown',
+                username: '나',
+                goalExp: 0,
+                actualRank: null
+            };
+        }
+    }
+
+    // 친구들을 검색하는 함수
+    async function searchMembers(nickname = '') {
+        try {
+            const searchData = {
+                nickname: nickname
+            };
+
+            const response = await fetch('/searchMembers?nickname=' + encodeURIComponent(nickname), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(searchData)
+            });
+
+            if (!response.ok) {
+                console.warn('친구 검색 실패:', response.status);
+                return [];
+            }
+
+            const users = await response.json();
+            return Array.isArray(users) ? users : [];
+        } catch (error) {
+            console.warn('친구 검색 중 오류:', error);
+            return [];
+        }
+    }
+
+    // 전체 랭킹을 로드하고 표시하는 함수
+    async function loadAndDisplayRanking() {
+        try {
+            // 로딩 상태 표시
+            showLoadingState();
+
+            // 나의 데이터와 다른 사용자들을 병렬로 실행
+            const [myData, otherUsers] = await Promise.all([
+                fetchMyData(),
+                searchMembers('')
+            ]);
+
+            // 나의 데이터가 없으면 에러 처리
+            if (myData === null) {
+                throw new Error('사용자 데이터를 불러올 수 없습니다.');
+            }
+
+            // 랭킹 표시 (나와 다른 사용자들을 함께 정렬)
+            displayTreeRanking(myData, otherUsers);
+
+        } catch (error) {
+            console.error('랭킹 로딩 중 오류 발생:', error);
+            displayErrorMessage(error.message);
+        }
+    }
+
+    // 로딩 상태 표시 함수
+    function showLoadingState() {
+        const tbody = document.querySelector('.ranking-table tbody');
+        tbody.innerHTML = '<tr><td colspan="3" class="ranking-loading">랭킹 데이터를 불러오는 중...</td></tr>';
+    }
+
+    // 에러 메시지 표시 함수
+    function displayErrorMessage(message = '랭킹 데이터를 불러올 수 없습니다.') {
+        const tbody = document.querySelector('.ranking-table tbody');
+        tbody.innerHTML = '<tr><td colspan="3" class="ranking-error">' +
+            message +
+            '<br><button onclick="loadAndDisplayRanking()" style="margin-top: 10px; padding: 5px 10px; border: none; background: #2196f3; color: white; border-radius: 4px; cursor: pointer;">다시 시도</button></td></tr>';
+    }
+
+    // 랭킹 새로고침 함수
+    function refreshRanking() {
+        loadAndDisplayRanking();
+    }
+
+    // 샘플 데이터로 테스트하는 함수
+    function testWithSampleData() {
+        const myData = {
+            id: 'currentUser',
+            username: '나',
+            goalExp: 15000, // 나의 goalExp를 15000으로 설정
+            actualRank: null
+        };
+
+        const otherUsers = [
+            { id: 'user1', username: '김철님#1322', goalExp: 35000, actualRank: 1 },
+            { id: 'user2', username: '박작가씨#41', goalExp: 22000, actualRank: 2 },
+            { id: 'user3', username: '장보고#11059', goalExp: 19000, actualRank: 3 },
+            { id: 'user4', username: '고주몽#3', goalExp: 8000, actualRank: 4 },
+            { id: 'user6', username: '이순신#777', goalExp: 12000, actualRank: 5 }
+        ];
+
+        // 결과: 1위 김철님(35000) → 2위 박작가씨(22000) → 3위 장보고(19000) → 4위 나(15000) → 5위 이순신(12000)
+        displayTreeRanking(myData, otherUsers);
+    }
+
+    // 나가 1위인 경우 테스트 함수
+    function testWithMeFirst() {
+        const myData = {
+            id: 'currentUser',
+            username: '나',
+            goalExp: 50000, // 나의 goalExp를 가장 높게 설정
+            actualRank: null
+        };
+
+        const otherUsers = [
+            { id: 'user1', username: '김철님#1322', goalExp: 35000, actualRank: 2 },
+            { id: 'user2', username: '박작가씨#41', goalExp: 22000, actualRank: 3 },
+            { id: 'user3', username: '장보고#11059', goalExp: 19000, actualRank: 4 },
+            { id: 'user4', username: '고주몽#3', goalExp: 8000, actualRank: 5 }
+        ];
+
+        // 결과: 1위 나(50000) → 2위 김철님(35000) → 3위 박작가씨(22000) → 4위 장보고(19000) → 5위 고주몽(8000)
+        displayTreeRanking(myData, otherUsers);
+    }
+
+    // 나만 있는 경우 테스트 함수
+    function testWithOnlyMe() {
+        const myData = {
+            id: 'currentUser',
+            username: '나',
+            goalExp: 1000,
+            actualRank: null
+        };
+
+        // 결과: 1위 나(1000) - 혼자만 있음
+        displayTreeRanking(myData, []);
+    }
+
+    // 페이지 로드 시 실행
+    document.addEventListener('DOMContentLoaded', () => {
+        // 초기 랭킹 로드 및 표시
+        loadAndDisplayRanking();
+
+        // 확장 버튼 이벤트
+        const expandBtn = document.querySelector('.expand-btn');
+        if (expandBtn) {
+            expandBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+
+                if (icon.classList.contains('fa-plus')) {
+                    icon.classList.remove('fa-plus');
+                    icon.classList.add('fa-minus');
+                } else {
+                    icon.classList.remove('fa-minus');
+                    icon.classList.add('fa-plus');
+                }
+            });
+        }
+    });
+
+    // 주기적 랭킹 업데이트 함수 (선택사항)
+    function startAutoRefresh(intervalMinutes = 5) {
+        setInterval(() => {
+            loadAndDisplayRanking();
+        }, intervalMinutes * 60 * 1000);
+    }
+
+    // 전역 함수들 export (필요한 경우)
+    window.rankingFunctions = {
+        loadAndDisplayRanking,
+        refreshRanking,
+        testWithSampleData,
+        testWithMeFirst,
+        testWithOnlyMe
+    };
 </script>
 </body>
 

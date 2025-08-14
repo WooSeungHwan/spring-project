@@ -31,10 +31,7 @@
     <%--<link rel="shortcut icon" href="<c:url value="/images/favicon.png"/>" />--%>
     <style>
         body {
-            background-color: #f5f7fa;
             font-family:'Jua',sans-serif;
-            margin: 0;
-            padding: 20px;
         }
 
         /* Card 스타일 */
@@ -217,7 +214,7 @@
         /*}*/
 
         .chart-card .card-body {
-            padding: 30px;
+            padding: 15px;
         }
 
         /* Chart Header Styles */
@@ -225,13 +222,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #f0f0f0;
         }
 
         .chart-header .card-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: #000000;
             margin: 0;
