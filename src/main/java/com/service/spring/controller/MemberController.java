@@ -2,9 +2,15 @@ package com.service.spring.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import com.service.spring.domain.Goal;
+import com.service.spring.domain.Health;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.service.spring.domain.Member;
+import com.service.spring.service.HealthService;
 import com.service.spring.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,7 +38,9 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
-
+	@Autowired
+	private HealthService healthService;
+	
 	@GetMapping("/")
 	public String getDefault(HttpSession session, Model model) {
 		// 로그인되어있다면 main, 아니면 login으로
@@ -50,6 +59,16 @@ public class MemberController {
         Member member = (Member)session.getAttribute("member");
         if (member != null) {
             model.addAttribute("currentMenu", "dashboard");
+            int memId = member.getMemId();
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("memId", memId);
+			map.put("healDate", LocalDate.now().toString());
+			try {
+				List<Health> healthList = healthService.getHealth(map);
+				model.addAttribute("healthList", healthList);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
             return "pages/main/main";
         } else {
             return "pages/member/login";
@@ -75,7 +94,7 @@ public class MemberController {
 			return "error";
 		}
 
-		return "pages/main/main";
+		return "redirect:/main";
 	}
 
 	// 로그아웃
@@ -152,7 +171,7 @@ public class MemberController {
             model.addAttribute("errorMsg", "회원 정보 수정 중 오류가 발생했습니다.");
             return "redirect:/pages/member/login.jsp";
         }
-		return "/pages/profile/profile";
+		return "redirect:/moveProfile";
 	}
 }
 

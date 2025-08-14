@@ -32,6 +32,8 @@ public class HealthController {
 	private PInfoService pInfoService;
 	@Autowired
 	private FriendService friendService;
+	@Autowired
+	private MemberService memberService;
 	@GetMapping("/moveHealth")
 	public String moveHealth(HttpSession session, Model model) {
 		if ((Member)session.getAttribute("member") == null)
@@ -52,9 +54,10 @@ public class HealthController {
 				}
 				HashMap<String, List<?>> chartMap = healthService.getChartData(list);
 				list = healthService.getHealth(map);
-				List<Map.Entry<String, Double>> healthDoneRanking = healthService.getHealthDoneRanking(friendService.getFriendList(memId));
-				if (healthDoneRanking != null)
-					model.addAttribute("healthRanking", healthDoneRanking);
+				List<Member> RankingList = friendService.getFriendList(memId);
+				RankingList.add(memberService.searchMember(memId));
+				List<Map.Entry<String, Double>> healthDoneRanking = healthService.getHealthDoneRanking(RankingList);
+				model.addAttribute("healthRanking", healthDoneRanking);
 				model.addAttribute("healthList", list);
 				model.addAttribute("pInfo", pInfo);
 				model.addAttribute("chartData", chartMap.get("chartData"));
