@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,9 @@ public class AccountDAO {
 	}
 	
 	public int getMonthSum(Account account) throws SQLException {
-		return sqlSession.selectOne(NS + "getMonthSum", account);
+        return (int) Optional.ofNullable(
+                sqlSession.selectOne(NS + "getMonthSum", account)
+        ).orElse(0);
 	}
     
 	public TargetAccount getTarget(TargetAccount targetAccount) throws SQLException {

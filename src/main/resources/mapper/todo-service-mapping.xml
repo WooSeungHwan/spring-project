@@ -6,8 +6,8 @@
 	 <!-- 공통 컬럼 -->
 	<!-- SELECT 시에는 초 제거해서 보내기 (항상 HH:mm) -->
 	<sql id="todo_cols">
-  todo_id, todo_done, todo_content, todo_date, todo_time, todo_important, mem_id
-</sql>
+      todo_id, todo_done, todo_content, todo_date, todo_time, todo_important, mem_id
+    </sql>
 
 
 	<sql id="select-todo">

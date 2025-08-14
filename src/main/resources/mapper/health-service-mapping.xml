@@ -5,7 +5,7 @@
 <mapper namespace="ns.sql.HealthMapper">
 	<!-- 건강관리 동적할당 all 과 특정 조건 전부 충족하게 -->
 	<select id="getHealthList" parameterType="hashmap" resultType="health">
-		SELECT heal_id, heal_name, heal_amount, heal_done, heal_date
+		SELECT heal_id, heal_name, heal_amount, heal_done
 		FROM health
 		<where>
 			<if test="memId != null">
