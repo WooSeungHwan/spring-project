@@ -440,7 +440,7 @@ $(() => {
 		                </div>
               		</div>
               	</div>
-              	<div class="card tale-bg"  style="margin-top:40px; background:white;width:100%; height:650px;">
+              	<div class="card tale-bg"  style="margin-top:40px; background:white;width:100%; height:700px;">
               		<div class="card-body">
               			<h3>회원 정보 수정</h3>
               			<form id="updateMember" action="updateMember">
