@@ -15,7 +15,10 @@ public class PInfoService {
 	private PInfoDAO pInfoDAO;
 	
 	public PInfo getPInfo(int memId) {
-  		return pInfoDAO.getPInfo(memId);
+		PInfo pInfo = pInfoDAO.getPInfo(memId);
+		if (pInfo == null)
+			pInfo = new PInfo(memId, 0, 0);
+  		return pInfo;
   	}
   	
 	public int addPInfo(PInfo pInfo) {

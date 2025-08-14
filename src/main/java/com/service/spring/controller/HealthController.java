@@ -1,6 +1,7 @@
 package com.service.spring.controller;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,10 @@ public class HealthController {
 		System.out.println(member);
 		int memId = member.getMemId();
 		HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("memId", memId);
-			try {
+		map.put("memId", memId);
+		try {
 				List<Health> list = healthService.getHealth(map);
+				map.put("healDate", LocalDate.now().toString());
 				PInfo pInfo = pInfoService.getPInfo(memId);
 				if (pInfo != null)
 					pInfo.setBMI(pInfoService.getBMI(memId));
@@ -49,6 +51,7 @@ public class HealthController {
 					pInfo = new PInfo(memId, 0, 0);
 				}
 				HashMap<String, List<?>> chartMap = healthService.getChartData(list);
+				list = healthService.getHealth(map);
 				List<Map.Entry<String, Double>> healthDoneRanking = healthService.getHealthDoneRanking(friendService.getFriendList(memId));
 				if (healthDoneRanking != null)
 					model.addAttribute("healthRanking", healthDoneRanking);
@@ -95,9 +98,11 @@ public class HealthController {
 	            HashMap<String, Object> map = new HashMap<String, Object>();
 	            map.put("memId", memId);
 	            List<Health> newHealthList = healthService.getHealth(map);
+	            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
+	            map.put("healDate", LocalDate.now().toString());
+	            newHealthList = healthService.getHealth(map);
 	            response.put("success", true);
 	            response.put("healthList", newHealthList);
-	            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
 				response.put("chartData", chartMap.get("chartData"));
 				response.put("chartLabel", chartMap.get("chartLabel"));
 	        } catch (SQLException e) {
@@ -124,9 +129,11 @@ public class HealthController {
 		            HashMap<String, Object> map = new HashMap<String, Object>();
 		            map.put("memId", memId);
 		            List<Health> newHealthList = healthService.getHealth(map);
+		            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
+		            map.put("healDate", LocalDate.now().toString());
+		            newHealthList = healthService.getHealth(map);
 		            response.put("success", true);
 		            response.put("healthList", newHealthList);
-		            HashMap<String, List<?>> chartMap = healthService.getChartData(newHealthList);
 					response.put("chartData", chartMap.get("chartData"));
 					response.put("chartLabel", chartMap.get("chartLabel"));
 		        } else {
