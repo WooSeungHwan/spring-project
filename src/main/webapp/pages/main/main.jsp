@@ -129,9 +129,22 @@
               <section class="dash-card">
                 <div class="dash-card__header">
                   <h5 class="dash-card__title">오늘 할 운동</h5>  <a class="dash-btn" href="<c:url value='/moveHealth'/>" aria-label="운동 페이지로 이동">+</a>
-
+					   
                 </div>
-                <div class="dash-card__body" id="card-body-4"><div class="dash-card__empty">데이터를 불러오는 중…</div></div>
+               <div class="hide-scrollbar" id="healthTable" style="height: 200px; overflow-y: scroll;">
+					    <table class="table table-hover" style="text-align: center;">
+					        <tbody>
+					            <c:forEach items="${healthList}" var="health">
+					            	<c:if test="${health.healDone == false}">
+						                <tr>
+						                    <td class="col-width-1" style="height:40px; padding : 5px 0">${health.healName}</td>
+						                    <td class="col-width-2" style="height:40px; padding : 5px 0">${health.healAmount}</td>
+						                </tr>
+						            </c:if>
+						        </c:forEach>
+						    </tbody>
+						</table>
+				</div>
               </section>
             </div>
             <!-- 5 -->
