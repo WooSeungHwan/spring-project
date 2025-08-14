@@ -4,12 +4,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.service.spring.dao.HealthDAO;
 import com.service.spring.domain.Health;
+import com.service.spring.domain.Member;
 
 @Service
 public class HealthService {
@@ -66,5 +68,25 @@ public class HealthService {
 		map.put("chartData", chartData);
 		map.put("chartLabel", chartLabel);
 		return map; 
+	}
+
+	private List<Map.Entry<String, Double>> sortHealthRanking(HashMap<String, Double> healthRanking) {
+		List<Map.Entry<String, Double>> sortedRanking = healthRanking.entrySet().stream()
+			    .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+			    .toList();
+		return sortedRanking;
+	}
+	public List<Map.Entry<String, Double>> getHealthDoneRanking(List<Member> friendList) throws SQLException{
+		if (friendList.size() == 0)
+			return null;
+		HashMap<String, Double> map = new HashMap<String, Double>();
+		HashMap<String, Object> healthMap = new HashMap<String, Object>();
+		for(Member m : friendList) {
+			healthMap.clear();
+			healthMap.put("memId", m.getMemId());
+			List<Health> healthList = getHealth(healthMap);
+			map.put(m.getNickname(), getHealthDonePercent(healthList));
+		}
+		return sortHealthRanking(map); 
 	}
 }

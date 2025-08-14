@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.service.spring.domain.Health;
 import com.service.spring.domain.Member;
 import com.service.spring.domain.PInfo;
+import com.service.spring.service.FriendService;
 import com.service.spring.service.HealthService;
+import com.service.spring.service.MemberService;
 import com.service.spring.service.PInfoService;
 
 import jakarta.servlet.http.HttpSession;
@@ -27,7 +29,8 @@ public class HealthController {
 	private HealthService healthService;
 	@Autowired
 	private PInfoService pInfoService;
-	
+	@Autowired
+	private FriendService friendService;
 	@GetMapping("/moveHealth")
 	public String moveHealth(HttpSession session, Model model) {
 		if ((Member)session.getAttribute("member") == null)
@@ -46,6 +49,9 @@ public class HealthController {
 					pInfo = new PInfo(memId, 0, 0);
 				}
 				HashMap<String, List<?>> chartMap = healthService.getChartData(list);
+				List<Map.Entry<String, Double>> healthDoneRanking = healthService.getHealthDoneRanking(friendService.getFriendList(memId));
+				if (healthDoneRanking != null)
+					model.addAttribute("healthRanking", healthDoneRanking);
 				model.addAttribute("healthList", list);
 				model.addAttribute("pInfo", pInfo);
 				model.addAttribute("chartData", chartMap.get("chartData"));
@@ -56,6 +62,7 @@ public class HealthController {
 			}
 		return "pages/health/health";
 	}
+	
 	
 	@ResponseBody
 	@PostMapping("/changePInfo")
