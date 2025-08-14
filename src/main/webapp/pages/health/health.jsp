@@ -31,12 +31,16 @@
 	.col-width-1 { width: 40%; }
 	.col-width-2 { width: 27%; }
 	.col-width-3 { width: 33%; }
+	table {
+    border-collapse: collapse !important; /* 셀 사이 여백 제거 */
+}
 	th{
 		padding:0 !important;
 	}
 	td{
 		font-family: 'Jua', sans-serif;
 		font-size: 33px;
+
 	}
 
 	h3{
@@ -709,8 +713,14 @@ $(() => {
                           <th>완료율</th>
                         </tr>
                       </thead>
-                      <tbody style="height:200px">
-                        
+                      <tbody>
+                        <c:forEach items="${healthRanking}" var="member" varStatus="status"  begin="0" end="4">
+                        	<tr style="height:30px;">
+                        		<td style="padding:0; height:40px;line-height: 40px;" >${status.index + 1}</td>
+                        		<td style="padding:0; height:40px;line-height: 40px;">${member.key}</td>
+                        		<td style="padding:0; height:40px;line-height: 40px;">${member.value}</td>
+                        	</tr>
+                        </c:forEach>
                       </tbody>
                     </table>
                 </div>
