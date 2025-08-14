@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.service.spring.domain.Goal;
+import org.apache.ibatis.jdbc.SQL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,10 @@ public class MemberService {
 	public Member searchMember(int memId) throws SQLException {
 		return memberDAO.searchMember(memId);
 	}
+
+//    public List<Member> searchAllFriend(int memId) throws SQLException {
+//        return memberDAO.searchAllFriend(memId);
+//    }
 	
 	public int addMember(Member member) throws SQLException {
 		return memberDAO.addMember(member);

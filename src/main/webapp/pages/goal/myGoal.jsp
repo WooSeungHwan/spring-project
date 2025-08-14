@@ -33,10 +33,6 @@
             font-family:'Jua',sans-serif;
         }
 
-        tbody tr:first-child {
-            background-color: #F5F8F8;
-        }
-
         .main-panel {
             background-color: #F5F8F8;
         }
@@ -530,10 +526,10 @@
     // 랭킹 데이터를 처리하고 테이블에 표시하는 함수
     function displayTreeRanking(currentUser, otherUsers = []) {
         // 나와 다른 사용자들을 합쳐서 전체 사용자 목록 생성
-        const allUsers = [currentUser, ...otherUsers.filter(user => user.id !== currentUser.id)];
+        const allUsers = [currentUser, ...otherUsers];
 
         // goalExp 순으로 정렬 (내림차순)
-        const sortedUsers = allUsers.sort((a, b) => b.goalExp - a.goalExp);
+        const sortedUsers = allUsers.sort((a, b) => b.goal.goalExp - a.goal.goalExp);
 
         // 최대 5명까지만 선택
         const topUsers = sortedUsers.slice(0, 5);
@@ -546,8 +542,10 @@
 
         // 각 사용자에 대해 행 생성
         topUsers.forEach((user, index) => {
+            console.log(user);
+            console.log(currentUser.id);
             const rank = index + 1; // 실제 표시 순위
-            const row = createRankingRow(user, rank, currentUser.id);
+            const row = createRankingRow(user, rank, currentUser.memId);
             tbody.appendChild(row);
         });
     }
@@ -557,21 +555,22 @@
         const row = document.createElement('tr');
 
         // 현재 사용자인지 확인
-        const isCurrentUser = user.id === currentUserId;
+        const isCurrentUser = user.memId === currentUserId;
+        console.log(isCurrentUser);
 
         // 순위 텍스트
         const rankText = rank + '위';
 
         // 사용자명 처리
-        const username = isCurrentUser ? '나' : (user.username || user.nickname || '사용자' + user.id);
+        const username = isCurrentUser ? '나' : (user.username || user.nickname || '사용자' + user.memId);
 
         // 레벨 계산 (goalExp 기반)
-        const level = calculateLevel(user.goalExp || 0);
+        const level = calculateLevel(user.goal.goalExp || 0);
 
         // HTML 생성
-        const rankClass = isCurrentUser ? 'rank-number my-rank' : 'rank-number';
-        const userClass = isCurrentUser ? 'username my-username' : 'username';
-        const levelClass = isCurrentUser ? 'level-badge-small my-level' : 'level-badge-small';
+        const rankClass = isCurrentUser ? 'rank-number' : 'rank-number';
+        const userClass = isCurrentUser ? 'username' : 'username';
+        const levelClass = isCurrentUser ? 'level-badge-small' : 'level-badge-small';
 
         row.innerHTML = '<td><span class="' + rankClass + '">' + rankText + '</span></td>' +
             '<td><span class="' + userClass + '">' + username + '</span></td>' +
@@ -615,19 +614,9 @@
     }
 
     // 친구들을 검색하는 함수
-    async function searchMembers(nickname = '') {
+    async function searchMembers() {
         try {
-            const searchData = {
-                nickname: nickname
-            };
-
-            const response = await fetch('/searchMembers?nickname=' + encodeURIComponent(nickname), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(searchData)
-            });
+            const response = await fetch('/searchFriends');
 
             if (!response.ok) {
                 console.warn('친구 검색 실패:', response.status);
@@ -651,7 +640,7 @@
             // 나의 데이터와 다른 사용자들을 병렬로 실행
             const [myData, otherUsers] = await Promise.all([
                 fetchMyData(),
-                searchMembers('')
+                searchMembers()
             ]);
 
             // 나의 데이터가 없으면 에러 처리

@@ -36,7 +36,11 @@ public class MemberDAO {
 	public Member searchMember(int memId) throws SQLException {
 		return sqlSession.selectOne(NS + "searchMemberById", memId);
 	}
-	
+
+//    public List<Member> searchAllFriend(int memId) throws SQLException {
+//        return sqlSession.selectList("ns.sql.FriendMapper" + "getFriendList", memId);
+//    }
+
 	public int addMember(Member member) throws SQLException {
 		return sqlSession.insert(NS + "addMember", member);
 	}

@@ -66,6 +66,25 @@ public class FriendController {
             return null;
         }
     }
+
+    @GetMapping("/searchFriends")
+    @ResponseBody
+    public List<Member> getAllFriends(HttpSession session) {
+        List<Member> list = new ArrayList<>();
+        Member member = (Member)session.getAttribute("member");
+        try {
+            if (member == null)
+                return null;
+
+            List<Member> friendList = friendService.getFriendList(member.getMemId());
+            for (Member m : friendList) {
+                list.add(memberService.searchMember(m.getMemId()));
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return list;
+    }
 	
 	@PostMapping("/searchMembers")
 	@ResponseBody
