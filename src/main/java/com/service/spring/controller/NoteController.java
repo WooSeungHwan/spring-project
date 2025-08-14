@@ -65,13 +65,23 @@ public class NoteController {
     }
 
     
-    // ✅ 메모 등록
     @PostMapping("/addNote")
     @ResponseBody
-    public Note addNote(@RequestBody Note note) throws Exception {
-        note.setMemId(1); // 테스트용
+    public Note addNote(@RequestBody Note dto, HttpSession session) throws Exception {
+        Member login = (Member) session.getAttribute("member");
+        if (login == null) {
+            throw new RuntimeException("로그인이 필요합니다."); // or 401 응답
+        }
+
+        Note note = new Note();
+        note.setMemId(login.getMemId());        // ✅ 클라이언트 memId 무시하고 서버에서 설정
+        note.setNoteName(dto.getNoteName());
+        note.setNoteContent(dto.getNoteContent());
+        // 기타 필드 복사
+
         return noteService.addNote(note);
     }
+
 
     // ✅ 메모 수정
     @PutMapping("/updateNote")
