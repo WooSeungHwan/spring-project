@@ -46,7 +46,7 @@
 	</select>
 	
 	<select id="searchMemberById" parameterType="int" resultMap="memberRM">		
-		SELECT mem_id, email, password, nickname, gender, profile_img
+		SELECT mem_id, email, password, nickname, gender, profile_img, goal_lv, goal_name, goal_exp
 		FROM member
 		WHERE mem_id=#{VALUE}
 	</select>

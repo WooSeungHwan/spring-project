@@ -71,6 +71,7 @@ public class MemberController {
 			session.setAttribute("member", loginMember);
 		} catch (Exception e) {
 			// 에러 처리
+            model.addAttribute("msg", e.getMessage());
 			return "error";
 		}
 
